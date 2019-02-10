@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SetupActivity">
+
+    <TextView
+        android:id="@+id/welcomeTitle"
+        android:layout_width="193dp"
+        android:layout_height="60dp"
+        android:text="Welcome!"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="109dp"
+        tools:layout_editor_absoluteY="128dp" />
+
+    <TextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="302dp"
+        android:layout_height="91dp"
+        android:text="Welcome to Personal Best! This app will allow you to better keep track of your daily and weekly walking in order for you to push yourself to achieve new personal goals."
+        tools:layout_editor_absoluteX="42dp"
+        tools:layout_editor_absoluteY="276dp" />
+
+    <TextView
+        android:id="@+id/requiredInfoText"
+        android:layout_width="237dp"
+        android:layout_height="57dp"
+        android:text="We require this information in order to calculate your stride length, which is then used to calculate distance traveled."
+        tools:layout_editor_absoluteX="78dp"
+        tools:layout_editor_absoluteY="500dp" />
+
+    <TextView
+        android:id="@+id/enterHeightPrompt"
+        android:layout_width="163dp"
+        android:layout_height="27dp"
+        android:text="Enter Height (inches):"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="42dp"
+        tools:layout_editor_absoluteY="449dp" />
+
+    <EditText
+        android:id="@+id/enterHeightField"
+        android:layout_width="98dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="217dp"
+        tools:layout_editor_absoluteY="431dp" />
+
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="616dp" />
+</android.support.constraint.ConstraintLayout>
