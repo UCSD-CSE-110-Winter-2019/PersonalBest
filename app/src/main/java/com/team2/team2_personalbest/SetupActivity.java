@@ -32,7 +32,7 @@ public class SetupActivity extends AppCompatActivity {
 
     public void launchActivity() {
         // TODO change if homepage is not MainActivity. Change to whatever homepage is.
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, HomePage.class);
         startActivity(intent);
     }
 }
