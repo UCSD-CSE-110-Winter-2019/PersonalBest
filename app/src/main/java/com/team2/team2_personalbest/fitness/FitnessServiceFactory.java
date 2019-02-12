@@ -1,11 +1,11 @@
-package edu.ucsd.cse110.personalbest.fitness;
+package com.team2.team2_personalbest.fitness;
 
 import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.ucsd.cse110.personalbest.HomePage;
+import com.team2.team2_personalbest.HomePage;
 
 public class FitnessServiceFactory {
 

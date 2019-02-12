@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.personalbest.fitness;
+package com.team2.team2_personalbest.fitness;
 
 public interface FitnessService {
     int getRequestCode();

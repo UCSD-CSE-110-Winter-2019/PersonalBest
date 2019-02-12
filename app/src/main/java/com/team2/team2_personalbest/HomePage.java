@@ -1,19 +1,13 @@
-package edu.ucsd.cse110.personalbest;
+package com.team2.team2_personalbest;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.os.Handler;
 
-import edu.ucsd.cse110.personalbest.fitness.FitnessService;
-import edu.ucsd.cse110.personalbest.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.personalbest.fitness.GoogleFitAdapter;
-import android.widget.Toast;
+import com.team2.team2_personalbest.fitness.FitnessService;
+import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
+import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
 import java.util.Calendar;
 import java.util.Timer;

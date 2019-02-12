@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.personalbest;
+package com.team2.team2_personalbest;
 
 import android.widget.TextView;
 

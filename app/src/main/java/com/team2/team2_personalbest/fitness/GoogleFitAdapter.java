@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.personalbest.fitness;
+package com.team2.team2_personalbest.fitness;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,7 +13,7 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import edu.ucsd.cse110.personalbest.HomePage;
+import com.team2.team2_personalbest.HomePage;
 
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
