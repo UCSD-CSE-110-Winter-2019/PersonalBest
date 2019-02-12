@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class SetupActivity extends AppCompatActivity {
 
@@ -18,14 +19,19 @@ public class SetupActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO switch Activity to MainActivity (homepage)
+                EditText heightField = (EditText) findViewById(R.id.enterHeightField);
+
+                // TODO store this height value in FireBase with the user's account.
+                String height = heightField.getText().toString();
+
+                // Go back to homepage
                 launchActivity();
             }
         });
     }
 
     public void launchActivity() {
-        // TODO this "MainActivity.class" will need to be updated to whatever Activity the homepage is.
+        // TODO change if homepage is not MainActivity. Change to whatever homepage is.
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

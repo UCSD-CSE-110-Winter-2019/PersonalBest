@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="247dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="60sp"
+        android:layout_marginBottom="200sp"
+        android:text="Welcome to Personal Best!"
+        android:textSize="35sp" />
 
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="187dp"
         android:layout_height="57dp"
-        android:text="Sign Up With Google"
-        tools:layout_editor_absoluteX="112dp"
-        tools:layout_editor_absoluteY="473dp" />
+        android:layout_gravity="center"
+        android:text="Sign Up With Google" />
 
-    <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="247dp"
-        android:layout_height="77dp"
-        android:text="Welcome To Personal Best!"
-        android:textSize="35sp"
-        app:layout_constraintEnd_toEndOf="@+id/signUpButton"
-        app:layout_constraintStart_toStartOf="@+id/signUpButton"
-        tools:layout_editor_absoluteY="136dp" />
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

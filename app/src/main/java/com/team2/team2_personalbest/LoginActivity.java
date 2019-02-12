@@ -19,6 +19,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO Whatever needs to be done to sign up with Google
+                // do something
+
                 launchActivity();
             }
         });
