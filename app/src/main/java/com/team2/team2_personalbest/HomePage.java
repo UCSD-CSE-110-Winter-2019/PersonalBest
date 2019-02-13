@@ -1,5 +1,7 @@
 package com.team2.team2_personalbest;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,10 @@ public class HomePage extends AppCompatActivity {
     public double height;
     public double averageStrideLength;
     private Button toggle_walk;
+    //TODO
+    private TextView TextViewStepsLeft;
+    public long goal;
+    public long stepsLeft;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,17 +87,46 @@ public class HomePage extends AppCompatActivity {
         };
         timer.schedule(doAsynchronousTask, 0,5* 1000);
         fitnessService.setup();
+        // TODO Set up the initial goal
+        this.goal = 5000;
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("newgoal", "5000");
+        editor.apply();
 
     }
+
+    //TODO Update the goal
+    @Override
+    public void onResume(){
+        super.onResume();
+        TextViewStepsLeft = (TextView) findViewById(R.id.steps_left);
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        String newGoal = sharedPreferences.getString("newgoal", "");
+        this.goal = Long.parseLong(newGoal);
+        this.stepsLeft = this.goal;
+        TextViewStepsLeft.setText(newGoal);
+    }
+
     protected void onClose(){
         planned_walk = false;
     }
+
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.valueOf(stepCount) + "   " +getString(R.string.steps_taken);
         double totalDistanceInInch = stepCount * averageStrideLength;
         String milesDisplay = String.format("%.1g", convertInchToMile(totalDistanceInInch)) + "  " +getString(R.string.miles_taken);
         textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
+        //TODO Update steps left
+        this.stepsLeft = this.goal - stepCount;
+        //TODO When reached the goal
+        if (this.stepsLeft < 0) {
+            this.stepsLeft = 0;
+            launchEncouragementPopup();
+        }
+        String stepsLeft = String.valueOf(this.stepsLeft);
+        TextViewStepsLeft.setText(stepsLeft);
     }
 
     public double calculateAveStrideLength(double height) {
@@ -111,5 +146,17 @@ public class HomePage extends AppCompatActivity {
             return true;
         }
         else return false;
+    }
+    //TODO Launch the set new goal popup
+    public void set_goal(View view){
+        //TODO
+        Intent intent = new Intent(this, SetNewGoal.class);
+        startActivity(intent);
+    }
+
+    //TODO Launch the encouragement popup
+    public void launchEncouragementPopup(){
+        Intent intent = new Intent(this, GoalAccomplished.class);
+        startActivity(intent);
     }
 }

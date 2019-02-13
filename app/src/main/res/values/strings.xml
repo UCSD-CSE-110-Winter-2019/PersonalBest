@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Team2-PersonalBest</string>
     <string name="steps_taken"> Steps Taken</string>
-    <string name="R">Steps Taken</string>
     <string name="miles_taken">Miles Taken</string>
+    <string name="select_new_goal">Select New Goal</string>
+    <string name="num_steps">Number of steps</string>
+    <string name="cancel">cancel</string>
+    <string name="confirm">confirm</string>
 </resources>
