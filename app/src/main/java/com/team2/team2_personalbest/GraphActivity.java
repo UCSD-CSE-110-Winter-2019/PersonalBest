@@ -29,7 +29,7 @@ public class GraphActivity extends AppCompatActivity {
         int color1 = ContextCompat.getColor(this, R.color.colorAccent);
         int color2 = ContextCompat.getColor(this, R.color.colorPrimary);
         int color3 = ContextCompat.getColor(this, R.color.colorPrimaryDark);
-        barDataSet.setColors(color1, color2, color3);
+        barDataSet.setColors(color1, color2);
 
         BarData barData = new BarData(barDataSet);
 
