@@ -11,8 +11,7 @@
         android:id="@+id/toggle_walk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Planned Walk/Run"
-        android:backgroundColor="Green"/>
+        android:text="Start Planned Walk/Run"/>
 
     <TextView
         android:id="@+id/miles_taken"

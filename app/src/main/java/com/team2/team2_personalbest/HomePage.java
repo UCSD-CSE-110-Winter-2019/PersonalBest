@@ -42,9 +42,17 @@ public class HomePage extends AppCompatActivity {
         toggle_walk = findViewById(R.id.toggle_walk);
         toggle_walk.setBackgroundColor(Color.GREEN);
 
+
         toggle_walk.setOnClickListener(new View.OnClickListener() {
+            /**
+             * author josephl310
+             *
+             * Implements toggle functionality of button: switches between planned and unplanned
+             * walks
+             */
             @Override
             public void onClick(View v) {
+                //TODO: Update with styling
                 if (planned_walk){ //User was on planned walk, wants to end it
                     planned_walk = false;
                     toggle_walk.setText("Start Planned Walk/Run");
@@ -83,8 +91,16 @@ public class HomePage extends AppCompatActivity {
         fitnessService.setup();
 
     }
-    protected void onClose(){
+
+    /**
+     * Author: josephl310
+     *
+     * This should end planned walks when the app is quit
+     */
+    @Override
+    protected void onDestroy(){
         planned_walk = false;
+        super.onDestroy();
     }
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.valueOf(stepCount) + "   " +getString(R.string.steps_taken);
