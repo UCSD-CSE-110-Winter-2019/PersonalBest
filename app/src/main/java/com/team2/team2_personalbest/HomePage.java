@@ -1,8 +1,11 @@
 package com.team2.team2_personalbest;
 
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.team2.team2_personalbest.fitness.FitnessService;
@@ -21,11 +24,13 @@ public class HomePage extends AppCompatActivity {
     private TextView textViewStepCount;
     private TextView textViewDistance;
     private FitnessService fitnessService;
+    private boolean planned_walk = false;
     final Handler handler = new Handler();
     String fitnessServiceKey = "GOOGLE_FIT";
     private final double toGetAverageStride = 0.413;
     public double height;
     public double averageStrideLength;
+    private Button toggle_walk;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +39,23 @@ public class HomePage extends AppCompatActivity {
         textViewStepCount = (TextView) findViewById(R.id.step_taken);
         textViewDistance = (TextView) findViewById(R.id.miles_taken);
         averageStrideLength = calculateAveStrideLength(height);
+        toggle_walk = findViewById(R.id.toggle_walk);
+        toggle_walk.setBackgroundColor(Color.GREEN);
+
+        toggle_walk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (planned_walk){ //User was on planned walk, wants to end it
+                    planned_walk = false;
+                    toggle_walk.setText("Start Planned Walk/Run");
+                    toggle_walk.setBackgroundColor(Color.GREEN);
+                } else {
+                    planned_walk = true;
+                    toggle_walk.setText("End Planned Walk/Run");
+                    toggle_walk.setBackgroundColor(Color.RED);
+                }
+            }
+        });
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(HomePage homePage) {
@@ -61,12 +83,14 @@ public class HomePage extends AppCompatActivity {
         fitnessService.setup();
 
     }
-
+    protected void onClose(){
+        planned_walk = false;
+    }
     public void setStepCount(long stepCount){
-        String stepCountDispaly = String.valueOf(stepCount) + "   " +getString(R.string.steps_taken);
-        double totaDistanceInInch = stepCount * averageStrideLength;
-        String milesDisplay = String.format("%.1g", convertInchToMile(totaDistanceInInch)) + "  " +getString(R.string.miles_taken);
-        textViewStepCount.setText(stepCountDispaly);
+        String stepCountDisplay = String.valueOf(stepCount) + "   " +getString(R.string.steps_taken);
+        double totalDistanceInInch = stepCount * averageStrideLength;
+        String milesDisplay = String.format("%.1g", convertInchToMile(totalDistanceInInch)) + "  " +getString(R.string.miles_taken);
+        textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
     }
 
