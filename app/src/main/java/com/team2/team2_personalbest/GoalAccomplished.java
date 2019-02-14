@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class GoalAccomplished extends Activity {
@@ -17,7 +18,9 @@ public class GoalAccomplished extends Activity {
     public void yes(View view){
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
+        finish();
     }
+
     public void no(View view){
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         String newGoal = sharedPreferences.getString("newgoal", "");

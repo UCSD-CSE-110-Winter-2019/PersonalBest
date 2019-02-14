@@ -19,9 +19,10 @@ public class SetNewGoal extends Activity {
 
     public void confirm(View view){
         EditText newGoal = (EditText) findViewById(R.id.set_goal);
+        //TODO Check for valid input
         boolean digitsOnly = TextUtils.isDigitsOnly(newGoal.getText());
-        //Check for valid input
-        if (!digitsOnly){
+        // Making sure it's a number and editText is not empty
+        if (!digitsOnly || newGoal.getText().toString().matches("")){
             Toast.makeText(SetNewGoal.this, "Enter a positive number", Toast.LENGTH_SHORT).show();
             // Restart this activity
             Intent intent = getIntent();
@@ -32,7 +33,7 @@ public class SetNewGoal extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("newgoal", newGoal.getText().toString());
         editor.apply();
-        finish();
+        this.onBackPressed();
     }
     public void cancel(View view){
         /*
@@ -40,6 +41,6 @@ public class SetNewGoal extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         */
-        finish();
+        this.onBackPressed();
     }
 }
