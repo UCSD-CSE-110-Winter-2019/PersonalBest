@@ -1,9 +1,15 @@
 package com.team2.team2_personalbest;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +23,8 @@ import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.app.NotificationChannel.DEFAULT_CHANNEL_ID;
 
 
 public class HomePage extends AppCompatActivity {
@@ -48,10 +56,16 @@ public class HomePage extends AppCompatActivity {
         toggle_walk = findViewById(R.id.toggle_walk);
         toggle_walk.setBackgroundColor(Color.GREEN);
 
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+// notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1000, mBuilder.build());
+
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (planned_walk){ //User was on planned walk, wants to end it
+                if (planned_walk) { //User was on planned walk, wants to end it
                     planned_walk = false;
                     toggle_walk.setText("Start Planned Walk/Run");
                     toggle_walk.setBackgroundColor(Color.GREEN);
@@ -85,7 +99,7 @@ public class HomePage extends AppCompatActivity {
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0,5* 1000);
+        timer.schedule(doAsynchronousTask, 0, 5 * 1000);
         fitnessService.setup();
         // TODO Set up the initial goal
         this.goal = 5000;
@@ -98,7 +112,7 @@ public class HomePage extends AppCompatActivity {
 
     //TODO Update the goal
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         TextViewStepsLeft = (TextView) findViewById(R.id.steps_left);
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
@@ -108,14 +122,14 @@ public class HomePage extends AppCompatActivity {
         TextViewStepsLeft.setText(newGoal);
     }
 
-    protected void onClose(){
+    protected void onClose() {
         planned_walk = false;
     }
 
-    public void setStepCount(long stepCount){
-        String stepCountDisplay = String.valueOf(stepCount) + "   " +getString(R.string.steps_taken);
+    public void setStepCount(long stepCount) {
+        String stepCountDisplay = String.valueOf(stepCount) + "   " + getString(R.string.steps_taken);
         double totalDistanceInInch = stepCount * averageStrideLength;
-        String milesDisplay = String.format("%.1g", convertInchToMile(totalDistanceInInch)) + "  " +getString(R.string.miles_taken);
+        String milesDisplay = String.format("%.1g", convertInchToMile(totalDistanceInInch)) + "  " + getString(R.string.miles_taken);
         textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
         //TODO Update steps left
@@ -133,30 +147,60 @@ public class HomePage extends AppCompatActivity {
         return height * toGetAverageStride;
     }
 
-    public double convertInchToMile(double inch){
+    public double convertInchToMile(double inch) {
         return inch * 1.57828e-5;
     }
 
-    private boolean checkIfDayHasChanged(){
+    private boolean checkIfDayHasChanged() {
         Calendar c = Calendar.getInstance();
         int hours = c.get(Calendar.HOUR_OF_DAY);
         int minutes = c.get(Calendar.MINUTE);
         int seconds = c.get(Calendar.SECOND);
-        if(hours == 0 && minutes == 0 && seconds < 30){
+        if (hours == 0 && minutes == 0 && seconds < 30) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
+
     //TODO Launch the set new goal popup
-    public void set_goal(View view){
+    public void set_goal(View view) {
         //TODO
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
     }
 
     //TODO Launch the encouragement popup
-    public void launchEncouragementPopup(){
+    public void launchEncouragementPopup() {
         Intent intent = new Intent(this, GoalAccomplished.class);
         startActivity(intent);
+    }
+
+    //TODO For the push notifications
+    //Intent intent = new Intent(this, GoalAccomplished.class);
+    //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
+            .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+            .setContentTitle("Congratulations!")
+            .setContentText("Do you want to set a new step goal?")
+            .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText("Much longer text that cannot fit one line..."))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+;//            .setContentIntent(pendingIntent)
+  //          .setAutoCancel(true);
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel";
+            String description = "what";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("channel", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
