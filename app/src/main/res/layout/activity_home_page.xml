@@ -7,11 +7,30 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/planned_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:text="TextView"
+        tools:text="@string/planned_steps"
+        android:textSize="32sp"/>
+    <TextView
+        android:id="@+id/planned_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:text="TextView"
+        tools:text="@string/planned_distance"
+        android:textSize="32sp"/>
+
     <Button
         android:id="@+id/toggle_walk"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Planned Walk/Run"/>
+        android:text="Start Planned Walk/Run" />
 
     <TextView
         android:id="@+id/miles_taken"

@@ -90,6 +90,7 @@ public class GoogleFitAdapter implements FitnessService {
                                                 : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
 
                                 activity.setStepCount(total);
+                                activity.setPsBaseline(total);
                                 Log.d(TAG, "Total steps: " + total);
                             }
                         })
