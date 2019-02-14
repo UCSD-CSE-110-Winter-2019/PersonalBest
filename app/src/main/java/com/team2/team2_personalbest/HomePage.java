@@ -55,13 +55,6 @@ public class HomePage extends AppCompatActivity {
         averageStrideLength = calculateAveStrideLength(height);
         toggle_walk = findViewById(R.id.toggle_walk);
         toggle_walk.setBackgroundColor(Color.GREEN);
-
-        createNotificationChannel();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-// notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1000, mBuilder.build());
-
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,7 +100,24 @@ public class HomePage extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("newgoal", "5000");
         editor.apply();
-
+        //TODO For the notifications
+        Intent intent = new Intent(this, GoalAccomplished.class);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentTitle("Congratulations!")
+                //.setContentText("Do you want to set a new step goal?")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Do you want to set a new step goal?"))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent);
+                //.setAutoCancel(true);
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1000, mBuilder.build());
     }
 
     //TODO Update the goal
@@ -173,20 +183,6 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, GoalAccomplished.class);
         startActivity(intent);
     }
-
-    //TODO For the push notifications
-    //Intent intent = new Intent(this, GoalAccomplished.class);
-    //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
-            .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-            .setContentTitle("Congratulations!")
-            .setContentText("Do you want to set a new step goal?")
-            .setStyle(new NotificationCompat.BigTextStyle()
-                    .bigText("Much longer text that cannot fit one line..."))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-;//            .setContentIntent(pendingIntent)
-  //          .setAutoCancel(true);
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
