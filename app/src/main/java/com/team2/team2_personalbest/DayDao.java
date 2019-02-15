@@ -23,7 +23,7 @@ public interface DayDao {
     void deleteDay();
 
     @Update
-    void update(Day day);
+    void updateDay(Day day);
 
     /*@Query("SELECT * from day_step_table ORDER BY day ASC")
     List<Day> getAllWords(); */

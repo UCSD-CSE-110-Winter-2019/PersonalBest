@@ -18,56 +18,73 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //runDataBase();
 
+        // Build DB
         final String DATABASE_NAME = "days_db";
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
                 DayDatabase.class, DATABASE_NAME)
                 .build();
 
-
-        String toToast=("");
+        // Always insert values  into DB from separate thread
         new Thread(new Runnable() {
             @Override
             public void run() {
 
+                //Initializes a new Day row like this !
+                /*
+                Day dayTest =new Day("MondayTest", 355053, 50503);
+                dayDatabase.dayDao().insertSingleDay (dayTest);
+                */
 
-                //Initializes database
-                //create a dummy day
-                //Day dayTest =new Day("MondayTest2w323", 355053, 50503);
-                //day.setDayId("MondayTest");
-                //day.setStepsTracked(30);
-                //day.setStepsUntracked(500);
-
-                //add to db
-                //dayDatabase.dayDao().insertSingleDay (dayTest);
-
-                Day day2 = new Day("Tuesday", 400, 50);
-                dayDatabase.dayDao().insertSingleDay(day2);
-
-
-                String toToast  = testDataBase();
-                Log.d("DB VALUES", toToast);
-
+                loggerForTesting();
             }
         }) .start();
 
 
-        Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
+    }
+
+    /*
+     Helper method to print DB values and test in LOG
+     */
+    private void loggerForTesting(){
+
+        Log.d("change-string", "X\n\nInitial Values\n\n");
+
+        String toLog  = dayToString("Monday");
+        Log.d("DB VALUES", toLog);
+
+        toLog  = dayToString("Tuesday");
+        Log.d("DB VALUES", toLog);
+
+        toLog  = dayToString("Wednesday");
+        Log.d("DB VALUES", toLog);
+
+        Log.d("change-string", "Now\n\nWe change the value of Tuesday\n\n");
+
+        Day day2 = new Day("Tuesday", 0, 76);
+        dayDatabase.dayDao().updateDay(day2);
+
+        toLog  = dayToString("Monday");
+        Log.d("DB VALUES", toLog);
+
+        toLog  = dayToString("Tuesday");
+        Log.d("DB VALUES", toLog);
+
+        toLog  = dayToString("Wednesday");
+        Log.d("DB VALUES", toLog);
 
     }
 
 
-    /*private void runDataBase(){
-        final String DATABASE_NAME = "days_db";
-        dayDatabase = Room.databaseBuilder(getApplicationContext(),
-                DayDatabase.class, DATABASE_NAME)
-                .build();
-    }*/
-
-    private String testDataBase(){
-        Day outputDay = dayDatabase.dayDao().getDayById("Tuesday");
-        return ("Its "+outputDay.getDayId()+" and you have walked " +outputDay.getStepsTracked()+" today!");
+    /*
+    Private Helper Method that converts a day entry into readable LOGGER output
+     */
+    private String dayToString(String testId){
+        Day outputDay = dayDatabase.dayDao().getDayById(testId);
+        return (" \n\n" +
+                "\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n" +
+                "Its "+outputDay.getDayId()+"\nYou have walked \n" +outputDay.getStepsTracked()+
+                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
     }
 
 

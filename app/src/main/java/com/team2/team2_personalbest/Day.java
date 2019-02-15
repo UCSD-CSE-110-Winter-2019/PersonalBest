@@ -12,25 +12,20 @@ import java.util.Date;
 @Entity/*(tableName = "day_step_table")*/
 public class Day {
 
-
-
     //@NonNull
     //@ColumnInfo(name = "day")
     //private Date date;
-
 
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "dayId")
     private String dayId;
 
-
     //String dayOfTheWeek = (String) DateFormat.format("EEEE", date); // Thursday
     //String day          = (String) DateFormat.format("dd",   date); // 20
     //String monthString  = (String) DateFormat.format("MMM",  date); // Jun
     //String monthNumber  = (String) DateFormat.format("MM",   date); // 06
     //String year         = (String) DateFormat.format("yyyy", date); // 2013
-
 
 
     @ColumnInfo(name = "steps_tracked")
@@ -46,41 +41,28 @@ public class Day {
         this.stepsUntracked = stepsUntracked;
     }
 
-    //public Day(){
-    //}
-
     /* getters for all fields */
+
     public String getDayId(){
         return this.dayId;
     }
 
-    /*public Date getDate() {
-        return this.date;
-    }*/
+    //public Date getDate() { return this.date; }
 
-    public int getStepsTracked() {
-        return this.stepsTracked;
-    }
+    public int getStepsTracked() { return this.stepsTracked; }
 
-    public int getStepsUntracked() {
-        return this.stepsUntracked;
-    }
+    public int getStepsUntracked() { return this.stepsUntracked; }
+
 
     /* Setters for all fields */
 
-    /*public void setDate(@NonNull Date date) {
-        this.date = date;
-    }*/
+    //public void setDate(@NonNull Date date) { this.date = date; }
 
-    public void setDayId(String dayId) {
-        this.dayId = dayId;
-    }
+    public void setDayId(String dayId) { this.dayId = dayId; }
 
-    public void setStepsTracked(int stepsTracked) {
-        this.stepsTracked = stepsTracked;
-    }
+    public void setStepsTracked(int stepsTracked) { this.stepsTracked = stepsTracked; }
 
-    public void setStepsUntracked(int stepsUntracked) {
-        this.stepsUntracked = stepsUntracked;
-    }
+    public void setStepsUntracked(int stepsUntracked) { this.stepsUntracked = stepsUntracked; }
+
+
 }
