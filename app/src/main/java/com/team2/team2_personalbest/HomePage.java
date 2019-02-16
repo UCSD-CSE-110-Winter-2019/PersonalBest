@@ -101,23 +101,7 @@ public class HomePage extends AppCompatActivity {
         editor.putString("newgoal", "5000");
         editor.apply();
         //TODO For the notifications
-        Intent intent = new Intent(this, GoalAccomplished.class);
-        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setContentTitle("Congratulations!")
-                //.setContentText("Do you want to set a new step goal?")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Do you want to set a new step goal?"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(contentIntent);
-                //.setAutoCancel(true);
-        createNotificationChannel();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1000, mBuilder.build());
+        sendNotification();
     }
 
     //TODO Update the goal
@@ -198,5 +182,24 @@ public class HomePage extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+    private void sendNotification(){
+        Intent intent = new Intent(this, GoalAccomplished.class);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentTitle("Congratulations!")
+                //.setContentText("Do you want to set a new step goal?")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Do you want to set a new step goal?"))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent);
+        //.setAutoCancel(true);
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1000, mBuilder.build());
     }
 }

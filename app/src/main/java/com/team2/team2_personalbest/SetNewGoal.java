@@ -33,7 +33,7 @@ public class SetNewGoal extends Activity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("newgoal", newGoal.getText().toString());
         editor.apply();
-        this.onBackPressed();
+        finish();
     }
     public void cancel(View view){
         /*
@@ -41,6 +41,6 @@ public class SetNewGoal extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         */
-        this.onBackPressed();
+        finish();
     }
 }
