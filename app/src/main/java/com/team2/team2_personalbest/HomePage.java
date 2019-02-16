@@ -35,7 +35,7 @@ public class HomePage extends AppCompatActivity {
     private Button toggle_walk;
 
     private FitnessService fitnessService;
-    private boolean planned_walk = false;
+    public static boolean planned_walk = false;
     final Handler handler = new Handler();
     public double height;
     public double averageStrideLength;
@@ -83,18 +83,31 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: Update with styling
                 if (planned_walk){ //User was on planned walk, wants to end it
-                    psDailyTotal += psStepsThisWalk;
-                    psStepsThisWalk = 0;
-                    planned_walk = false;
+
+                    psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
+
+                    psStepsThisWalk = 0; //reset current walk step counter
+                    planned_walk = false; //not on a planned walk anymore
+
+                    /* make planned steps text invisible */
                     textViewPlannedSteps.setVisibility(View.INVISIBLE);
                     textViewPlannedDistance.setVisibility(View.INVISIBLE);
+
+                    /* reset button */
                     toggle_walk.setText("Start Planned Walk/Run");
                     toggle_walk.setBackgroundColor(Color.GREEN);
+
                 } else { //Turn on planned walk
-                    planned_walk = true;
-                    fitnessService.updateStepCount();
+
+
+                    fitnessService.updateStepCount(); //update with newest information
+                    planned_walk = true; //start planned walk
+
+                    /* make planned steps text visible */
                     textViewPlannedSteps.setVisibility(View.VISIBLE);
                     textViewPlannedDistance.setVisibility(View.VISIBLE);
+
+                    /* change button */
                     toggle_walk.setText("End Planned Walk/Run");
                     toggle_walk.setBackgroundColor(Color.RED);
                 }
@@ -110,7 +123,6 @@ public class HomePage extends AppCompatActivity {
                     @Override
                     public void run() {
                         fitnessService.updateStepCount();
-                        Toast.makeText(HomePage.this, "updating!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
