@@ -183,6 +183,9 @@ public class HomePage extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public void setFitnessServiceKey(String fitnessServiceKey) {
+        this.fitnessServiceKey = fitnessServiceKey;
+    }
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
@@ -233,14 +236,9 @@ public class HomePage extends AppCompatActivity {
         return inch * 1.57828e-5;
     }
 
-    private boolean checkIfDayHasChanged() {
-        Calendar c = Calendar.getInstance();
-        int hours = c.get(Calendar.HOUR_OF_DAY);
-        int minutes = c.get(Calendar.MINUTE);
-        int seconds = c.get(Calendar.SECOND);
-        if (hours == 0 && minutes == 0 && seconds < 30) {
-            return true;
-        } else return false;
+    public static boolean isNumeric(String str)
+    {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 
     //TODO Launch the set new goal popup
@@ -300,9 +298,5 @@ public class HomePage extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
-    }
-    public static boolean isNumeric(String str)
-    {
-        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 }
