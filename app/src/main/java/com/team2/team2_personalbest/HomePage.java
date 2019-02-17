@@ -72,6 +72,7 @@ public class HomePage extends AppCompatActivity {
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
     private int psStepsThisWalk = 0; //holder for planned steps during current walk
+
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -247,6 +248,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
     }
+
     public void submitButton(){
         submitButton = (Button) findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -441,5 +443,9 @@ public class HomePage extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
+    }
+
+    public TextView getTextViewStepCount() {
+        return this.textViewStepCount;
     }
 }
