@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SetupActivity">
+
+    <TextView
+        android:id="@+id/welcomeTitle"
+        android:layout_width="193dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="10sp"
+        android:text="Welcome!"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="302dp"
+        android:layout_height="91dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30sp"
+        android:text="Welcome to Personal Best! This app will allow you to better keep track of your daily and weekly walking in order for you to push yourself to achieve new personal goals." />
+
+    <TextView
+        android:id="@+id/enterHeightPrompt"
+        android:layout_width="163dp"
+        android:layout_height="27dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5sp"
+        android:text="Enter Height (inches):"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/enterHeightField"
+        android:layout_width="98dp"
+        android:layout_height="41dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="15sp"
+        android:ems="10"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/requiredInfoText"
+        android:layout_width="237dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30sp"
+        android:text="We require this information in order to calculate your stride length, which is then used to calculate distance traveled." />
+
+    <Button
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50sp"
+        android:text="Done" />
+</LinearLayout>

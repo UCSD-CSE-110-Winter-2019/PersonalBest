@@ -9,9 +9,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".HomePage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".SetupActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".GraphActivity">
+            <intent-filter>
+                <action android:name="android.intent.action." />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SetNewGoal"
+            android:theme="@android:style/Theme.Holo.Dialog">
+            <intent-filter>
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GoalAccomplished"
+            android:theme="@android:style/Theme.Holo.Dialog">
+            <intent-filter>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

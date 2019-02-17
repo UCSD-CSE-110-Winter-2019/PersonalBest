@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Team2-PersonalBest</string>
+    <string name="app_name">PersonalBest</string>
+    <string name="steps_taken"> Steps Taken</string>
+    <string name="miles_taken">Miles Walked</string>
+    <string name="planned_steps"> planned steps taken</string>
+    <string name="planned_distance"> planned miles travelled</string>
+    <string name="select_new_goal">Select New Goal</string>
+    <string name="num_steps">Number of steps</string>
+    <string name="cancel">cancel</string>
+    <string name="confirm">confirm</string>
+    <string name="title_activity_db_view">DbView</string>
 </resources>
