@@ -87,9 +87,10 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                String totalNewStr = Integer.toString(totalNewSteps);
-                setPsBaseline(totalNewSteps);
-                textViewStepCount.setText(totalNewStr);
+                setStepCount(totalNewSteps);
+//                String totalNewStr = Integer.toString(totalNewSteps);
+//                setPsBaseline(totalNewSteps);
+//                textViewStepCount.setText(totalNewStr);
             }
         });
 
@@ -217,6 +218,7 @@ public class HomePage extends AppCompatActivity {
         String milesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalDistanceInInch),
                                             getString(R.string.miles_taken));
 
+        setPsBaseline(stepCount);
         textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
 
