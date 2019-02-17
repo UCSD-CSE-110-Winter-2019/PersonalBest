@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -9,15 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.team2.team2_personalbest.fitness.FitnessService;
-import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import android.support.test.uiautomator.By;
+import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.support.test.uiautomator.UiScrollable;
+import android.support.test.uiautomator.UiSelector;
+import android.support.test.uiautomator.Until;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -33,22 +39,26 @@ import static org.hamcrest.Matchers.is;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class InvalidInput {
-    private static final String TEST_SERVICE = "TEST_SERVICE";
 
     @Rule
     public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
 
+    private UiDevice mDevice;
+
+    @Before
+    public void setUp() {
+        // Initialize UiDevice instance
+
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        // Start from the home screen
+        mDevice.pressHome();
+
+        mDevice.wait(Until.hasObject(By.pkg(getLauncherPackageName()).depth(0)), 1000);
+    }
+
+
     @Test
     public void invalidInput() {
-        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(HomePage homePage) {
-                return new TestFitnessService(homePage);
-            }
-        });
-
-        mActivityTestRule.getActivity().setFitnessServiceKey(TEST_SERVICE);
-
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.set_goal), withText("set goal"),
                         childAtPosition(
@@ -119,28 +129,5 @@ public class InvalidInput {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
-    }
-    private class TestFitnessService implements FitnessService {
-        private static final String TAG = "[TestFitnessService]: ";
-        private HomePage homePage;
-
-        public TestFitnessService(HomePage homePage) {
-            this.homePage = homePage;
-        }
-
-        @Override
-        public int getRequestCode() {
-            return 0;
-        }
-
-        @Override
-        public void setup() {
-            System.out.println(TAG + "setup");
-        }
-
-        @Override
-        public void updateStepCount() {
-            return;
-        }
     }
 }
