@@ -1,5 +1,6 @@
 package com.team2.team2_personalbest;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -25,9 +26,12 @@ public class HomePage extends AppCompatActivity {
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
     String fitnessServiceKey = "GOOGLE_FIT";
 
+    private final int FIVE_HUNDRED_INCREMENT = 500;
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
     private final double TO_GET_AVERAGE_STRIDE = 0.413;
     private static final String TAG = "HomePage";
+
+    private long currentTimeMilli = System.currentTimeMillis();
 
     private TextView textViewStepCount;
     private TextView textViewDistance;
@@ -41,9 +45,9 @@ public class HomePage extends AppCompatActivity {
     public double averageStrideLength;
 
     /* Vars for planned walk data storage */
-    private long psBaseline = 0; //daily steps at time planned steps turned on
-    private long psDailyTotal = 0; //total planned steps before current planned walk
-    private long psStepsThisWalk = 0; //holder for planned steps during current walk
+    private int psBaseline = 0; //daily steps at time planned steps turned on
+    private int psDailyTotal = 0; //total planned steps before current planned walk
+    private int psStepsThisWalk = 0; //holder for planned steps during current walk
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,33 @@ public class HomePage extends AppCompatActivity {
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
 
+
+        // Set onClick listeners for manually setting time and step increment (+500 steps)
+        Button add500StepsButton = (Button) findViewById(R.id.add500Button);
+
+        add500StepsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get increment field int value
+                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                String totalNewStr = Integer.toString(totalNewSteps);
+                setPsBaseline(totalNewSteps);
+                textViewStepCount.setText(totalNewStr);
+            }
+        });
+
+        Button submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
+                String input = inputTimeView.getText().toString();
+                if (!input.equals("")) {
+                    currentTimeMilli = Long.parseLong(input);
+                }
+                inputTimeView.setText("");
+            }
+        });
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
@@ -129,7 +160,6 @@ public class HomePage extends AppCompatActivity {
         };
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
-
     }
 
     /**
@@ -143,7 +173,7 @@ public class HomePage extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void setStepCount(long stepCount){
+    public void setStepCount(int stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
         String milesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalDistanceInInch),
@@ -169,7 +199,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
     }
-    public void setPsBaseline(long stepCount){
+    public void setPsBaseline(int stepCount){
         psBaseline = stepCount;
     }
 
