@@ -85,7 +85,7 @@ public class GraphActivity extends AppCompatActivity {
                     Log.d("GraphActivity", Integer.toString(i));
                     int trackedSteps = currentDay.getStepsTracked();
                     int untrackedSteps = currentDay.getStepsUntracked() - trackedSteps;
-                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, untrackedSteps}));
+                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, trackedSteps}));
                 }
             }
 
@@ -100,6 +100,7 @@ public class GraphActivity extends AppCompatActivity {
 
     public void generateBarChart(List<BarEntry> entries) {
         CombinedChart chart = findViewById(R.id.chart);
+        chart.setScaleEnabled(false);
 
         final ArrayList<String> xLabel = new ArrayList<>();
         String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
@@ -110,6 +111,8 @@ public class GraphActivity extends AppCompatActivity {
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceMin(.5f);
+        xAxis.setSpaceMax(.5f);
         xAxis.setDrawGridLines(false);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
