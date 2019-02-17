@@ -85,7 +85,7 @@ public class GraphActivity extends AppCompatActivity {
                     Log.d("GraphActivity", Integer.toString(i));
                     int trackedSteps = currentDay.getStepsTracked();
                     int untrackedSteps = currentDay.getStepsUntracked() - trackedSteps;
-                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, untrackedSteps}));
+                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, trackedSteps}));
                 }
             }
 
