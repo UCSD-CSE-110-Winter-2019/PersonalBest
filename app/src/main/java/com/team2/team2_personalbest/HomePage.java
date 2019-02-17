@@ -215,7 +215,6 @@ public class HomePage extends AppCompatActivity {
         String milesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalDistanceInInch),
                                             getString(R.string.miles_taken));
 
-        setPsBaseline(stepCount);
         textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
 
@@ -225,6 +224,7 @@ public class HomePage extends AppCompatActivity {
         }
 
         psStepsThisWalk = stepCount - psBaseline; //Current walk steps
+        setPsBaseline(stepCount);
         long plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
@@ -236,7 +236,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
         //TODO Update steps left
-        this.stepsLeft = this.goal - plannedSteps;
+        this.stepsLeft = this.goal - stepCount;
         //TODO When reached the goal
         if (this.stepsLeft < 0) {
             this.stepsLeft = 0;
