@@ -22,7 +22,9 @@ public class SetupActivity extends AppCompatActivity {
                 EditText heightField = (EditText) findViewById(R.id.enterHeightField);
 
                 // TODO store this height value in FireBase with the user's account.
-                String height = heightField.getText().toString();
+                String heightStr = heightField.getText().toString();
+                double height = Double.parseDouble(heightStr);
+                HomePage.setUserHeight(height);
 
                 // Go back to homepage
                 launchActivity();

@@ -93,7 +93,11 @@ public class GoogleFitAdapter implements FitnessService {
                                 if (!HomePage.planned_walk) {
                                     activity.setPsBaseline(total);
                                 }
-                                activity.setStepCount(total);
+
+                                // Google Fit API will only get the number of actual steps taken,
+                                // and will not account for user manually inputted (+500) steps, so
+                                // we must add on the manual steps added too.
+                                activity.setStepCount(total + activity.getManualStepsAddedTotal());
                                 Log.d(TAG, "Total steps: " + total);
                             }
                         })

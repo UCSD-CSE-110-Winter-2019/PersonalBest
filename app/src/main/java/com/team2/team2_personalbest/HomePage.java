@@ -62,8 +62,12 @@ public class HomePage extends AppCompatActivity {
     private FitnessService fitnessService;
     public static boolean planned_walk = false;
     final Handler handler = new Handler();
-    public double height;
+    private static double userHeight;
     public double averageStrideLength;
+
+    // This is used to be able to track how many steps were added manually via HomePage
+    // by the user
+    private int manualStepsAddedTotal;
 
     private int goal;
     private int stepsLeft;
@@ -92,7 +96,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedDistance = findViewById(R.id.planned_distance); //planned mile counter
         toggle_walk = findViewById(R.id.toggle_walk); //planned walk button
 
-        averageStrideLength = calculateAveStrideLength(height);
+        averageStrideLength = calculateAveStrideLength(userHeight);
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
@@ -244,6 +248,7 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
             }
         });
@@ -447,5 +452,13 @@ public class HomePage extends AppCompatActivity {
 
     public TextView getTextViewStepCount() {
         return this.textViewStepCount;
+    }
+
+    public int getManualStepsAddedTotal() {
+        return this.manualStepsAddedTotal;
+    }
+
+    public static void setUserHeight(double height) {
+        userHeight = height;
     }
 }
