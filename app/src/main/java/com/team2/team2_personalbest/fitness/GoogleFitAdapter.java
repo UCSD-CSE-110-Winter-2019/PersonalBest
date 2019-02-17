@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.team2.team2_personalbest.HomePage;
+import com.team2.team2_personalbest.SharedPref;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -78,6 +79,9 @@ public class GoogleFitAdapter implements FitnessService {
      * current timezone.
      */
     public void updateStepCount() {
+        //Context context = HomePage.class;
+        //SharedPref sharedPref = new SharedPref();
+        //boolean hasRun = sharedPref.getBool("init");
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
         if (lastSignedInAccount == null) {
             return;

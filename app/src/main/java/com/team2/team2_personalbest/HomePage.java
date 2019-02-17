@@ -145,6 +145,8 @@ public class HomePage extends AppCompatActivity {
         boolean hasRun = sharedPref.getBool("init");
         if (!hasRun){
             sharedPref.setBool("init", true);
+            goToLogIn();
+            goToSetupActivity();
             setInitialGoal();
         }
     }
@@ -238,6 +240,15 @@ public class HomePage extends AppCompatActivity {
 
     //TODO Buttons
     // Launch the set new goal popup
+    public void goToLogIn() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+    public void goToSetupActivity(){
+        Intent intent = new Intent(this, SetupActivity.class);
+        startActivity(intent);
+    }
+
     public void set_goal(View view) {
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);

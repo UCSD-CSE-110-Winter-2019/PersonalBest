@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 public class LoginActivity extends AppCompatActivity {
+    private HomePage activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activity = HomePage.getContex
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -18,7 +23,12 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
+                if (lastSignedInAccount == null) {
+                    return;
+                }
                 launchActivity();
+                finish();
             }
         });
     }
