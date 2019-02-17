@@ -211,7 +211,6 @@ public class HomePage extends AppCompatActivity {
                     dayDatabase.dayDao().updateDay(currentDay);
                 }
 
-//                loggerForTesting();
             }
         }) .start();
 
