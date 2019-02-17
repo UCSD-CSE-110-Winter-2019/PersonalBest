@@ -212,6 +212,8 @@ public class HomePage extends AppCompatActivity {
                 }
 
 //                loggerForTesting();
+                sendSubNotification();
+
             }
         }) .start();
 
@@ -247,9 +249,13 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get increment field int value
-                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
+                int TEN_INCREMENT=10;
+                int totalNewSteps = psBaseline + TEN_INCREMENT;
+                manualStepsAddedTotal += TEN_INCREMENT;
                 setStepCount(totalNewSteps);
+
+                //Log.d("ENTRY","IN HERE!!!!\n\n\n\nXXX\n\n");
+
             }
         });
     }
@@ -437,11 +443,11 @@ public class HomePage extends AppCompatActivity {
     }
 
     // Popup for encouragement
-    private void sendEncouragement(){
+    private void sendEncouragement(int increase){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 // fixme CHANGE THIS STEPs
-                .setContentTitle("You've increased your daily steps by over 1000 steps. Keep up the good work!" )
+                .setContentTitle(increase+ " steps more than yesterday! Wow!" )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
         createNotificationChannel();
@@ -460,5 +466,41 @@ public class HomePage extends AppCompatActivity {
 
     public static void setUserHeight(double height) {
         userHeight = height;
+    }
+
+    /*
+    Sends Notification when we have reached 500 above yesterdays total steps!
+ */
+    private void sendSubNotification(){
+        String currentDayID = DateHelper.getPreviousDayDateString(0);
+        Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
+        String yesterdayID = DateHelper.getPreviousDayDateString(1);
+        Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
+
+        int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
+        int currentStepsTotal = currentDay.getStepsTracked()+currentDay.getStepsUntracked();
+
+        //if we have crossed yesterdays threshold
+        if (currentStepsTotal > yesterdayTotal){
+
+
+            //find the difference
+            int difference = currentStepsTotal-yesterdayTotal;
+
+            //if difference is 500 or 1000 or 1500 or 2000... we want to show notification
+            int FIVE_HUNDRED_INCREMENT = 500;
+            int fiveHundredIncrements = difference/FIVE_HUNDRED_INCREMENT;
+            int remainder = difference%FIVE_HUNDRED_INCREMENT;
+
+            Log.d("YESTERDAY VS TODAY", "XXXX\nCURRENT: "+currentStepsTotal+"\nYEST: "+yesterdayTotal
+                    +"\nDIFF: "+difference+"\nREM: "+remainder);
+            if(remainder <= 6){
+
+                Log.d("YESTERDAY NOTIFICATION!", "NOTIFICATION WITH INCREASE OF "
+                        +FIVE_HUNDRED_INCREMENT*fiveHundredIncrements);
+                sendEncouragement(fiveHundredIncrements*FIVE_HUNDRED_INCREMENT);
+
+            }
+        }
     }
 }
