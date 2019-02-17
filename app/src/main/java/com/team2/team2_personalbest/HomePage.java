@@ -1,5 +1,9 @@
 package com.team2.team2_personalbest;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +26,7 @@ import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
@@ -35,9 +41,14 @@ public class HomePage extends AppCompatActivity {
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
     String fitnessServiceKey = "GOOGLE_FIT";
 
+    private final int FIVE_HUNDRED_INCREMENT = 500;
+    private DayDatabase dayDatabase;
+
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
     private final double TO_GET_AVERAGE_STRIDE = 0.413;
     private static final String TAG = "HomePage";
+
+    private long currentTimeMilli = System.currentTimeMillis();
 
     private TextView textViewStepCount;
     private TextView textViewDistance;
@@ -51,17 +62,24 @@ public class HomePage extends AppCompatActivity {
     public double averageStrideLength;
     //TODO
     private TextView TextViewStepsLeft;
-    private long goal;
-    private long stepsLeft;
+    private int goal;
+    private int stepsLeft;
 
     /* Vars for planned walk data storage */
-    private long psBaseline = 0; //daily steps at time planned steps turned on
-    private long psDailyTotal = 0; //total planned steps before current planned walk
-    private long psStepsThisWalk = 0; //holder for planned steps during current walk
+    private int psBaseline = 0; //daily steps at time planned steps turned on
+    private int psDailyTotal = 0; //total planned steps before current planned walk
+    private int psStepsThisWalk = 0; //holder for planned steps during current walk
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        final String DATABASE_NAME = "days_db";
+        dayDatabase = Room.databaseBuilder(getApplicationContext(),
+                DayDatabase.class, DATABASE_NAME)
+                .build();
+
+        setTestValues();
 
         //Getting XML elements
         textViewStepCount = findViewById(R.id.step_taken); //daily step counter
@@ -76,6 +94,31 @@ public class HomePage extends AppCompatActivity {
         toggle_walk.setBackgroundColor(Color.GREEN);
         sendEncouragement();
 
+
+        // Set onClick listeners for manually setting time and step increment (+500 steps)
+        Button add500StepsButton = (Button) findViewById(R.id.add500Button);
+
+        add500StepsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get increment field int value
+                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                setStepCount(totalNewSteps);
+            }
+        });
+
+        Button submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
+                String input = inputTimeView.getText().toString();
+                if (!input.equals("")) {
+                    currentTimeMilli = Long.parseLong(input);
+                }
+                inputTimeView.setText("");
+            }
+        });
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
@@ -150,6 +193,7 @@ public class HomePage extends AppCompatActivity {
         };
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
+
         // TODO Set up the initial goal
         this.goal = 5000;
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
@@ -166,7 +210,7 @@ public class HomePage extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         String newGoal = sharedPreferences.getString("newgoal", "");
         if(isNumeric(newGoal)){
-            this.goal = Long.parseLong(newGoal);
+            this.goal = Integer.parseInt(newGoal);
             this.stepsLeft = this.goal;
             TextViewStepsLeft.setText(newGoal);
         }
@@ -200,7 +244,8 @@ public class HomePage extends AppCompatActivity {
             psDailyTotal = 0;
         }
 
-        psStepsThisWalk = stepCount - psBaseline; //Current walk steps
+        psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
+        setPsBaseline((int)stepCount);
         long plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
@@ -209,10 +254,34 @@ public class HomePage extends AppCompatActivity {
         String plannedMilesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalPlannedDistanceInInch),
                 getString(R.string.planned_distance));
 
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //Initializes a new Day row like this !
+                String date = DateHelper.getPreviousDayDateString(0);
+                Log.d("HomePage", date);
+                Day currentDay = dayDatabase.dayDao().getDayById(date);
+                if(currentDay == null) {
+                    currentDay = new Day(date, psDailyTotal, (int)stepCount);
+                    dayDatabase.dayDao().insertSingleDay(currentDay);
+                } else {
+                    currentDay.setStepsTracked(psDailyTotal);
+                    currentDay.setStepsUntracked((int)stepCount);
+                    dayDatabase.dayDao().updateDay(currentDay);
+                }
+
+//                loggerForTesting();
+            }
+        }) .start();
+
+
+
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
         //TODO Update steps left
-        this.stepsLeft = this.goal - stepCount;
+        this.stepsLeft = this.goal - (int)stepCount;
         //TODO When reached the goal
         if (this.stepsLeft < 0) {
             this.stepsLeft = 0;
@@ -223,8 +292,7 @@ public class HomePage extends AppCompatActivity {
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
     }
-
-    public void setPsBaseline(long stepCount){
+    public void setPsBaseline(int stepCount){
         psBaseline = stepCount;
     }
 
@@ -247,6 +315,68 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
     }
+
+    public void goToGraph(View view) {
+        Intent intent = new Intent(this, GraphActivity.class);
+        startActivity(intent);
+    }
+
+
+    /*
+     Helper method to print DB values and test in LOG
+     */
+//    private void loggerForTesting(){
+//
+//        Log.d("change-string", "X\n\nInitial Values\n\n");
+//
+//        String toLog  = dayToString("Monday");
+//        Log.d("DB VALUES", toLog);
+//
+//        toLog  = dayToString("Tuesday");
+//        Log.d("DB VALUES", toLog);
+//
+//        toLog  = dayToString("Wednesday");
+//        Log.d("DB VALUES", toLog);
+//
+//        Log.d("change-string", "Now\n\nWe change the value of Tuesday\n\n");
+//
+//        toLog  = dayToString("Monday");
+//        Log.d("DB VALUES", toLog);
+//
+//        toLog  = dayToString("Tuesday");
+//        Log.d("DB VALUES", toLog);
+//
+//        toLog  = dayToString("Wednesday");
+//        Log.d("DB VALUES", toLog);
+//
+//    }
+    private void setTestValues() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 1; i < 7; i++) {
+                    Log.d("HomePage", "test adding day");
+                    Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.getPreviousDayDateString(i));
+                    if(currentDay == null) {
+                        currentDay = new Day(DateHelper.getPreviousDayDateString(i), i * 30, i * 76);
+                        dayDatabase.dayDao().insertSingleDay(currentDay);
+                    }
+                }
+            }
+        }).start();
+    }
+
+
+    /*
+    Private Helper Method that converts a day entry into readable LOGGER output
+     */
+//    private String dayToString(String testId){
+//        Day outputDay = dayDatabase.dayDao().getDayById(testId);
+//        return (" \n\n" +
+//                "\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n" +
+//                "Its "+outputDay.getDayId()+"\nYou have walked \n" +outputDay.getStepsTracked()+
+//                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
+//    }
 
     //TODO Launch the encouragement popup
     public void launchEncouragementPopup() {
