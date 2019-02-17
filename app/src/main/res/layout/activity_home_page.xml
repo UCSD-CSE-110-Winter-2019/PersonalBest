@@ -76,20 +76,21 @@
         android:layout_height="wrap_content"
         android:text="To go today"
         android:textSize="32sp" />
+
     <Button
         android:id="@+id/set_goal"
-        android:textSize="20sp"
-        android:layout_marginTop="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="set_goal"
         android:text="set goal"
-        android:onClick="set_goal"/>
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/add500Button"
         android:layout_width="144dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100sp"
+        android:layout_marginTop="20dp"
         android:text="Add 500 Steps" />
 
     <EditText
