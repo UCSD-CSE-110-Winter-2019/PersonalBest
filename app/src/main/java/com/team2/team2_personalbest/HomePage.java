@@ -68,6 +68,10 @@ public class HomePage extends AppCompatActivity {
     private int goal;
     private int stepsLeft;
 
+    //SharePreferences
+    SharedPreferences appIntro = null;
+
+
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
@@ -85,6 +89,7 @@ public class HomePage extends AppCompatActivity {
         setTestValues();
 
         //Getting XML elements
+
         textViewStepCount = findViewById(R.id.step_taken); //daily step counter
         textViewDistance = findViewById(R.id.miles_taken); //daily mile counter
         textViewPlannedSteps = findViewById(R.id.planned_steps); //planned step counter
@@ -133,8 +138,14 @@ public class HomePage extends AppCompatActivity {
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
 
-        // TODO Set up the initial goal
-        setInitialGOal();
+        // TODO Check if it's the first time running the app
+        appIntro = getSharedPreferences("FirstTime", MODE_PRIVATE);  //load the preferences
+        boolean hasRun = appIntro.getBoolean("init", false); //see if it's run before, default no
+        if (!hasRun){
+            SharedPreferences.Editor editor = appIntro.edit();
+            editor.putBoolean("init", true).apply();
+            setInitialGoal();
+        }
     }
 
     //TODO On Resume
@@ -323,7 +334,7 @@ public class HomePage extends AppCompatActivity {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
     // To set the initial goal
-    public void setInitialGOal(){
+    public void setInitialGoal(){
         this.goal = INITIAL_GOAL;
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
