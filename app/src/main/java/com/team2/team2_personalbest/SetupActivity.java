@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,9 +24,13 @@ public class SetupActivity extends AppCompatActivity {
 
                 // TODO store this height value in FireBase with the user's account.
                 String height = heightField.getText().toString();
-
+                SharedPreferences sharedPreferences = getSharedPreferences("Height", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("height", height);
+                editor.apply();
                 // Go back to homepage
-                launchActivity();
+                //launchActivity();
+                finish();
             }
         });
     }

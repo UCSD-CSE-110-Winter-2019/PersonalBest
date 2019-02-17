@@ -79,9 +79,6 @@ public class GoogleFitAdapter implements FitnessService {
      * current timezone.
      */
     public void updateStepCount() {
-        //Context context = HomePage.class;
-        //SharedPref sharedPref = new SharedPref();
-        //boolean hasRun = sharedPref.getBool("init");
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
         if (lastSignedInAccount == null) {
             return;

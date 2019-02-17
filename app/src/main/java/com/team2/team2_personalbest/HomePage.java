@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -146,6 +148,10 @@ public class HomePage extends AppCompatActivity {
         if (!hasRun){
             sharedPref.setBool("init", true);
             goToLogIn();
+            GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
+            if (lastSignedInAccount == null) {
+                return;
+            }
             goToSetupActivity();
             setInitialGoal();
         }

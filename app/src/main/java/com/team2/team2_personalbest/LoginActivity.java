@@ -14,7 +14,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        activity = HomePage.getContex
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -27,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (lastSignedInAccount == null) {
                     return;
                 }
-                launchActivity();
+                //launchActivity();
                 finish();
             }
         });
