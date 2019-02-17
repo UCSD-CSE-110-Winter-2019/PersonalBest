@@ -164,6 +164,7 @@ public class HomePage extends AppCompatActivity {
         super.onDestroy();
     }
 
+
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
@@ -206,8 +207,11 @@ public class HomePage extends AppCompatActivity {
                     dayDatabase.dayDao().updateDay(currentDay);
                 }
 
-//                loggerForTesting();
+                sendSubNotification();
+
             }
+
+
         }) .start();
 
         textViewPlannedSteps.setText(plannedStepCountDisplay);
@@ -222,6 +226,7 @@ public class HomePage extends AppCompatActivity {
         }
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
+
     }
 
     //TODO Buttons
@@ -242,7 +247,7 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get increment field int value
-                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                int totalNewSteps = psBaseline + 10/*FIVE_HUNDRED_INCREMENT*/;
                 setStepCount(totalNewSteps);
             }
         });
@@ -305,6 +310,39 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
+
+
+    /*
+        Sends Notification when we have reached 500 above yesterdays total steps!
+     */
+    private void sendSubNotification(){
+        String currentDayID = DateHelper.getPreviousDayDateString(0);
+        Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
+        String yesterdayID = DateHelper.getPreviousDayDateString(1);
+        Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
+
+        int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
+        int currentStepsTotal = currentDay.getStepsTracked()+currentDay.getStepsUntracked();
+
+        //if we have crossed yesterdays threshold
+        if (currentStepsTotal > yesterdayTotal){
+            //find the difference
+            int difference = currentStepsTotal-yesterdayTotal;
+
+            //if difference is 500 or 1000 or 1500 or 2000... we want to show notification
+            int fiveHundredIncrements = difference/FIVE_HUNDRED_INCREMENT;
+            int remainder = difference|FIVE_HUNDRED_INCREMENT;
+
+            if(remainder == 0){
+                Toast.makeText(this, "NOTIFICATION WITH INCREASE OF "
+                        +FIVE_HUNDRED_INCREMENT*fiveHundredIncrements, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+
+
     //TODO Helper Functions
 
     public void setPsBaseline(int stepCount){
@@ -332,34 +370,6 @@ public class HomePage extends AppCompatActivity {
         editor.apply();
     }
 
-    /*
-     Helper method to print DB values and test in LOG
-     */
-//    private void loggerForTesting(){
-//
-//        Log.d("change-string", "X\n\nInitial Values\n\n");
-//
-//        String toLog  = dayToString("Monday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Tuesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Wednesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        Log.d("change-string", "Now\n\nWe change the value of Tuesday\n\n");
-//
-//        toLog  = dayToString("Monday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Tuesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Wednesday");
-//        Log.d("DB VALUES", toLog);
-//
-//    }
     private void setTestValues() {
         new Thread(new Runnable() {
             @Override

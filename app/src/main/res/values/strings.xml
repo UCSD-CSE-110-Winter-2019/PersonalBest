@@ -8,4 +8,5 @@
     <string name="num_steps">Number of steps</string>
     <string name="cancel">cancel</string>
     <string name="confirm">confirm</string>
+    <string name="title_activity_db_view">DbView</string>
 </resources>

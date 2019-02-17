@@ -39,9 +39,23 @@ public class GoogleFitAdapter implements FitnessService {
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
         } else {
-            updateStepCount();
-            startRecording();
+
+            newThread();
+            //updateStepCount();
+            //startRecording();
         }
+    }
+
+
+    private void newThread(){
+
+        new Thread(new Runnable() {
+            public void run() {
+
+                updateStepCount();
+                startRecording();
+            }
+        }).start();
     }
 
     private void startRecording() {
