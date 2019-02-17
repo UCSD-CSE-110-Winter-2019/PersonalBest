@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -138,12 +139,12 @@ public class HomePage extends AppCompatActivity {
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
 
-        // TODO Check if it's the first time running the app
-        appIntro = getSharedPreferences("FirstTime", MODE_PRIVATE);  //load the preferences
-        boolean hasRun = appIntro.getBoolean("init", false); //see if it's run before, default no
+        // TODO Check if it's the first time running the appp
+
+        SharedPref sharedPref = new SharedPref(this);
+        boolean hasRun = sharedPref.getBool("init");
         if (!hasRun){
-            SharedPreferences.Editor editor = appIntro.edit();
-            editor.putBoolean("init", true).apply();
+            sharedPref.setBool("init", true);
             setInitialGoal();
         }
     }
