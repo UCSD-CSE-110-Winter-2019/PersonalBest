@@ -247,6 +247,7 @@ public class HomePage extends AppCompatActivity {
             }
         });
     }
+
     public void submitButton(){
         submitButton = (Button) findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
