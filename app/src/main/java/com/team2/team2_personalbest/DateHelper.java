@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateHelper {
-    private static String[] daysOfWeek = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday"};
+    private static String[] daysOfWeek = {"Sat", "Sun", "Mon", "Tues", "Wed",
+            "Thurs", "Fri"};
 
     public static Date previousDay(int daysAgo) {
         final Calendar cal = Calendar.getInstance();
