@@ -74,6 +74,7 @@ public class HomePage extends AppCompatActivity {
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
+        sendEncouragement();
 
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
@@ -164,9 +165,11 @@ public class HomePage extends AppCompatActivity {
         TextViewStepsLeft = (TextView) findViewById(R.id.steps_left);
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         String newGoal = sharedPreferences.getString("newgoal", "");
-        this.goal = Long.parseLong(newGoal);
-        this.stepsLeft = this.goal;
-        TextViewStepsLeft.setText(newGoal);
+        if(isNumeric(newGoal)){
+            this.goal = Long.parseLong(newGoal);
+            this.stepsLeft = this.goal;
+            TextViewStepsLeft.setText(newGoal);
+        }
     }
 
     /**
@@ -206,7 +209,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
         //TODO Update steps left
-        this.stepsLeft = this.goal - plannedSteps;
+        this.stepsLeft = this.goal - stepCount;
         //TODO When reached the goal
         if (this.stepsLeft < 0) {
             this.stepsLeft = 0;
@@ -280,11 +283,26 @@ public class HomePage extends AppCompatActivity {
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Do you want to set a new step goal?"))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(contentIntent);
-        //.setAutoCancel(true);
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true);
         createNotificationChannel();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
+    }
+    private void sendEncouragement(){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel2")
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentTitle("You've increased your daily steps by over 1000 steps. Keep up the good work!" )
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1000, mBuilder.build());
+    }
+    public static boolean isNumeric(String str)
+    {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 }
