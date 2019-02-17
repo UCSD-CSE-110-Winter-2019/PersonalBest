@@ -92,7 +92,7 @@ public class HomePage extends AppCompatActivity {
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
-        sendEncouragement();
+        //sendEncouragement();
 
 
         // Set onClick listeners for manually setting time and step increment (+500 steps)
@@ -202,7 +202,7 @@ public class HomePage extends AppCompatActivity {
         editor.apply();
     }
 
-    //TODO Update the goal
+    //TODO Update the goal when coming back to homePage
     @Override
     public void onResume() {
         super.onResume();
@@ -227,9 +227,6 @@ public class HomePage extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void setFitnessServiceKey(String fitnessServiceKey) {
-        this.fitnessServiceKey = fitnessServiceKey;
-    }
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
@@ -283,7 +280,7 @@ public class HomePage extends AppCompatActivity {
         //TODO Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
         //TODO When reached the goal
-        if (this.stepsLeft < 0) {
+        if (this.stepsLeft <= 0) {
             this.stepsLeft = 0;
             launchEncouragementPopup();
             //TODO For the notifications
@@ -304,6 +301,7 @@ public class HomePage extends AppCompatActivity {
         return inch * 1.57828e-5;
     }
 
+    // Check if String is number
     public static boolean isNumeric(String str)
     {
         return str.matches("-?\\d+(\\.\\d+)?");
@@ -384,6 +382,7 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // For the popup
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -399,6 +398,8 @@ public class HomePage extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+    // Popup for when goal reached
     private void sendNotification(){
         Intent intent = new Intent(this, GoalAccomplished.class);
         //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -418,9 +419,12 @@ public class HomePage extends AppCompatActivity {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
     }
+
+    // Popup for encouragement
     private void sendEncouragement(){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel2")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                // TODO CHANGE THIS STEPs
                 .setContentTitle("You've increased your daily steps by over 1000 steps. Keep up the good work!" )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);

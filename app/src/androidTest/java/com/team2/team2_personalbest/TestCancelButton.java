@@ -1,7 +1,6 @@
 package com.team2.team2_personalbest;
 
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -13,22 +12,12 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
-import android.support.test.uiautomator.UiSelector;
-import android.support.test.uiautomator.Until;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -38,69 +27,42 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class InvalidInput {
+public class TestCancelButton {
 
     @Rule
     public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
 
-    private UiDevice mDevice;
-
-    @Before
-    public void setUp() {
-        // Initialize UiDevice instance
-
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        // Start from the home screen
-        mDevice.pressHome();
-
-        mDevice.wait(Until.hasObject(By.pkg(getLauncherPackageName()).depth(0)), 1000);
-    }
-
-
     @Test
-    public void invalidInput() {
+    public void testCancelButton() {
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.set_goal), withText("set goal"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                7),
+                                8),
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.set_goal),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        editText.perform(click());
-
-        ViewInteraction editText2 = onView(
-                allOf(withId(R.id.set_goal),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        editText2.perform(replaceText("hi"), closeSoftKeyboard());
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction button = onView(
-                allOf(withId(R.id.confirm), withText("confirm"),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout1),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                2)),
-                                0),
-                        isDisplayed()));
-        button.perform(click());
-
-        ViewInteraction button2 = onView(
                 allOf(withId(R.id.cancel), withText("cancel"),
                         childAtPosition(
                                 allOf(withId(R.id.linearLayout1),
@@ -109,7 +71,7 @@ public class InvalidInput {
                                                 2)),
                                 1),
                         isDisplayed()));
-        button2.perform(click());
+        button.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
