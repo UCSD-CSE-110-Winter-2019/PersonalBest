@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Team2-PersonalBest</string>
+    <string name="app_name">PersonalBest</string>
     <string name="steps_taken"> Steps Taken</string>
     <string name="miles_taken">Miles Walked</string>
     <string name="planned_steps"> planned steps taken</string>
