@@ -2,6 +2,7 @@ package com.team2.team2_personalbest.fitness;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -14,6 +15,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.team2.team2_personalbest.HomePage;
+import com.team2.team2_personalbest.R;
 
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
@@ -105,7 +107,11 @@ public class GoogleFitAdapter implements FitnessService {
                                 if (!HomePage.planned_walk) {
                                     activity.setPsBaseline(total);
                                 }
-                                activity.setStepCount(total);
+
+                                // Google Fit API will only get the number of actual steps taken,
+                                // and will not account for user manually inputted (+500) steps, so
+                                // we must add on the manual steps added too.
+                                activity.setStepCount(total + activity.getManualStepsAddedTotal());
                                 Log.d(TAG, "Total steps: " + total);
                             }
                         })
