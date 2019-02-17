@@ -1,8 +1,15 @@
 package com.team2.team2_personalbest;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +25,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.app.NotificationChannel.DEFAULT_CHANNEL_ID;
 
 
 
@@ -43,6 +52,10 @@ public class HomePage extends AppCompatActivity {
     final Handler handler = new Handler();
     public double height;
     public double averageStrideLength;
+    //TODO
+    private TextView TextViewStepsLeft;
+    private long goal;
+    private long stepsLeft;
 
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
@@ -144,6 +157,12 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(HomePage homePage) {
+                return new GoogleFitAdapter(homePage);
+            }
+        });
 
         //update step every 5 seconds
         Timer timer = new Timer();
@@ -160,6 +179,25 @@ public class HomePage extends AppCompatActivity {
         };
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
+
+        // TODO Set up the initial goal
+        this.goal = 5000;
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("newgoal", "5000");
+        editor.apply();
+    }
+
+    //TODO Update the goal
+    @Override
+    public void onResume() {
+        super.onResume();
+        TextViewStepsLeft = (TextView) findViewById(R.id.steps_left);
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        String newGoal = sharedPreferences.getString("newgoal", "");
+        this.goal = Long.parseLong(newGoal);
+        this.stepsLeft = this.goal;
+        TextViewStepsLeft.setText(newGoal);
     }
 
     /**
@@ -198,6 +236,17 @@ public class HomePage extends AppCompatActivity {
 
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
+        //TODO Update steps left
+        this.stepsLeft = this.goal - plannedSteps;
+        //TODO When reached the goal
+        if (this.stepsLeft < 0) {
+            this.stepsLeft = 0;
+            launchEncouragementPopup();
+            //TODO For the notifications
+            sendNotification();
+        }
+        String stepsLeft = String.valueOf(this.stepsLeft);
+        TextViewStepsLeft.setText(stepsLeft);
     }
     public void setPsBaseline(int stepCount){
         psBaseline = stepCount;
@@ -207,18 +256,65 @@ public class HomePage extends AppCompatActivity {
         return height * TO_GET_AVERAGE_STRIDE;
     }
 
-    public double convertInchToMile(double inch){
+    public double convertInchToMile(double inch) {
         return inch * 1.57828e-5;
     }
 
-    private boolean checkIfDayHasChanged(){
+    private boolean checkIfDayHasChanged() {
         Calendar c = Calendar.getInstance();
         int hours = c.get(Calendar.HOUR_OF_DAY);
         int minutes = c.get(Calendar.MINUTE);
         int seconds = c.get(Calendar.SECOND);
-        if(hours == 0 && minutes == 0 && seconds < 30){
+        if (hours == 0 && minutes == 0 && seconds < 30) {
             return true;
+        } else return false;
+    }
+
+    //TODO Launch the set new goal popup
+    public void set_goal(View view) {
+        //TODO
+        Intent intent = new Intent(this, SetNewGoal.class);
+        startActivity(intent);
+    }
+
+    //TODO Launch the encouragement popup
+    public void launchEncouragementPopup() {
+        Intent intent = new Intent(this, GoalAccomplished.class);
+        startActivity(intent);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel";
+            String description = "what";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("channel", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
-        else return false;
+    }
+    private void sendNotification(){
+        Intent intent = new Intent(this, GoalAccomplished.class);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentTitle("Congratulations!")
+                //.setContentText("Do you want to set a new step goal?")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Do you want to set a new step goal?"))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent);
+        //.setAutoCancel(true);
+        createNotificationChannel();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1000, mBuilder.build());
     }
 }
