@@ -111,14 +111,17 @@
         android:layout_marginTop="10sp"
         android:ems="10"
         android:hint="Enter a Current Time (milliseconds)"
-        android:inputType="number" />
+        android:inputType="number"
+        android:onClick="add500StepsButton"/>
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="140dp"
         android:layout_height="38dp"
         android:layout_marginTop="30sp"
-        android:text="Submit" />
+        android:text="Submit"
+        android:onClick="submitButton"
+        />
 
 
 </LinearLayout>

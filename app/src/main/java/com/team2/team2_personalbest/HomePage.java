@@ -37,31 +37,34 @@ import static android.app.NotificationChannel.DEFAULT_CHANNEL_ID;
 
 
 public class HomePage extends AppCompatActivity {
-    //keep track of the current steps take
+    //TODO Variables
+    /* Constants */
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
     String fitnessServiceKey = "GOOGLE_FIT";
-
     private final int FIVE_HUNDRED_INCREMENT = 500;
-    private DayDatabase dayDatabase;
-
+    private final int INITIAL_GOAL = 5000;
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
     private final double TO_GET_AVERAGE_STRIDE = 0.413;
     private static final String TAG = "HomePage";
 
     private long currentTimeMilli = System.currentTimeMillis();
-
+    private DayDatabase dayDatabase;
+    /* Textviews */
     private TextView textViewStepCount;
     private TextView textViewDistance;
     private TextView textViewPlannedSteps, textViewPlannedDistance;
+    private TextView TextViewStepsLeft;
+    /* Buttons */
     private Button toggle_walk;
+    private Button add500StepsButton;
+    private Button submitButton;
 
     private FitnessService fitnessService;
     public static boolean planned_walk = false;
     final Handler handler = new Handler();
     public double height;
     public double averageStrideLength;
-    //TODO
-    private TextView TextViewStepsLeft;
+
     private int goal;
     private int stepsLeft;
 
@@ -69,7 +72,7 @@ public class HomePage extends AppCompatActivity {
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
     private int psStepsThisWalk = 0; //holder for planned steps during current walk
-
+    //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
@@ -92,34 +95,11 @@ public class HomePage extends AppCompatActivity {
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
+        //fixme USE THIS ENCOURAGEMENT
         //sendEncouragement();
-
-
         // Set onClick listeners for manually setting time and step increment (+500 steps)
-        Button add500StepsButton = (Button) findViewById(R.id.add500Button);
-
-        add500StepsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get increment field int value
-                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                setStepCount(totalNewSteps);
-            }
-        });
-
-        Button submitButton = (Button) findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
-                String input = inputTimeView.getText().toString();
-                if (!input.equals("")) {
-                    currentTimeMilli = Long.parseLong(input);
-                }
-                inputTimeView.setText("");
-            }
-        });
-
+        add500StepsButton();
+        submitButton();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(HomePage homePage) {
@@ -129,48 +109,7 @@ public class HomePage extends AppCompatActivity {
 
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         fitnessService.setup();
-
-        toggle_walk.setOnClickListener(new View.OnClickListener() {
-            /**
-             * author josephl310
-             *
-             * Implements toggle functionality of button: switches between planned and unplanned
-             * walks
-             */
-            @Override
-            public void onClick(View v) {
-                //TODO: Update with styling
-                if (planned_walk){ //User was on planned walk, wants to end it
-
-                    psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
-
-                    psStepsThisWalk = 0; //reset current walk step counter
-                    planned_walk = false; //not on a planned walk anymore
-
-                    /* make planned steps text invisible */
-                    textViewPlannedSteps.setVisibility(View.INVISIBLE);
-                    textViewPlannedDistance.setVisibility(View.INVISIBLE);
-
-                    /* reset button */
-                    toggle_walk.setText("Start Planned Walk/Run");
-                    toggle_walk.setBackgroundColor(Color.GREEN);
-
-                } else { //Turn on planned walk
-
-
-                    fitnessService.updateStepCount(); //update with newest information
-                    planned_walk = true; //start planned walk
-
-                    /* make planned steps text visible */
-                    textViewPlannedSteps.setVisibility(View.VISIBLE);
-                    textViewPlannedDistance.setVisibility(View.VISIBLE);
-
-                    /* change button */
-                    toggle_walk.setText("End Planned Walk/Run");
-                    toggle_walk.setBackgroundColor(Color.RED);
-                }
-            }
-        });
+        toggleWalk();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(HomePage homePage) {
@@ -195,14 +134,11 @@ public class HomePage extends AppCompatActivity {
         fitnessService.setup();
 
         // TODO Set up the initial goal
-        this.goal = 5000;
-        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("newgoal", "5000");
-        editor.apply();
+        setInitialGOal();
     }
 
-    //TODO Update the goal when coming back to homePage
+    //TODO On Resume
+    // Update the goal when coming back to homePage
     @Override
     public void onResume() {
         super.onResume();
@@ -221,6 +157,7 @@ public class HomePage extends AppCompatActivity {
      *
      * This should end planned walks when the app is quit
      */
+    // TODO On Destroy
     @Override
     protected void onDestroy(){
         planned_walk = false;
@@ -273,22 +210,102 @@ public class HomePage extends AppCompatActivity {
             }
         }) .start();
 
-
-
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
-        //TODO Update steps left
+        //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
-        //TODO When reached the goal
+        //For when reached the goal
         if (this.stepsLeft <= 0) {
             this.stepsLeft = 0;
             launchEncouragementPopup();
-            //TODO For the notifications
             sendNotification();
         }
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
     }
+
+    //TODO Buttons
+    // Launch the set new goal popup
+    public void set_goal(View view) {
+        Intent intent = new Intent(this, SetNewGoal.class);
+        startActivity(intent);
+    }
+
+    public void goToGraph(View view) {
+        Intent intent = new Intent(this, GraphActivity.class);
+        startActivity(intent);
+    }
+    public void add500StepsButton(){
+        add500StepsButton = (Button) findViewById(R.id.add500Button);
+
+        add500StepsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get increment field int value
+                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                setStepCount(totalNewSteps);
+            }
+        });
+    }
+    public void submitButton(){
+        submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
+                String input = inputTimeView.getText().toString();
+                if (!input.equals("")) {
+                    currentTimeMilli = Long.parseLong(input);
+                }
+                inputTimeView.setText("");
+            }
+        });
+    }
+    public void toggleWalk(){
+        toggle_walk.setOnClickListener(new View.OnClickListener() {
+            /**
+             * author josephl310
+             *
+             * Implements toggle functionality of button: switches between planned and unplanned
+             * walks
+             */
+            @Override
+            public void onClick(View v) {
+                if (planned_walk){ //User was on planned walk, wants to end it
+
+                    psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
+
+                    psStepsThisWalk = 0; //reset current walk step counter
+                    planned_walk = false; //not on a planned walk anymore
+
+                    /* make planned steps text invisible */
+                    textViewPlannedSteps.setVisibility(View.INVISIBLE);
+                    textViewPlannedDistance.setVisibility(View.INVISIBLE);
+
+                    /* reset button */
+                    toggle_walk.setText("Start Planned Walk/Run");
+                    toggle_walk.setBackgroundColor(Color.GREEN);
+
+                } else { //Turn on planned walk
+
+
+                    fitnessService.updateStepCount(); //update with newest information
+                    planned_walk = true; //start planned walk
+
+                    /* make planned steps text visible */
+                    textViewPlannedSteps.setVisibility(View.VISIBLE);
+                    textViewPlannedDistance.setVisibility(View.VISIBLE);
+
+                    /* change button */
+                    toggle_walk.setText("End Planned Walk/Run");
+                    toggle_walk.setBackgroundColor(Color.RED);
+                }
+            }
+        });
+    }
+
+    //TODO Helper Functions
+
     public void setPsBaseline(int stepCount){
         psBaseline = stepCount;
     }
@@ -302,23 +319,17 @@ public class HomePage extends AppCompatActivity {
     }
 
     // Check if String is number
-    public static boolean isNumeric(String str)
-    {
+    public static boolean isNumeric(String str){
         return str.matches("-?\\d+(\\.\\d+)?");
     }
-
-    //TODO Launch the set new goal popup
-    public void set_goal(View view) {
-        //TODO
-        Intent intent = new Intent(this, SetNewGoal.class);
-        startActivity(intent);
+    // To set the initial goal
+    public void setInitialGOal(){
+        this.goal = INITIAL_GOAL;
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("newgoal", "5000");
+        editor.apply();
     }
-
-    public void goToGraph(View view) {
-        Intent intent = new Intent(this, GraphActivity.class);
-        startActivity(intent);
-    }
-
 
     /*
      Helper method to print DB values and test in LOG
@@ -364,7 +375,6 @@ public class HomePage extends AppCompatActivity {
         }).start();
     }
 
-
     /*
     Private Helper Method that converts a day entry into readable LOGGER output
      */
@@ -376,7 +386,7 @@ public class HomePage extends AppCompatActivity {
 //                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
 //    }
 
-    //TODO Launch the encouragement popup
+    //Launch the encouragement popup
     public void launchEncouragementPopup() {
         Intent intent = new Intent(this, GoalAccomplished.class);
         startActivity(intent);
@@ -398,7 +408,6 @@ public class HomePage extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
     // Popup for when goal reached
     private void sendNotification(){
         Intent intent = new Intent(this, GoalAccomplished.class);
@@ -424,7 +433,7 @@ public class HomePage extends AppCompatActivity {
     private void sendEncouragement(){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                // TODO CHANGE THIS STEPs
+                // fixme CHANGE THIS STEPs
                 .setContentTitle("You've increased your daily steps by over 1000 steps. Keep up the good work!" )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
