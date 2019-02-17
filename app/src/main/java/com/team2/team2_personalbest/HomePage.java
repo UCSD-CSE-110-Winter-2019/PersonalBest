@@ -377,8 +377,6 @@ public class HomePage extends AppCompatActivity {
 //                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
 //    }
 
-}
-
     //TODO Launch the encouragement popup
     public void launchEncouragementPopup() {
         Intent intent = new Intent(this, GoalAccomplished.class);
