@@ -88,9 +88,6 @@ public class HomePage extends AppCompatActivity {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
-//                String totalNewStr = Integer.toString(totalNewSteps);
-//                setPsBaseline(totalNewSteps);
-//                textViewStepCount.setText(totalNewStr);
             }
         });
 
