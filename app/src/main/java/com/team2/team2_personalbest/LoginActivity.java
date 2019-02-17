@@ -18,9 +18,6 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO Whatever needs to be done to sign up with Google
-                // do something
-
                 launchActivity();
             }
         });
