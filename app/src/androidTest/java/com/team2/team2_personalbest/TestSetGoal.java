@@ -1,6 +1,10 @@
 package com.team2.team2_personalbest;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -13,10 +17,12 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -32,9 +38,16 @@ import static org.hamcrest.Matchers.is;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TestSetGoal {
-
+    Intent intent;
+    SharedPreferences.Editor preferencesEditor;
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, true, false);
+    Context context = getInstrumentation().getTargetContext();
+    @Before
+    public void setUp() {
+        Context targetContext = getInstrumentation().getTargetContext();
+        preferencesEditor = PreferenceManager.getDefaultSharedPreferences(targetContext).edit();
+    }
 
     @Test
     public void testSetGoal() {

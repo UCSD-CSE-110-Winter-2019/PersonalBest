@@ -27,9 +27,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void launchActivity() {
-        Intent intent = new Intent(this, SetupActivity.class);
-        startActivity(intent);
-    }
 }

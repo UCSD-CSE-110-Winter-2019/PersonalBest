@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+/**
+ * This activity prompt the user for the height and store it
+ */
 public class SetupActivity extends AppCompatActivity {
 
     @Override
@@ -32,22 +34,12 @@ public class SetupActivity extends AppCompatActivity {
                     finish();
                     startActivity(intent);
                 }
-                //double height = Double.parseDouble(heightStr);
-                //HomePage.setUserHeight(height);
                 SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("height", heightStr);
                 editor.apply();
-                // Go back to homepage
-                //launchActivity();
                 finish();
             }
         });
-    }
-
-    public void launchActivity() {
-        // TODO change if homepage is not MainActivity. Change to whatever homepage is.
-        Intent intent = new Intent(this, HomePage.class);
-        startActivity(intent);
     }
 }

@@ -38,10 +38,9 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.app.NotificationChannel.DEFAULT_CHANNEL_ID;
-
-
-
+/**
+ * Main activity of the app
+ */
 public class HomePage extends AppCompatActivity {
     //TODO Variables
     /* Constants */
@@ -50,7 +49,6 @@ public class HomePage extends AppCompatActivity {
     private final int FIVE_HUNDRED_INCREMENT = 500;
     private final int INITIAL_GOAL = 5000;
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
-    private final double TO_GET_AVERAGE_STRIDE = 0.413;
     private static final String TAG = "HomePage";
 
     private long currentTimeMilli = System.currentTimeMillis();
@@ -96,6 +94,7 @@ public class HomePage extends AppCompatActivity {
     public double start;
 
     //TODO OnCreate
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
@@ -127,7 +126,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedTitle = findViewById(R.id.planned_stats_title);
         toggle_walk = findViewById(R.id.toggle_walk); //planned walk button
 
-        averageStrideLength = calculateAveStrideLength(userHeight);
+        averageStrideLength = StatisticsUtilities.calculateAveStrideLength(userHeight);
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
@@ -135,7 +134,6 @@ public class HomePage extends AppCompatActivity {
         //sendEncouragement();
         // Set onClick listeners for manually setting time and step increment (+500 steps)
         add500StepsButton();
-        submitButton();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(HomePage homePage) {
@@ -203,11 +201,11 @@ public class HomePage extends AppCompatActivity {
         goalReached.setBool("goalReached", true);
 
         //TODO Store the height
-        /*
         SharedPreferences heightPref = getSharedPreferences("height", MODE_PRIVATE);
         String height = heightPref.getString("height", "");
-        this.userHeight = Double.parseDouble(height);
-        */
+        if(isNumeric(height)){
+            this.userHeight = Double.parseDouble(height);
+        }
     }
 
     /**
@@ -226,10 +224,15 @@ public class HomePage extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /**
+     *
+     * @param stepCount total steps from googleFit
+     *
+     */
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
-        String milesDisplay = String.format(Locale.US, "%.1f %s", convertInchToMile(totalDistanceInInch),
+        String milesDisplay = String.format(Locale.US, "%.1f %s", StatisticsUtilities.convertInchToMile(totalDistanceInInch),
                                             getString(R.string.miles_taken));
 
         textViewStepCount.setText(stepCountDisplay);
@@ -247,7 +250,7 @@ public class HomePage extends AppCompatActivity {
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
                 getString(R.string.planned_steps));
         double totalPlannedDistanceInInch = plannedSteps * averageStrideLength;
-        String plannedMilesDisplay = String.format(Locale.US, "%.1f %s", convertInchToMile(totalPlannedDistanceInInch),
+        String plannedMilesDisplay = String.format(Locale.US, "%.1f %s", StatisticsUtilities.convertInchToMile(totalPlannedDistanceInInch),
                 getString(R.string.planned_distance));
 
 
@@ -274,8 +277,6 @@ public class HomePage extends AppCompatActivity {
             }
         }).start();
 
-        //textViewPlannedSteps.setText(plannedStepCountDisplay);
-        //textViewPlannedDistance.setText(plannedMilesDisplay);
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
         //For when reached the goal
@@ -297,25 +298,36 @@ public class HomePage extends AppCompatActivity {
     }
 
     //TODO Buttons
-    // Launch the set new goal popup
-    public void goToLogIn() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
+
+    /**
+     * Launch setUpActivity
+     */
     public void goToSetupActivity(){
         Intent intent = new Intent(this, SetupActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Launch SetNewGoal Activity
+     * @param view
+     */
     public void set_goal(View view) {
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
     }
 
+    /**
+     * Launch GraphActivity
+     * @param view
+     */
     public void goToGraph(View view) {
         Intent intent = new Intent(this, GraphActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * Button to add 500 steps to total steps
+     */
     public void add500StepsButton(){
         add500StepsButton = (Button) findViewById(R.id.add500Button);
 
@@ -331,28 +343,14 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
-    public void submitButton(){
-        submitButton = (Button) findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
-                String input = inputTimeView.getText().toString();
-                if (!input.equals("")) {
-                    currentTimeMilli = Long.parseLong(input);
-                }
-                inputTimeView.setText("");
-            }
-        });
-    }
+    /**
+     * author josephl310
+     *
+     * Implements toggle functionality of button: switches between planned and unplanned
+     * walks
+     */
     public void toggleWalk(){
         toggle_walk.setOnClickListener(new View.OnClickListener() {
-            /**
-             * author josephl310
-             *
-             * Implements toggle functionality of button: switches between planned and unplanned
-             * walks
-             */
             @Override
             public void onClick(View v) {
                 if (planned_walk){ //User was on planned walk, wants to end it
@@ -395,6 +393,11 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
+    /**
+     * Log steps and time
+     * @param steps
+     * @param time
+     */
     public void addWalk(int steps, double time) {
         new Thread(new Runnable() {
             @Override
@@ -411,22 +414,25 @@ public class HomePage extends AppCompatActivity {
 
     //TODO Helper Functions
 
+    /**
+     * Set the psBaseline to current stepCount
+     * @param stepCount
+     */
+
     public void setPsBaseline(int stepCount){
         this.psBaseline = stepCount;
     }
 
-    public double calculateAveStrideLength(double height) {
-        return height * TO_GET_AVERAGE_STRIDE;
-    }
-
-    public double convertInchToMile(double inch) {
-        return inch * 1.57828e-5;
-    }
-
-    // Check if String is number
+    /**
+     * Check if a String is a number
+     */
     public static boolean isNumeric(String str){
         return str.matches("-?\\d+(\\.\\d+)?");
     }
+
+    /**
+     * set initial goal to 5000
+     */
     // To set the initial goal
     public void setInitialGoal(){
         this.goal = INITIAL_GOAL;
@@ -464,6 +470,10 @@ public class HomePage extends AppCompatActivity {
 //        Log.d("DB VALUES", toLog);
 //
 //    }
+
+    /**
+     * log test values
+     */
     private void setTestValues() {
         new Thread(new Runnable() {
             @Override
@@ -491,13 +501,17 @@ public class HomePage extends AppCompatActivity {
 //                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
 //    }
 
-    //Launch the encouragement popup
+    /**
+     * Launch the encouragement popup
+     */
     public void launchEncouragementPopup() {
         Intent intent = new Intent(this, GoalAccomplished.class);
         startActivity(intent);
     }
 
-    // For the popup
+    /**
+     * Create a channel to be used for the popup
+     */
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -513,7 +527,10 @@ public class HomePage extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-    // Popup for when goal reached
+
+    /**
+     * Show the popup when goal is reached
+     */
     private void sendNotification(){
         Intent intent = new Intent(this, GoalAccomplished.class);
         //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
@@ -535,6 +552,11 @@ public class HomePage extends AppCompatActivity {
     }
 
     // Popup for encouragement
+
+    /**
+     * Popup to encourage the user
+     * @param increase how many steps the user improved
+     */
     private void sendEncouragement(int increase){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
@@ -548,11 +570,14 @@ public class HomePage extends AppCompatActivity {
         notificationManager.notify(1000, mBuilder.build());
     }
 
+    /**
+     * Update statistics of planned walk
+     */
     private void updateStats() {
         double finish = System.currentTimeMillis();
         double timeElapsed = finish - start;
         elapsedTime = timeElapsed / 1000 / 3600;
-        double plannedWalkDistance = convertInchToMile(psDailyTotal * calculateAveStrideLength(userHeight));
+        double plannedWalkDistance = StatisticsUtilities.convertInchToMile(psDailyTotal * StatisticsUtilities.calculateAveStrideLength(userHeight));
         double averagePlannedWalkSpeed = plannedWalkDistance / elapsedTime;
         textViewPlannedSteps = findViewById(R.id.planned_steps);
         textViewPlannedDistance = findViewById(R.id.planned_distance);
@@ -571,13 +596,9 @@ public class HomePage extends AppCompatActivity {
         return this.manualStepsAddedTotal;
     }
 
-    public static void setUserHeight(double height) {
-        userHeight = height;
-    }
-
-    /*
+    /**
     Sends Notification when we have reached 500 above yesterdays total steps!
- */
+    */
     private void sendSubNotification(){
         String currentDayID = DateHelper.dayDateToString(DateHelper.previousDay(0));
         Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
