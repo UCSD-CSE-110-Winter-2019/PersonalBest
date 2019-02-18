@@ -12,48 +12,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Planned Walk Stats"
-        android:textSize="20sp"
-        android:visibility="visible" />
+        android:text=""
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/planned_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Average Speed"
-        android:textSize="15sp"
-        android:visibility="visible"
-        tools:text="@string/planned_steps" />
+        android:text=""
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/planned_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Miles Taken"
-        android:textSize="15sp"
-        android:visibility="visible"
-        tools:text="@string/planned_distance" />
+        android:text=""
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/planned_stepsTaken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Planned step"
-        android:textSize="15sp"
-        android:visibility="visible" />
+        android:text=""
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/timeElapsed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Time Elapsed"
-        android:textSize="15sp"
-        android:visibility="visible" />
-
+        android:text=""
+        android:textSize="15sp"/>
 
     <Button
         android:id="@+id/button"
