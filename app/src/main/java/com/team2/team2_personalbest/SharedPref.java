@@ -3,6 +3,9 @@ package com.team2.team2_personalbest;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * This class is used to make creating sharedPref easier
+ */
 public class SharedPref {
 
     private static Context context;

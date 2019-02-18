@@ -31,6 +31,10 @@ import java.util.List;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
+/**
+ * This activity displays the graph
+ */
+
 public class GraphActivity extends AppCompatActivity {
 
     private DayDatabase dayDatabase;

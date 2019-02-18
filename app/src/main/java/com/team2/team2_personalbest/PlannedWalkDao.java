@@ -7,7 +7,9 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import java.util.List;
-
+/**
+ * This interface is used for database
+ */
 @Dao
 public interface PlannedWalkDao {
 

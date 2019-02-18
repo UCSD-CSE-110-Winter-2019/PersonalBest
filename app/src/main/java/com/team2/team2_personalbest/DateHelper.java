@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
+/**
+ * This class helps with the date
+ */
 public class DateHelper {
     private static String[] daysOfWeek = {"Sat", "Sun", "Mon", "Tues", "Wed",
             "Thurs", "Fri"};

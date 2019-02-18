@@ -30,6 +30,9 @@ public class GoogleFitAdapter implements FitnessService {
         this.activity = activity;
     }
 
+    /**
+     * set up with google login prompt
+     */
     public void setupInit(){
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -49,6 +52,9 @@ public class GoogleFitAdapter implements FitnessService {
         }
     }
 
+    /**
+     * setup but without login prompt
+     */
     public void setup() {
         /*
         FitnessOptions fitnessOptions = FitnessOptions.builder()
