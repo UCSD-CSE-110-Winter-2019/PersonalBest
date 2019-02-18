@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class SetupActivity extends AppCompatActivity {
 
@@ -24,9 +25,19 @@ public class SetupActivity extends AppCompatActivity {
 
                 // TODO store this height value in FireBase with the user's account.
                 String heightStr = heightField.getText().toString();
-                double height = Double.parseDouble(heightStr);
-                HomePage.setUserHeight(height);
-
+                if (heightStr.matches("")){
+                    Toast.makeText(SetupActivity.this, "Enter a positive number", Toast.LENGTH_SHORT).show();
+                    // Restart this activity
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
+                //double height = Double.parseDouble(heightStr);
+                //HomePage.setUserHeight(height);
+                SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("height", heightStr);
+                editor.apply();
                 // Go back to homepage
                 //launchActivity();
                 finish();
