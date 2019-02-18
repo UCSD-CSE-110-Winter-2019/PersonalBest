@@ -76,6 +76,7 @@ public class HomePage extends AppCompatActivity {
     // This is used to be able to track how many steps were added manually via HomePage
     // by the user
     private int manualStepsAddedTotal;
+
     private int goal;
     private int stepsLeft;
 
@@ -151,8 +152,9 @@ public class HomePage extends AppCompatActivity {
             firstTime.setBool("init", true);
             setInitialGoal();
         }
-        else
+        else {
             fitnessService.setup();
+        }
         toggleWalk();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
@@ -327,7 +329,7 @@ public class HomePage extends AppCompatActivity {
     /**
      * Button to add 500 steps to total steps
      */
-    public void add500StepsButton(){
+    public void add500StepsButton() {
         add500StepsButton = (Button) findViewById(R.id.add500Button);
 
         add500StepsButton.setOnClickListener(new View.OnClickListener() {
@@ -335,20 +337,21 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                if(planned_walk) psDailyTotal+=FIVE_HUNDRED_INCREMENT;
+                if (planned_walk) psDailyTotal += FIVE_HUNDRED_INCREMENT;
                 manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
             }
         });
     }
-
+  
+      
     /**
      * author josephl310
      *
      * Implements toggle functionality of button: switches between planned and unplanned
      * walks
      */
-    public void toggleWalk(){
+    public void toggleWalk() {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -356,9 +359,9 @@ public class HomePage extends AppCompatActivity {
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
-                    Log.d("insertVal", "STEPS: "+psStepsThisWalk);
+                    Log.d("insertVal", "STEPS: "+psDailyTotal);
 
-                    addWalk(psStepsThisWalk, elapsedTime);
+                    addWalk(psDailyTotal, elapsedTime);
                     psStepsThisWalk = 0; //reset current walk step counter
                     planned_walk = false; //not on a planned walk anymore
 
