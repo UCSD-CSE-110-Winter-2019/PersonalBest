@@ -135,7 +135,6 @@ public class HomePage extends AppCompatActivity {
         //sendEncouragement();
         // Set onClick listeners for manually setting time and step increment (+500 steps)
         add500StepsButton();
-        submitButton();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(HomePage homePage) {
@@ -331,20 +330,7 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
-    public void submitButton(){
-        submitButton = (Button) findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView inputTimeView = (TextView) findViewById(R.id.currentTimeField);
-                String input = inputTimeView.getText().toString();
-                if (!input.equals("")) {
-                    currentTimeMilli = Long.parseLong(input);
-                }
-                inputTimeView.setText("");
-            }
-        });
-    }
+
     public void toggleWalk(){
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             /**
@@ -359,9 +345,9 @@ public class HomePage extends AppCompatActivity {
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
-                    Log.d("insertVal", "STEPS: "+psStepsThisWalk);
+                    Log.d("insertVal", "STEPS: "+psDailyTotal);
 
-                    addWalk(psStepsThisWalk, elapsedTime);
+                    addWalk(psDailyTotal, elapsedTime);
                     psStepsThisWalk = 0; //reset current walk step counter
                     planned_walk = false; //not on a planned walk anymore
 
