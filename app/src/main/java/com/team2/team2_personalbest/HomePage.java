@@ -76,7 +76,6 @@ public class HomePage extends AppCompatActivity {
     // This is used to be able to track how many steps were added manually via HomePage
     // by the user
     private int manualStepsAddedTotal;
-
     private int goal;
     private int stepsLeft;
 
