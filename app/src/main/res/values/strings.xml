@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">PersonalBest</string>
-    <string name="steps_taken"> Steps Taken</string>
-    <string name="miles_taken">Miles Walked</string>
-    <string name="planned_steps"> planned average speed</string>
-    <string name="planned_distance"> planned miles travelled</string>
+    <string name="steps_taken"> Steps taken</string>
+    <string name="miles_taken">Miles walked</string>
+    <string name="planned_steps"> Planned steps taken</string>
+    <string name="planned_distance"> Planned miles travelled</string>
+>>>>>>> 8b3b95c0e77d4dbf7623735975dcc6eae2ed8cc2
     <string name="select_new_goal">Select New Goal</string>
     <string name="num_steps">Number of steps</string>
-    <string name="cancel">cancel</string>
-    <string name="confirm">confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>
