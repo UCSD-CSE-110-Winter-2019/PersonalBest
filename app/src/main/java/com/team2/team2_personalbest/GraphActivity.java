@@ -31,6 +31,7 @@ import static com.team2.team2_personalbest.HomePage.isNumeric;
 public class GraphActivity extends AppCompatActivity {
 
     private DayDatabase dayDatabase;
+    private WalkDatabase walkDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,11 @@ public class GraphActivity extends AppCompatActivity {
         final String DATABASE_NAME = "days_db";
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
                 DayDatabase.class, DATABASE_NAME)
+                .build();
+
+        final String DATABASE_NAME1 = "walk_db";
+        walkDatabase = Room.databaseBuilder(getApplicationContext(),
+                WalkDatabase.class, DATABASE_NAME1)
                 .build();
 
 
@@ -55,6 +61,16 @@ public class GraphActivity extends AppCompatActivity {
 
 
         new FillEntriesTask(this).execute(dayDatabase);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<PlannedWalk> walks = walkDatabase.walkDao().getAllWalks();
+                for(PlannedWalk i : walks) {
+                    Log.d("PLANNED WALK", String.format("%d\n", i.getSteps()));
+                }
+            }
+        }).start();
 
 
 
