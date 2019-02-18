@@ -55,6 +55,7 @@ public class HomePage extends AppCompatActivity {
 
     private long currentTimeMilli = System.currentTimeMillis();
     private DayDatabase dayDatabase;
+    private WalkDatabase walkDatabase;
     /* Textviews */
     private TextView textViewStepCount;
     private TextView textViewDistance;
@@ -102,6 +103,12 @@ public class HomePage extends AppCompatActivity {
         final String DATABASE_NAME = "days_db";
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
                 DayDatabase.class, DATABASE_NAME)
+                .build();
+
+
+        final String DATABASE_NAME1 = "walk_db";
+        walkDatabase = Room.databaseBuilder(getApplicationContext(),
+                WalkDatabase.class, DATABASE_NAME1)
                 .build();
 
         setTestValues();
@@ -350,6 +357,7 @@ public class HomePage extends AppCompatActivity {
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
+                    addWalk(psStepsThisWalk, elapsedTime);
                     psStepsThisWalk = 0; //reset current walk step counter
                     planned_walk = false; //not on a planned walk anymore
 
@@ -363,6 +371,7 @@ public class HomePage extends AppCompatActivity {
                     /* reset button */
                     toggle_walk.setText("Start Planned Walk/Run");
                     toggle_walk.setBackgroundColor(Color.GREEN);
+
 
                 } else { //Turn on planned walk
                     //start measuring start time
@@ -384,6 +393,20 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void addWalk(int steps, double time) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PlannedWalk walk = new PlannedWalk(steps, time);
+
+                Log.d("Database Entry", "run: inserting " + steps + " " + time);
+                walkDatabase.walkDao().insertSingleWalk(walk);
+
+            }
+        }).start();
+
     }
 
     //TODO Helper Functions
