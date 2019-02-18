@@ -10,8 +10,8 @@ public class TestDateHelper {
     @Test
     public void testGetLastSevenWeekDays() {
         String[] days = DateHelper.getLastSevenWeekDays(1);
-        String[] daysCheck = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-            "Saturday", "Sunday"};
+        String[] daysCheck = {"Mon", "Tues", "Wed", "Thurs", "Fri",
+            "Sat", "Sun"};
         assertEquals(days.length, daysCheck.length);
         for(int i = 0; i < 7; i++) {
             assertEquals(daysCheck[i], days[i]);
