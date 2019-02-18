@@ -31,7 +31,6 @@
             android:name=".SetNewGoal"
             android:theme="@android:style/Theme.Holo.Dialog">
             <intent-filter>
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,10 +38,10 @@
             android:name=".GoalAccomplished"
             android:theme="@android:style/Theme.Holo.Dialog">
             <intent-filter>
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".walkHistory"></activity>
     </application>
 
 </manifest>
