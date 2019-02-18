@@ -79,8 +79,7 @@ public class HomePage extends AppCompatActivity {
     private int stepsLeft;
 
     //SharePreferences
-    SharedPreferences appIntro = null;
-
+    SharedPref firstTime;
 
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
@@ -125,10 +124,10 @@ public class HomePage extends AppCompatActivity {
 
         // TODO Check if it's the first time running the appp
 
-        SharedPref sharedPref = new SharedPref(this);
-        boolean hasRun = sharedPref.getBool("init");
+        firstTime = new SharedPref(this);
+        boolean hasRun = firstTime.getBool("init");
         if (!hasRun){
-            sharedPref.setBool("init", true);
+            firstTime.setBool("init", true);
             goToSetupActivity();
             FitnessOptions fitnessOptions = FitnessOptions.builder()
                     .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -161,6 +160,7 @@ public class HomePage extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+
                         fitnessService.updateStepCount();
                     }
                 });
