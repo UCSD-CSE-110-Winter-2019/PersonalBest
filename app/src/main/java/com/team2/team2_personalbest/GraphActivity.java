@@ -1,34 +1,32 @@
 package com.team2.team2_personalbest;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
+import static com.team2.team2_personalbest.HomePage.isNumeric;
 
 public class GraphActivity extends AppCompatActivity {
 
@@ -44,6 +42,7 @@ public class GraphActivity extends AppCompatActivity {
                 DayDatabase.class, DATABASE_NAME)
                 .build();
 
+
 //        DayViewModel model = ViewModelProviders.of(this).get(DayViewModel.class);
 //
 //        model.getDays().observe(this, days -> {
@@ -51,7 +50,7 @@ public class GraphActivity extends AppCompatActivity {
 //            for(int i = 0; i < days.size(); i++) {
 //                entries.add(new BarEntry(i, new float[] {days.get(i).getStepsTracked(), days.get(i).getStepsUntracked()}));
 //            }
-//            createGraph(entries);
+//            generateBarChart(entries);
 //        });
 
 
@@ -84,7 +83,9 @@ public class GraphActivity extends AppCompatActivity {
 
                 if(currentDay != null) {
                     Log.d("GraphActivity", Integer.toString(i));
-                    entries.add(new BarEntry(i, new float[]{currentDay.getStepsUntracked(), currentDay.getStepsTracked()}));
+                    int trackedSteps = currentDay.getStepsTracked();
+                    int untrackedSteps = currentDay.getStepsUntracked() - trackedSteps;
+                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, trackedSteps}));
                 }
             }
 
@@ -93,12 +94,32 @@ public class GraphActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(List<BarEntry> entries) {
-            createGraph(entries);
+            generateBarChart(entries);
         }
     }
 
-    public void createGraph(List<BarEntry> entries) {
-        BarChart chart = findViewById(R.id.chart);
+    public void generateBarChart(List<BarEntry> entries) {
+        CombinedChart chart = findViewById(R.id.chart);
+        chart.setScaleEnabled(false);
+
+        final ArrayList<String> xLabel = new ArrayList<>();
+        String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
+
+        for(String i : days) {
+            xLabel.add(i);
+        }
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setSpaceMin(.5f);
+        xAxis.setSpaceMax(.5f);
+        xAxis.setDrawGridLines(false);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return xLabel.get((int)value);
+            }
+        });
 
         BarDataSet barDataSet = new BarDataSet(entries, "Daily walking");
         int color1 = ContextCompat.getColor(this, R.color.colorAccent);
@@ -108,11 +129,38 @@ public class GraphActivity extends AppCompatActivity {
 
         BarData barData = new BarData(barDataSet);
 
-        chart.setDrawGridBackground(false);
-        chart.setDrawBorders(false);
 
-        chart.setData(barData);
+        CombinedData combinedData = new CombinedData();
+        combinedData.setData((barData));
+        combinedData.setData(generateLine());
+
+
+        chart.setData(combinedData);
         chart.invalidate();
+    }
+
+    private LineData generateLine() {
+        LineData data = new LineData();
+        int goal = 5000;
+
+        SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
+        String newGoal = sharedPreferences.getString("newgoal", "");
+        if(isNumeric(newGoal)) {
+            goal = Integer.parseInt(newGoal);
+        }
+
+        ArrayList<Entry> lineEntries = new ArrayList<>();
+        lineEntries.add(new Entry(0, goal));
+        lineEntries.add(new Entry(6, goal));
+
+        LineDataSet set = new LineDataSet(lineEntries, "Line Dataset");
+        set.setLineWidth(2.5f);
+        set.setCircleRadius(1f);
+
+        data.addDataSet(set);
+
+        return data;
+
     }
 
 //    public class DayViewModel extends ViewModel {

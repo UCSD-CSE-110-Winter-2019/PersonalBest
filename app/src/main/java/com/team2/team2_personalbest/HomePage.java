@@ -68,8 +68,12 @@ public class HomePage extends AppCompatActivity {
     private FitnessService fitnessService;
     public static boolean planned_walk = false;
     final Handler handler = new Handler();
-    public double height;
+    private static double userHeight;
     public double averageStrideLength;
+
+    // This is used to be able to track how many steps were added manually via HomePage
+    // by the user
+    private int manualStepsAddedTotal;
 
     private int goal;
     private int stepsLeft;
@@ -82,6 +86,7 @@ public class HomePage extends AppCompatActivity {
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
     private int psStepsThisWalk = 0; //holder for planned steps during current walk
+
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +107,7 @@ public class HomePage extends AppCompatActivity {
         textViewPlannedDistance = findViewById(R.id.planned_distance); //planned mile counter
         toggle_walk = findViewById(R.id.toggle_walk); //planned walk button
 
-        averageStrideLength = calculateAveStrideLength(height);
+        averageStrideLength = calculateAveStrideLength(userHeight);
 
         //set button color to green by default
         toggle_walk.setBackgroundColor(Color.GREEN);
@@ -234,7 +239,6 @@ public class HomePage extends AppCompatActivity {
                     dayDatabase.dayDao().updateDay(currentDay);
                 }
 
-//                loggerForTesting();
             }
         }) .start();
 
@@ -280,10 +284,12 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
             }
         });
     }
+
     public void submitButton(){
         submitButton = (Button) findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -478,5 +484,17 @@ public class HomePage extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
+    }
+
+    public TextView getTextViewStepCount() {
+        return this.textViewStepCount;
+    }
+
+    public int getManualStepsAddedTotal() {
+        return this.manualStepsAddedTotal;
+    }
+
+    public static void setUserHeight(double height) {
+        userHeight = height;
     }
 }
