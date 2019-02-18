@@ -23,4 +23,18 @@ public class TestSharedPref {
         goalReached.setBool("goalReached", true);
         assertTrue(goalReached.getBool("goalReached"));
     }
+    @Test
+    public void testInt(){
+        HomePage activity = Robolectric.setupActivity(HomePage.class);
+        SharedPref goalReached = new SharedPref(activity);
+        goalReached.setInt("goalReached", 69);
+        assertEquals(goalReached.getInt("goalReached"),  69);
+    }
+    @Test
+    public void testString(){
+        HomePage activity = Robolectric.setupActivity(HomePage.class);
+        SharedPref goalReached = new SharedPref(activity);
+        goalReached.setStr("goalReached", "hello");
+        assertEquals(goalReached.getStr("goalReached"),"hello");
+    }
 }
