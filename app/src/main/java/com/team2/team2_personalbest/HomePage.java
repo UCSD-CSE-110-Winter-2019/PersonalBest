@@ -490,7 +490,7 @@ public class HomePage extends AppCompatActivity {
 
             Log.d("YESTERDAY VS TODAY", "XXXX\nCURRENT: "+currentStepsTotal+"\nYEST: "+yesterdayTotal
                     +"\nDIFF: "+difference+"\nREM: "+remainder);
-            if(remainder <= 6){
+            if(remainder <= 10){
 
                 Log.d("YESTERDAY NOTIFICATION!", "NOTIFICATION WITH INCREASE OF "
                         +FIVE_HUNDRED_INCREMENT*fiveHundredIncrements);
