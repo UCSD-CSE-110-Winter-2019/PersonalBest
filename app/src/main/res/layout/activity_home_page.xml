@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:text="Planned Walk Stats"
         android:textSize="20sp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/planned_steps"
@@ -23,7 +23,7 @@
         android:layout_gravity="center"
         android:text="Average Speed"
         android:textSize="15sp"
-        android:visibility="invisible"
+        android:visibility="visible"
         tools:text="@string/planned_steps" />
 
     <TextView
@@ -33,7 +33,7 @@
         android:layout_gravity="center"
         android:text="Miles Taken"
         android:textSize="15sp"
-        android:visibility="invisible"
+        android:visibility="visible"
         tools:text="@string/planned_distance" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_gravity="center"
         android:text="Planned step"
         android:textSize="15sp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/timeElapsed"
@@ -52,7 +52,7 @@
         android:layout_gravity="center"
         android:text="Time Elapsed"
         android:textSize="15sp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 
     <Button
