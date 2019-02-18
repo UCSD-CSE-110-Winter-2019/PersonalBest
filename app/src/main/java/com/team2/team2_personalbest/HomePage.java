@@ -81,6 +81,7 @@ public class HomePage extends AppCompatActivity {
 
     //SharePreferences
     SharedPref firstTime;
+    SharedPref goalReached;
 
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
@@ -127,7 +128,7 @@ public class HomePage extends AppCompatActivity {
 
         firstTime = new SharedPref(this);
         boolean hasRun = firstTime.getBool("init");
-        if (!hasRun){
+        if (hasRun == false) {
             firstTime.setBool("init", true);
             goToSetupActivity();
             FitnessOptions fitnessOptions = FitnessOptions.builder()
@@ -154,21 +155,25 @@ public class HomePage extends AppCompatActivity {
         });
 
         //update step every 5 seconds
-        Timer timer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
+        goalReached = new SharedPref(this);
+        boolean goal_reached = goalReached.getBool("goalReached");
+        if (goal_reached) {
+            Timer timer = new Timer();
+            TimerTask doAsynchronousTask = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        fitnessService.updateStepCount();
-                    }
-                });
-            }
-        };
-        timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
-        fitnessService.setup();
+                            fitnessService.updateStepCount();
+                        }
+                    });
+                }
+            };
+            timer.schedule(doAsynchronousTask, 0, UPDATE_LENGTH);
+            fitnessService.setup();
+        }
     }
 
     //TODO On Resume
@@ -184,6 +189,8 @@ public class HomePage extends AppCompatActivity {
             this.stepsLeft = this.goal;
             TextViewStepsLeft.setText(newGoal);
         }
+        goalReached = new SharedPref(this);
+        goalReached.setBool("goalReached", true);
     }
 
     /**
@@ -253,6 +260,8 @@ public class HomePage extends AppCompatActivity {
         //For when reached the goal
         if (this.stepsLeft <= 0) {
             this.stepsLeft = 0;
+            goalReached = new SharedPref(this);
+            goalReached.setBool("goalReached", true);
             launchEncouragementPopup();
             sendNotification();
         }
