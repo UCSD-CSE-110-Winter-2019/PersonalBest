@@ -106,6 +106,10 @@ public class HomePage extends AppCompatActivity {
                 .build();
 
         setTestValues();
+        SharedPref PS = new SharedPref(this);
+        this.psDailyTotal = PS.getInt("psDailyTotal");
+        this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
+        this.psBaseline = PS.getInt("psBaseline");
 
         //Getting XML elements
 
@@ -140,6 +144,7 @@ public class HomePage extends AppCompatActivity {
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         boolean hasRun = firstTime.getBool("init");
         if (!hasRun) {
+            goToSetupActivity();
             fitnessService.setupInit();
             firstTime.setBool("init", true);
             setInitialGoal();
@@ -202,6 +207,10 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         planned_walk = false;
+        SharedPref PS = new SharedPref(this);
+        PS.setInt("psDailyTotal", this.psDailyTotal);
+        PS.setInt("psBaseline", this.psBaseline);
+        PS.setInt("psStepsThisWalk", this.psStepsThisWalk);
         super.onDestroy();
     }
 
@@ -215,11 +224,19 @@ public class HomePage extends AppCompatActivity {
         textViewDistance.setText(milesDisplay);
 
         //total daily steps should always be >= to planned
+        //TODO Retrieve the PS's from sharedPref
+        //SharedPref PS = new SharedPref(this);
+        //psDailyTotal = PS.getInt("psDailyTotal");
+        //psStepsThisWalk = PS.getInt("psStepsThisWalk");
+
+
         if (stepCount < psDailyTotal){
             psDailyTotal = 0;
+            //PS.setInt("psDailyTotal", psDailyTotal);
         }
 
         psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
+        //PS.setInt("psStepsThisWalk", psStepsThisWalk);
         setPsBaseline((int)stepCount);
         long plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
@@ -376,7 +393,7 @@ public class HomePage extends AppCompatActivity {
     //TODO Helper Functions
 
     public void setPsBaseline(int stepCount){
-        psBaseline = stepCount;
+        this.psBaseline = stepCount;
     }
 
     public double calculateAveStrideLength(double height) {
