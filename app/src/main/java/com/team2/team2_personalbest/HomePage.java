@@ -340,8 +340,8 @@ public class HomePage extends AppCompatActivity {
                 setStepCount(totalNewSteps);
             }
         });
-    }
-
+  
+      
     /**
      * author josephl310
      *
@@ -356,9 +356,9 @@ public class HomePage extends AppCompatActivity {
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
-                    Log.d("insertVal", "STEPS: "+psStepsThisWalk);
+                    Log.d("insertVal", "STEPS: "+psDailyTotal);
 
-                    addWalk(psStepsThisWalk, elapsedTime);
+                    addWalk(psDailyTotal, elapsedTime);
                     psStepsThisWalk = 0; //reset current walk step counter
                     planned_walk = false; //not on a planned walk anymore
 
