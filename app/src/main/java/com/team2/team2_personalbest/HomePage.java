@@ -203,9 +203,11 @@ public class HomePage extends AppCompatActivity {
         goalReached.setBool("goalReached", true);
 
         //TODO Store the height
+        /*
         SharedPreferences heightPref = getSharedPreferences("height", MODE_PRIVATE);
         String height = heightPref.getString("height", "");
         this.userHeight = Double.parseDouble(height);
+        */
     }
 
     /**
