@@ -66,7 +66,7 @@ public class HomePage extends AppCompatActivity {
     private FitnessService fitnessService;
     public static boolean planned_walk = false;
     final Handler handler = new Handler();
-    private static double userHeight;
+    private static double userHeight = 60;
     public double averageStrideLength;
 
     // This is used to be able to track how many steps were added manually via HomePage
@@ -183,7 +183,7 @@ public class HomePage extends AppCompatActivity {
     public void setStepCount(long stepCount){
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
-        String milesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalDistanceInInch),
+        String milesDisplay = String.format(Locale.US, "%.1f %s", convertInchToMile(totalDistanceInInch),
                                             getString(R.string.miles_taken));
 
         textViewStepCount.setText(stepCountDisplay);
@@ -201,7 +201,7 @@ public class HomePage extends AppCompatActivity {
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
                 getString(R.string.planned_steps));
         double totalPlannedDistanceInInch = plannedSteps * averageStrideLength;
-        String plannedMilesDisplay = String.format(Locale.US, "%.1g %s", convertInchToMile(totalPlannedDistanceInInch),
+        String plannedMilesDisplay = String.format(Locale.US, "%.1f %s", convertInchToMile(totalPlannedDistanceInInch),
                 getString(R.string.planned_distance));
 
 
