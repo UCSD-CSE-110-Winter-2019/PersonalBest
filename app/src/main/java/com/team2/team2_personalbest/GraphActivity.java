@@ -77,7 +77,7 @@ public class GraphActivity extends AppCompatActivity {
 
             List<BarEntry> entries = new ArrayList<>();
             for(int i = 0; i < 7; i++) {
-                String date = DateHelper.getPreviousDayDateString(i);
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
 
                 Day currentDay = database.dayDao().getDayById(date);
 
