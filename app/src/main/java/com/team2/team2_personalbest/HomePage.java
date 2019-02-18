@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.DataType;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -77,6 +82,10 @@ public class HomePage extends AppCompatActivity {
     private int goal;
     private int stepsLeft;
 
+    //SharePreferences
+    SharedPref firstTime;
+    SharedPref goalReached;
+
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
@@ -103,6 +112,10 @@ public class HomePage extends AppCompatActivity {
                 .build();
 
         setTestValues();
+        SharedPref PS = new SharedPref(this);
+        this.psDailyTotal = PS.getInt("psDailyTotal");
+        this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
+        this.psBaseline = PS.getInt("psBaseline");
 
         //Getting XML elements
         textViewStepCount = findViewById(R.id.step_taken); //daily step counter
@@ -130,8 +143,19 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        // TODO Check if it's the first time running the appp
+
+        firstTime = new SharedPref(this);
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        fitnessService.setup();
+        boolean hasRun = firstTime.getBool("init");
+        if (!hasRun) {
+            goToSetupActivity();
+            fitnessService.setupInit();
+            firstTime.setBool("init", true);
+            setInitialGoal();
+        }
+        else
+            fitnessService.setup();
         toggleWalk();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
@@ -141,23 +165,25 @@ public class HomePage extends AppCompatActivity {
         });
 
         //update step every 5 seconds
-        Timer timer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        fitnessService.updateStepCount();
-                    }
-                });
-            }
-        };
-        timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
-        fitnessService.setup();
+        goalReached = new SharedPref(this);
+        boolean goal_reached = goalReached.getBool("goalReached");
+        if (goal_reached) {
+            Timer timer = new Timer();
+            TimerTask doAsynchronousTask = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-        // TODO Set up the initial goal
-        setInitialGOal();
+                            fitnessService.updateStepCount();
+                        }
+                    });
+                }
+            };
+            timer.schedule(doAsynchronousTask, 0, UPDATE_LENGTH);
+            fitnessService.setup();
+        }
     }
 
     //TODO On Resume
@@ -173,6 +199,8 @@ public class HomePage extends AppCompatActivity {
             this.stepsLeft = this.goal;
             TextViewStepsLeft.setText(newGoal);
         }
+        goalReached = new SharedPref(this);
+        goalReached.setBool("goalReached", true);
     }
 
     /**
@@ -184,6 +212,10 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         planned_walk = false;
+        SharedPref PS = new SharedPref(this);
+        PS.setInt("psDailyTotal", this.psDailyTotal);
+        PS.setInt("psBaseline", this.psBaseline);
+        PS.setInt("psStepsThisWalk", this.psStepsThisWalk);
         super.onDestroy();
     }
 
@@ -197,12 +229,12 @@ public class HomePage extends AppCompatActivity {
         textViewDistance.setText(milesDisplay);
 
         //total daily steps should always be >= to planned
-//        if (stepCount < psDailyTotal){
-//            psDailyTotal = 0;
-//        }
+        if (stepCount < psDailyTotal){
+            psDailyTotal = 0;
+        }
 
         psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
-//        setPsBaseline((int)stepCount);
+        setPsBaseline((int)stepCount);
         int plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
@@ -242,6 +274,8 @@ public class HomePage extends AppCompatActivity {
         //For when reached the goal
         if (this.stepsLeft <= 0) {
             this.stepsLeft = 0;
+            goalReached = new SharedPref(this);
+            goalReached.setBool("goalReached", true);
             launchEncouragementPopup();
             sendNotification();
         }
@@ -257,6 +291,15 @@ public class HomePage extends AppCompatActivity {
 
     //TODO Buttons
     // Launch the set new goal popup
+    public void goToLogIn() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+    public void goToSetupActivity(){
+        Intent intent = new Intent(this, SetupActivity.class);
+        startActivity(intent);
+    }
+
     public void set_goal(View view) {
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
@@ -364,7 +407,7 @@ public class HomePage extends AppCompatActivity {
     //TODO Helper Functions
 
     public void setPsBaseline(int stepCount){
-        psBaseline = stepCount;
+        this.psBaseline = stepCount;
     }
 
     public double calculateAveStrideLength(double height) {
@@ -380,7 +423,7 @@ public class HomePage extends AppCompatActivity {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
     // To set the initial goal
-    public void setInitialGOal(){
+    public void setInitialGoal(){
         this.goal = INITIAL_GOAL;
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

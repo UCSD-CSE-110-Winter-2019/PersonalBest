@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +28,8 @@ public class SetupActivity extends AppCompatActivity {
                 HomePage.setUserHeight(height);
 
                 // Go back to homepage
-                launchActivity();
+                //launchActivity();
+                finish();
             }
         });
     }
