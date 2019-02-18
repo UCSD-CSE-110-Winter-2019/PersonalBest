@@ -180,13 +180,13 @@ public class HomePage extends AppCompatActivity {
         textViewDistance.setText(milesDisplay);
 
         //total daily steps should always be >= to planned
-        if (stepCount < psDailyTotal){
-            psDailyTotal = 0;
-        }
+//        if (stepCount < psDailyTotal){
+//            psDailyTotal = 0;
+//        }
 
         psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
-        setPsBaseline((int)stepCount);
-        long plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
+//        setPsBaseline((int)stepCount);
+        int plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
                 getString(R.string.planned_steps));
@@ -204,7 +204,7 @@ public class HomePage extends AppCompatActivity {
                 Log.d("HomePage", date);
                 Day currentDay = dayDatabase.dayDao().getDayById(date);
                 if(currentDay == null) {
-                    currentDay = new Day(date, psDailyTotal, (int)stepCount);
+                    currentDay = new Day(date, plannedSteps, (int)stepCount);
                     dayDatabase.dayDao().insertSingleDay(currentDay);
                 } else {
                     currentDay.setStepsTracked(psDailyTotal);
@@ -216,7 +216,7 @@ public class HomePage extends AppCompatActivity {
                 sendSubNotification();
 
             }
-        }) .start();
+        }).start();
 
         textViewPlannedSteps.setText(plannedStepCountDisplay);
         textViewPlannedDistance.setText(plannedMilesDisplay);
