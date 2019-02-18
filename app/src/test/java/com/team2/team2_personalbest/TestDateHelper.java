@@ -23,7 +23,7 @@ public class TestDateHelper {
 
     @Test
     public void testDayToString() {
-        long feb17 = 1550450565750L;
+        long feb17 = 1550445565750L;
         Date day = new Date();
         day.setTime(feb17);
         assertEquals("02.17.19", DateHelper.dayDateToString(day));
