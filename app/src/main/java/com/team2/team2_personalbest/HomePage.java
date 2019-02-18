@@ -152,8 +152,9 @@ public class HomePage extends AppCompatActivity {
             firstTime.setBool("init", true);
             setInitialGoal();
         }
-        else
+        else {
             fitnessService.setup();
+        }
         toggleWalk();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
@@ -328,7 +329,7 @@ public class HomePage extends AppCompatActivity {
     /**
      * Button to add 500 steps to total steps
      */
-    public void add500StepsButton(){
+    public void add500StepsButton() {
         add500StepsButton = (Button) findViewById(R.id.add500Button);
 
         add500StepsButton.setOnClickListener(new View.OnClickListener() {
@@ -336,11 +337,12 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                if(planned_walk) psDailyTotal+=FIVE_HUNDRED_INCREMENT;
+                if (planned_walk) psDailyTotal += FIVE_HUNDRED_INCREMENT;
                 manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
             }
         });
+    }
   
       
     /**
@@ -349,7 +351,7 @@ public class HomePage extends AppCompatActivity {
      * Implements toggle functionality of button: switches between planned and unplanned
      * walks
      */
-    public void toggleWalk(){
+    public void toggleWalk() {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
