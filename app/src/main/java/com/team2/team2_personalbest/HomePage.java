@@ -54,6 +54,9 @@ public class HomePage extends AppCompatActivity {
     private TextView textViewDistance;
     private TextView textViewPlannedSteps, textViewPlannedDistance;
     private TextView TextViewStepsLeft;
+    private TextView textViewPlannedStepsTaken;
+    private TextView textViewTimeElapsed;
+    private TextView textViewPlannedTitle;
     /* Buttons */
     private Button toggle_walk;
     private Button add500StepsButton;
@@ -62,7 +65,7 @@ public class HomePage extends AppCompatActivity {
     private FitnessService fitnessService;
     public static boolean planned_walk = false;
     final Handler handler = new Handler();
-    public double height;
+    public double height = 60;
     public double averageStrideLength;
 
     private int goal;
@@ -72,6 +75,11 @@ public class HomePage extends AppCompatActivity {
     private int psBaseline = 0; //daily steps at time planned steps turned on
     private int psDailyTotal = 0; //total planned steps before current planned walk
     private int psStepsThisWalk = 0; //holder for planned steps during current walk
+
+    /*var for stats*/
+    public double elapsedTime;
+    public double start;
+
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +97,9 @@ public class HomePage extends AppCompatActivity {
         textViewDistance = findViewById(R.id.miles_taken); //daily mile counter
         textViewPlannedSteps = findViewById(R.id.planned_steps); //planned step counter
         textViewPlannedDistance = findViewById(R.id.planned_distance); //planned mile counter
+        textViewPlannedStepsTaken = findViewById(R.id.planned_stepsTaken);
+        textViewTimeElapsed = findViewById(R.id.timeElapsed);
+        textViewPlannedTitle = findViewById(R.id.planned_stats_title);
         toggle_walk = findViewById(R.id.toggle_walk); //planned walk button
 
         averageStrideLength = calculateAveStrideLength(height);
@@ -209,9 +220,8 @@ public class HomePage extends AppCompatActivity {
 //                loggerForTesting();
             }
         }) .start();
-
-        textViewPlannedSteps.setText(plannedStepCountDisplay);
-        textViewPlannedDistance.setText(plannedMilesDisplay);
+        //textViewPlannedSteps.setText(plannedStepCountDisplay);
+        //textViewPlannedDistance.setText(plannedMilesDisplay);
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
         //For when reached the goal
@@ -222,6 +232,12 @@ public class HomePage extends AppCompatActivity {
         }
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
+
+        //update planned walk stats
+        if(planned_walk) {
+            updateStats();
+        }
+
     }
 
     //TODO Buttons
@@ -243,6 +259,7 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View v) {
                 // Get increment field int value
                 int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+                if(planned_walk) psDailyTotal+=FIVE_HUNDRED_INCREMENT;
                 setStepCount(totalNewSteps);
             }
         });
@@ -281,13 +298,17 @@ public class HomePage extends AppCompatActivity {
                     /* make planned steps text invisible */
                     textViewPlannedSteps.setVisibility(View.INVISIBLE);
                     textViewPlannedDistance.setVisibility(View.INVISIBLE);
+                    textViewPlannedStepsTaken.setVisibility(View.INVISIBLE);
+                    textViewTimeElapsed.setVisibility(View.INVISIBLE);
+                    textViewPlannedTitle.setVisibility((View.INVISIBLE));
 
                     /* reset button */
                     toggle_walk.setText("Start Planned Walk/Run");
                     toggle_walk.setBackgroundColor(Color.GREEN);
 
                 } else { //Turn on planned walk
-
+                    //start measuring start time
+                    start=System.currentTimeMillis();
 
                     fitnessService.updateStepCount(); //update with newest information
                     planned_walk = true; //start planned walk
@@ -295,6 +316,9 @@ public class HomePage extends AppCompatActivity {
                     /* make planned steps text visible */
                     textViewPlannedSteps.setVisibility(View.VISIBLE);
                     textViewPlannedDistance.setVisibility(View.VISIBLE);
+                    textViewPlannedStepsTaken.setVisibility(View.VISIBLE);
+                    textViewTimeElapsed.setVisibility(View.VISIBLE);
+                    textViewPlannedTitle.setVisibility((View.VISIBLE));
 
                     /* change button */
                     toggle_walk.setText("End Planned Walk/Run");
@@ -441,5 +465,19 @@ public class HomePage extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1000, mBuilder.build());
+    }
+
+    private void updateStats(){
+        double finish = System.currentTimeMillis();
+        double timeElapsed = finish - start;
+        elapsedTime = timeElapsed / 1000 /3600;
+        double plannedWalkDistance=convertInchToMile(psDailyTotal*calculateAveStrideLength(height));
+        double averagePlannedWalkSpeed = plannedWalkDistance / elapsedTime;
+        textViewPlannedSteps = findViewById(R.id.planned_steps);
+        textViewPlannedDistance = findViewById(R.id.planned_distance);
+        textViewPlannedSteps.setText(String.format("%.2f", averagePlannedWalkSpeed) + "  MPH");
+        textViewPlannedDistance.setText(String.format("%.2f", plannedWalkDistance) + " miles planned walking");
+        textViewTimeElapsed.setText(String.format("%.0f", elapsedTime*60)+" minutes");
+        textViewPlannedStepsTaken.setText(Integer.toString(psDailyTotal) + " steps taken");
     }
 }

@@ -8,12 +8,21 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/planned_stats_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Planned Walk Stats"
+        android:textSize="20sp"
+        android:visibility="invisible" />
+
+    <TextView
         android:id="@+id/planned_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="TextView"
-        android:textSize="32sp"
+        android:text="Average Speed"
+        android:textSize="15sp"
         android:visibility="invisible"
         tools:text="@string/planned_steps" />
 
@@ -22,10 +31,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="TextView"
-        android:textSize="32sp"
+        android:text="Miles Taken"
+        android:textSize="15sp"
         android:visibility="invisible"
         tools:text="@string/planned_distance" />
+
+    <TextView
+        android:id="@+id/planned_stepsTaken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Planned step"
+        android:textSize="15sp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/timeElapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Time Elapsed"
+        android:textSize="15sp"
+        android:visibility="invisible" />
+
 
     <Button
         android:id="@+id/button"
