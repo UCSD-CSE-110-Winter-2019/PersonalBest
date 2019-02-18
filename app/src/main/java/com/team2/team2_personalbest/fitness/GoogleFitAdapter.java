@@ -34,6 +34,7 @@ public class GoogleFitAdapter implements FitnessService {
 
 
     public void setup() {
+        /*
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -45,10 +46,10 @@ public class GoogleFitAdapter implements FitnessService {
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
-        } else {
+        } else {*/
             updateStepCount();
             startRecording();
-        }
+        //}
     }
 
     private void startRecording() {
@@ -78,7 +79,9 @@ public class GoogleFitAdapter implements FitnessService {
      * Reads the current daily step total, computed from midnight of the current day on the device's
      * current timezone.
      */
+
     public void updateStepCount() {
+
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
         if (lastSignedInAccount == null) {
             return;

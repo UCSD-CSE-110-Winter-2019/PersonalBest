@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.DataType;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -44,6 +46,7 @@ public class HomePage extends AppCompatActivity {
     /* Constants */
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
     String fitnessServiceKey = "GOOGLE_FIT";
+    private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private final int FIVE_HUNDRED_INCREMENT = 500;
     private final int INITIAL_GOAL = 5000;
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
@@ -115,6 +118,26 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        // TODO Check if it's the first time running the appp
+
+        SharedPref sharedPref = new SharedPref(this);
+        boolean hasRun = sharedPref.getBool("init");
+        if (!hasRun){
+            sharedPref.setBool("init", true);
+            goToSetupActivity();
+            FitnessOptions fitnessOptions = FitnessOptions.builder()
+                    .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                    .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                    .build();
+            GoogleSignIn.requestPermissions(
+                    this, // your activity
+                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                    GoogleSignIn.getLastSignedInAccount(this),
+                    fitnessOptions);
+            //goToLogIn();
+            setInitialGoal();
+        }
+
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         fitnessService.setup();
         toggleWalk();
@@ -140,21 +163,6 @@ public class HomePage extends AppCompatActivity {
         };
         timer.schedule(doAsynchronousTask, 0,UPDATE_LENGTH);
         fitnessService.setup();
-
-        // TODO Check if it's the first time running the appp
-
-        SharedPref sharedPref = new SharedPref(this);
-        boolean hasRun = sharedPref.getBool("init");
-        if (!hasRun){
-            sharedPref.setBool("init", true);
-            goToLogIn();
-            GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
-            if (lastSignedInAccount == null) {
-                return;
-            }
-            goToSetupActivity();
-            setInitialGoal();
-        }
     }
 
     //TODO On Resume
