@@ -48,7 +48,7 @@ public class HomePage extends AppCompatActivity {
     String fitnessServiceKey = "GOOGLE_FIT";
     private final int FIVE_HUNDRED_INCREMENT = 500;
     private final int INITIAL_GOAL = 5000;
-    private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
+    private final int UPDATE_LENGTH = 15000; //update step count every 5 seconds
     private static final String TAG = "HomePage";
 
     private long currentTimeMilli = System.currentTimeMillis();
