@@ -47,7 +47,6 @@
         android:text=""
         android:textSize="15sp"/>
 
-
     <Button
         android:id="@+id/button"
         android:layout_width="150dp"
