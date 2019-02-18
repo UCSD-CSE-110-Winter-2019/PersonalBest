@@ -33,6 +33,7 @@ import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -227,7 +228,7 @@ public class HomePage extends AppCompatActivity {
             public void run() {
 
                 //Initializes a new Day row like this !
-                String date = DateHelper.getPreviousDayDateString(0);
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
                 Log.d("HomePage", date);
                 Day currentDay = dayDatabase.dayDao().getDayById(date);
                 if(currentDay == null) {
@@ -238,6 +239,9 @@ public class HomePage extends AppCompatActivity {
                     currentDay.setStepsUntracked((int)stepCount);
                     dayDatabase.dayDao().updateDay(currentDay);
                 }
+
+//                loggerForTesting();
+                sendSubNotification();
 
             }
         }) .start();
@@ -408,9 +412,9 @@ public class HomePage extends AppCompatActivity {
             public void run() {
                 for(int i = 1; i < 7; i++) {
                     Log.d("HomePage", "test adding day");
-                    Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.getPreviousDayDateString(i));
+                    Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.dayDateToString(DateHelper.previousDay(i)));
                     if(currentDay == null) {
-                        currentDay = new Day(DateHelper.getPreviousDayDateString(i), i * 30, i * 76);
+                        currentDay = new Day(DateHelper.dayDateToString(DateHelper.previousDay(i)), i * 30, i * 76);
                         dayDatabase.dayDao().insertSingleDay(currentDay);
                     }
                 }
@@ -473,11 +477,11 @@ public class HomePage extends AppCompatActivity {
     }
 
     // Popup for encouragement
-    private void sendEncouragement(){
+    private void sendEncouragement(int increase){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 // fixme CHANGE THIS STEPs
-                .setContentTitle("You've increased your daily steps by over 1000 steps. Keep up the good work!" )
+                .setContentTitle(increase+ " steps more than yesterday! Wow!" )
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
         createNotificationChannel();
@@ -496,5 +500,41 @@ public class HomePage extends AppCompatActivity {
 
     public static void setUserHeight(double height) {
         userHeight = height;
+    }
+
+    /*
+    Sends Notification when we have reached 500 above yesterdays total steps!
+ */
+    private void sendSubNotification(){
+        String currentDayID = DateHelper.dayDateToString(DateHelper.previousDay(0));
+        Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
+        String yesterdayID = DateHelper.dayDateToString(DateHelper.previousDay(1));
+        Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
+
+        int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
+        int currentStepsTotal = currentDay.getStepsTracked()+currentDay.getStepsUntracked();
+
+        //if we have crossed yesterdays threshold
+        if (currentStepsTotal > yesterdayTotal){
+
+
+            //find the difference
+            int difference = currentStepsTotal-yesterdayTotal;
+
+            //if difference is 500 or 1000 or 1500 or 2000... we want to show notification
+            int FIVE_HUNDRED_INCREMENT = 500;
+            int fiveHundredIncrements = difference/FIVE_HUNDRED_INCREMENT;
+            int remainder = difference%FIVE_HUNDRED_INCREMENT;
+
+            Log.d("YESTERDAY VS TODAY", "XXXX\nCURRENT: "+currentStepsTotal+"\nYEST: "+yesterdayTotal
+                    +"\nDIFF: "+difference+"\nREM: "+remainder);
+            if(remainder <= 10){
+
+                Log.d("YESTERDAY NOTIFICATION!", "NOTIFICATION WITH INCREASE OF "
+                        +FIVE_HUNDRED_INCREMENT*fiveHundredIncrements);
+                sendEncouragement(fiveHundredIncrements*FIVE_HUNDRED_INCREMENT);
+
+            }
+        }
     }
 }

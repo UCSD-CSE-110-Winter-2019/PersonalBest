@@ -16,9 +16,9 @@ public class DateHelper {
         return cal.getTime();
     }
 
-    public static String getPreviousDayDateString(int daysAgo) {
+    public static String dayDateToString(Date day) {
         DateFormat dateFormat = new SimpleDateFormat("MM.dd.yy", Locale.US);
-        return dateFormat.format(previousDay(daysAgo));
+        return dateFormat.format(day);
     }
 
     public static String[] getLastSevenWeekDays(int dayOfWeek) {
