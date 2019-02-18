@@ -28,6 +28,7 @@ import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -199,7 +200,7 @@ public class HomePage extends AppCompatActivity {
             public void run() {
 
                 //Initializes a new Day row like this !
-                String date = DateHelper.getPreviousDayDateString(0);
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
                 Log.d("HomePage", date);
                 Day currentDay = dayDatabase.dayDao().getDayById(date);
                 if(currentDay == null) {
@@ -374,9 +375,9 @@ public class HomePage extends AppCompatActivity {
             public void run() {
                 for(int i = 1; i < 7; i++) {
                     Log.d("HomePage", "test adding day");
-                    Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.getPreviousDayDateString(i));
+                    Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.dayDateToString(DateHelper.previousDay(i)));
                     if(currentDay == null) {
-                        currentDay = new Day(DateHelper.getPreviousDayDateString(i), i * 30, i * 76);
+                        currentDay = new Day(DateHelper.dayDateToString(DateHelper.previousDay(i)), i * 30, i * 76);
                         dayDatabase.dayDao().insertSingleDay(currentDay);
                     }
                 }
@@ -468,9 +469,9 @@ public class HomePage extends AppCompatActivity {
     Sends Notification when we have reached 500 above yesterdays total steps!
  */
     private void sendSubNotification(){
-        String currentDayID = DateHelper.getPreviousDayDateString(0);
+        String currentDayID = DateHelper.dayDateToString(DateHelper.previousDay(0));
         Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
-        String yesterdayID = DateHelper.getPreviousDayDateString(1);
+        String yesterdayID = DateHelper.dayDateToString(DateHelper.previousDay(1));
         Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
 
         int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
