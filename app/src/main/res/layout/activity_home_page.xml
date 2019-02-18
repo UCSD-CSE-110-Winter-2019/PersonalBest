@@ -29,10 +29,10 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:onClick="goToGraph"
-        android:text="Go To Graph" />
+        android:text="Graph" />
 
     <Button
         android:id="@+id/toggle_walk"
@@ -44,7 +44,8 @@
         android:id="@+id/miles_taken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
         android:text="@string/miles_taken"
         android:textSize="32sp" />
 
@@ -52,7 +53,8 @@
         android:id="@+id/step_taken"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
+        android:layout_marginLeft="80dp"
         android:text="@string/steps_taken"
         android:textSize="32sp" />
 
@@ -69,7 +71,7 @@
             android:id="@+id/steps_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:text=""
             android:textSize="32sp" />
 
@@ -84,22 +86,44 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
+        android:layout_marginLeft="80dp"
         android:text="To go today"
         android:textSize="32sp" />
 
-    <Button
-        android:id="@+id/set_goal"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="set_goal"
-        android:text="set goal"
-        android:textSize="20sp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/set_goal"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:onClick="set_goal"
+            android:text="set goal"
+            android:layout_gravity="left"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/view_Goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="  steps"
+            android:textSize="32sp" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/add500Button"
-        android:layout_width="144dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Add 500 Steps" />
@@ -116,7 +140,7 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="140dp"
+        android:layout_width="150dp"
         android:layout_height="38dp"
         android:layout_marginTop="30sp"
         android:text="Submit"
