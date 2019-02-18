@@ -47,7 +47,6 @@ public class HomePage extends AppCompatActivity {
     /* Constants */
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
     String fitnessServiceKey = "GOOGLE_FIT";
-    private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private final int FIVE_HUNDRED_INCREMENT = 500;
     private final int INITIAL_GOAL = 5000;
     private final int UPDATE_LENGTH = 5000; //update step count every 5 seconds
@@ -112,7 +111,6 @@ public class HomePage extends AppCompatActivity {
         this.psBaseline = PS.getInt("psBaseline");
 
         //Getting XML elements
-
         textViewStepCount = findViewById(R.id.step_taken); //daily step counter
         textViewDistance = findViewById(R.id.miles_taken); //daily mile counter
         textViewPlannedSteps = findViewById(R.id.planned_steps); //planned step counter
@@ -224,21 +222,13 @@ public class HomePage extends AppCompatActivity {
         textViewDistance.setText(milesDisplay);
 
         //total daily steps should always be >= to planned
-        //TODO Retrieve the PS's from sharedPref
-        //SharedPref PS = new SharedPref(this);
-        //psDailyTotal = PS.getInt("psDailyTotal");
-        //psStepsThisWalk = PS.getInt("psStepsThisWalk");
-
-
         if (stepCount < psDailyTotal){
             psDailyTotal = 0;
-            //PS.setInt("psDailyTotal", psDailyTotal);
         }
 
         psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
-        //PS.setInt("psStepsThisWalk", psStepsThisWalk);
         setPsBaseline((int)stepCount);
-        long plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
+        int plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
                 getString(R.string.planned_steps));
@@ -256,7 +246,7 @@ public class HomePage extends AppCompatActivity {
                 Log.d("HomePage", date);
                 Day currentDay = dayDatabase.dayDao().getDayById(date);
                 if(currentDay == null) {
-                    currentDay = new Day(date, psDailyTotal, (int)stepCount);
+                    currentDay = new Day(date, plannedSteps, (int)stepCount);
                     dayDatabase.dayDao().insertSingleDay(currentDay);
                 } else {
                     currentDay.setStepsTracked(psDailyTotal);
@@ -268,7 +258,8 @@ public class HomePage extends AppCompatActivity {
                 sendSubNotification();
 
             }
-        }) .start();
+        }).start();
+
         //textViewPlannedSteps.setText(plannedStepCountDisplay);
         //textViewPlannedDistance.setText(plannedMilesDisplay);
         //Update steps left
