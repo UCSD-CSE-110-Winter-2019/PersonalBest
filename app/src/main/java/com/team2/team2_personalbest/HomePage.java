@@ -362,11 +362,12 @@ public class HomePage extends AppCompatActivity {
                     planned_walk = false; //not on a planned walk anymore
 
                     /* make planned steps text invisible */
-                    textViewPlannedSteps.setVisibility(View.INVISIBLE);
-                    textViewPlannedDistance.setVisibility(View.INVISIBLE);
-                    textViewPlannedStepsTaken.setVisibility(View.INVISIBLE);
-                    textViewTimeElapsed.setVisibility(View.INVISIBLE);
-                    textViewPlannedTitle.setVisibility((View.INVISIBLE));
+                    textViewPlannedSteps.setText("");
+                    textViewPlannedDistance.setText("");
+                    textViewPlannedStepsTaken.setText("");
+                    textViewTimeElapsed.setText("");
+                    textViewPlannedTitle.setText("");
+
 
                     /* reset button */
                     toggle_walk.setText("Start Planned Walk/Run");
@@ -380,12 +381,7 @@ public class HomePage extends AppCompatActivity {
                     fitnessService.updateStepCount(); //update with newest information
                     planned_walk = true; //start planned walk
 
-                    /* make planned steps text visible */
-                    textViewPlannedSteps.setVisibility(View.VISIBLE);
-                    textViewPlannedDistance.setVisibility(View.VISIBLE);
-                    textViewPlannedStepsTaken.setVisibility(View.VISIBLE);
-                    textViewTimeElapsed.setVisibility(View.VISIBLE);
-                    textViewPlannedTitle.setVisibility((View.VISIBLE));
+                    updateStats();
 
                     /* change button */
                     toggle_walk.setText("End Planned Walk/Run");
@@ -556,6 +552,7 @@ public class HomePage extends AppCompatActivity {
         double averagePlannedWalkSpeed = plannedWalkDistance / elapsedTime;
         textViewPlannedSteps = findViewById(R.id.planned_steps);
         textViewPlannedDistance = findViewById(R.id.planned_distance);
+        textViewPlannedTitle.setText("Planned Walk Stats");
         textViewPlannedSteps.setText(String.format("%.2f", averagePlannedWalkSpeed) + "  MPH");
         textViewPlannedDistance.setText(String.format("%.2f", plannedWalkDistance) + " miles planned walking");
         textViewTimeElapsed.setText(String.format("%.0f", elapsedTime * 60) + " minutes");
