@@ -352,6 +352,8 @@ public class HomePage extends AppCompatActivity {
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
+                    Log.d("insertVal", "STEPS: "+psStepsThisWalk);
+
                     addWalk(psStepsThisWalk, elapsedTime);
                     psStepsThisWalk = 0; //reset current walk step counter
                     planned_walk = false; //not on a planned walk anymore
