@@ -38,4 +38,8 @@ public class StatisticsUtilities {
         }
         return stepGoal - currStepCount;
     }
+
+    public  static double convertMillToHour(long milliSeconds){
+        return milliSeconds / (1000 * 3600);
+    }
 }
