@@ -30,6 +30,24 @@ public class GoogleFitAdapter implements FitnessService {
         this.activity = activity;
     }
 
+    public void setupInit(){
+        FitnessOptions fitnessOptions = FitnessOptions.builder()
+                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .build();
+
+        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
+            GoogleSignIn.requestPermissions(
+                    activity, // your activity
+                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                    GoogleSignIn.getLastSignedInAccount(activity),
+                    fitnessOptions);
+        } else {
+        updateStepCount();
+        startRecording();
+
+        }
+    }
 
     public void setup() {
         /*
@@ -47,28 +65,9 @@ public class GoogleFitAdapter implements FitnessService {
         } else {*/
             updateStepCount();
             startRecording();
-            //TODO New Thread
+
         //}
     }
-
-    /*            newThread();
-            //updateStepCount();
-            //startRecording();
-        }
-    }
-
-
-    private void newThread(){
-
-        new Thread(new Runnable() {
-            public void run() {
-
-                updateStepCount();
-                startRecording();
-            }
-        }).start();
-    }
-    */
 
     private void startRecording() {
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);

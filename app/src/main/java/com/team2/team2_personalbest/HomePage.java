@@ -127,25 +127,15 @@ public class HomePage extends AppCompatActivity {
         // TODO Check if it's the first time running the appp
 
         firstTime = new SharedPref(this);
+        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         boolean hasRun = firstTime.getBool("init");
-        if (hasRun == false) {
+        if (!hasRun) {
+            fitnessService.setupInit();
             firstTime.setBool("init", true);
-            goToSetupActivity();
-            FitnessOptions fitnessOptions = FitnessOptions.builder()
-                    .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-                    .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-                    .build();
-            GoogleSignIn.requestPermissions(
-                    this, // your activity
-                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                    GoogleSignIn.getLastSignedInAccount(this),
-                    fitnessOptions);
-            //goToLogIn();
             setInitialGoal();
         }
-
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        fitnessService.setup();
+        else
+            fitnessService.setup();
         toggleWalk();
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
