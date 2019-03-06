@@ -19,7 +19,7 @@ public class DateHelper {
     }
 
     public static String dayDateToString(Date day) {
-        DateFormat dateFormat = new SimpleDateFormat("MM.dd.yy", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy", Locale.US);
         return dateFormat.format(day);
     }
 

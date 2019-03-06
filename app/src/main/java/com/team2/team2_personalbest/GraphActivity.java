@@ -25,6 +25,12 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,9 @@ public class GraphActivity extends AppCompatActivity {
 
     private DayDatabase dayDatabase;
     private Button walkHist;
+    private DatabaseReference firebaseDatabaseRef;
+    private String userName = "dev";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,29 +68,21 @@ public class GraphActivity extends AppCompatActivity {
                 DayDatabase.class, DATABASE_NAME)
                 .build();
 
-
-
-//        DayViewModel model = ViewModelProviders.of(this).get(DayViewModel.class);
-//
-//        model.getDays().observe(this, days -> {
-//            List<BarEntry> entries = new ArrayList<>();
-//            for(int i = 0; i < days.size(); i++) {
-//                entries.add(new BarEntry(i, new float[] {days.get(i).getStepsTracked(), days.get(i).getStepsUntracked()}));
-//            }
-//            generateBarChart(entries);
-//        });
-
-
         new FillEntriesTask(this).execute(dayDatabase);
 
 
 
+        //Firebase sync accesses DB so execute from seperate thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseSync();
+            }
+        }).start();
 
     }
-//    private void addObserver(DayDatabase database, LiveData<Day> day) {
-//        DataBaseObserver observer = new DataBaseObserver(database, this);
-//        day.observe(this, observer);
-//    }
+
+
 
     private class FillEntriesTask extends AsyncTask<DayDatabase, Void, List<BarEntry>> {
 
@@ -114,6 +115,54 @@ public class GraphActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<BarEntry> entries) {
             generateBarChart(entries);
+        }
+    }
+
+    private void FirebaseSync() {
+
+        // Write a message to the database
+        FirebaseApp.initializeApp(this);
+        Log.d("FIREBASE_INIT", "Writing to firebase");
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabaseRef = firebaseDatabase.getReference();
+        firebaseDatabaseRef.child("messages").child("TestMssg2").setValue("ValueTest2");
+
+        //get Day values
+        for (int i = 0; i < 30; i++) {
+            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+
+            Day currentDay = dayDatabase.dayDao().getDayById(date);
+
+
+            //if day exists in local db
+            if(currentDay != null) {
+                String dayId = currentDay.getDayId();
+                int dayStepsTracked = currentDay.getStepsTracked();
+                int dayStepsUntracked = currentDay.getStepsUntracked();
+
+
+                Log.d("FIREBASE_DAY_VAL",
+                        "DayID: " + dayId+ "\n" +
+                                "Tracked Steps: " + dayStepsTracked+ "\n" +
+                                "Untracked Steps: " + dayStepsUntracked+ "\n");
+
+                firebaseDatabaseRef.child(userName+"/DayData/"+dayId+"/Tracked").setValue(dayStepsTracked);
+                firebaseDatabaseRef.child(userName+"/DayData/"+dayId+"/Untracked").setValue(dayStepsUntracked);
+
+            }
+            else{
+                //create day in local db if doesn't exist and update with firebase values
+
+                //hardcoded for now
+                int firebaseUntracked = 42;
+                int firebaseTracked = 9042;
+                Day newDay = new Day(date, firebaseTracked, firebaseUntracked );
+                dayDatabase.dayDao().insertSingleDay(newDay);
+
+                //try again
+                i--;
+            }
+
         }
     }
 
@@ -181,30 +230,4 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
-
-//    public class DayViewModel extends ViewModel {
-//        private MutableLiveData<List<Day>> days;
-//
-//        public DayViewModel(){}
-//
-//        public MutableLiveData<List<Day>> getDays() {
-//            if(days == null) {
-//                days = new MutableLiveData<>();
-//                loadDays();
-//            }
-//            return days;
-//        }
-//
-//        private void loadDays() {
-//            List<Day> lastWeek = new ArrayList<>();
-//            for(int i = 0; i < 7; i++) {
-//                String date = DateHelper.getPreviousDayDateString(i);
-//
-//                Day currentDay = dayDatabase.dayDao().getDayById(date);
-//                lastWeek.add(currentDay);
-//            }
-//            days.postValue(lastWeek);
-//        }
-//    }
-
 }
