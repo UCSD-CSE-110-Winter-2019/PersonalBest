@@ -255,28 +255,7 @@ public class HomePage extends AppCompatActivity {
                 getString(R.string.planned_distance));
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                //Initializes a new Day row like this !
-                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
-                Log.d("HomePage", date);
-                Day currentDay = dayDatabase.dayDao().getDayById(date);
-                if(currentDay == null) {
-                    currentDay = new Day(date, plannedSteps, (int)stepCount);
-                    dayDatabase.dayDao().insertSingleDay(currentDay);
-                } else {
-                    currentDay.setStepsTracked(psDailyTotal);
-                    currentDay.setStepsUntracked((int)stepCount);
-                    dayDatabase.dayDao().updateDay(currentDay);
-                }
-
-//                loggerForTesting();
-                sendSubNotification();
-
-            }
-        }).start();
+        updateDatabase((int) stepCount, plannedSteps);
 
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
@@ -296,6 +275,31 @@ public class HomePage extends AppCompatActivity {
             updateStats();
         }
 
+    }
+
+    private void updateDatabase(int stepCount, int plannedSteps) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //Initializes a new Day row like this !
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
+                Log.d("HomePage", date);
+                Day currentDay = dayDatabase.dayDao().getDayById(date);
+                if(currentDay == null) {
+                    currentDay = new Day(date, plannedSteps, stepCount);
+                    dayDatabase.dayDao().insertSingleDay(currentDay);
+                } else {
+                    currentDay.setStepsTracked(psDailyTotal);
+                    currentDay.setStepsUntracked(stepCount);
+                    dayDatabase.dayDao().updateDay(currentDay);
+                }
+
+//                loggerForTesting();
+                sendSubNotification();
+
+            }
+        }).start();
     }
 
     //TODO Buttons
