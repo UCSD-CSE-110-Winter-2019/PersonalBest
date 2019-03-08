@@ -1,39 +1,21 @@
 package com.team2.team2_personalbest;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Room;
-import android.content.Intent;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.fitness.FitnessOptions;
-import com.google.android.gms.fitness.data.DataType;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -255,28 +237,7 @@ public class HomePage extends AppCompatActivity {
                 getString(R.string.planned_distance));
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                //Initializes a new Day row like this !
-                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
-                Log.d("HomePage", date);
-                Day currentDay = dayDatabase.dayDao().getDayById(date);
-                if(currentDay == null) {
-                    currentDay = new Day(date, plannedSteps, (int)stepCount);
-                    dayDatabase.dayDao().insertSingleDay(currentDay);
-                } else {
-                    currentDay.setStepsTracked(psDailyTotal);
-                    currentDay.setStepsUntracked((int)stepCount);
-                    dayDatabase.dayDao().updateDay(currentDay);
-                }
-
-//                loggerForTesting();
-                sendSubNotification();
-
-            }
-        }).start();
+        updateDatabase((int) stepCount, plannedSteps);
 
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
@@ -286,7 +247,7 @@ public class HomePage extends AppCompatActivity {
             goalReached = new SharedPref(this);
             goalReached.setBool("goalReached", true);
             launchEncouragementPopup();
-            sendNotification();
+            EncouragementNotification.sendNotification(this);
         }
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
@@ -296,6 +257,31 @@ public class HomePage extends AppCompatActivity {
             updateStats();
         }
 
+    }
+
+    private void updateDatabase(int stepCount, int plannedSteps) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //Initializes a new Day row like this !
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
+                Log.d("HomePage", date);
+                Day currentDay = dayDatabase.dayDao().getDayById(date);
+                if(currentDay == null) {
+                    currentDay = new Day(date, plannedSteps, stepCount);
+                    dayDatabase.dayDao().insertSingleDay(currentDay);
+                } else {
+                    currentDay.setStepsTracked(psDailyTotal);
+                    currentDay.setStepsUntracked(stepCount);
+                    dayDatabase.dayDao().updateDay(currentDay);
+                }
+
+//                loggerForTesting();
+                EncouragementNotification.sendSubNotification(HomePage.this, dayDatabase);
+
+            }
+        }).start();
     }
 
     //TODO Buttons
@@ -511,66 +497,8 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /**
-     * Create a channel to be used for the popup
-     */
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "channel";
-            String description = "what";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("channel", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
-    /**
-     * Show the popup when goal is reached
-     */
-    private void sendNotification(){
-        Intent intent = new Intent(this, GoalAccomplished.class);
-        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setContentTitle("Congratulations!")
-                //.setContentText("Do you want to set a new step goal?")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Do you want to set a new step goal?"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true);
-        createNotificationChannel();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1000, mBuilder.build());
-    }
 
-    // Popup for encouragement
-
-    /**
-     * Popup to encourage the user
-     * @param increase how many steps the user improved
-     */
-    private void sendEncouragement(int increase){
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "channel")
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                // fixme CHANGE THIS STEPs
-                .setContentTitle(increase+ " steps more than yesterday! Wow!" )
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
-        createNotificationChannel();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1000, mBuilder.build());
-    }
 
     /**
      * Update statistics of planned walk
@@ -598,39 +526,4 @@ public class HomePage extends AppCompatActivity {
         return this.manualStepsAddedTotal;
     }
 
-    /**
-    Sends Notification when we have reached 500 above yesterdays total steps!
-    */
-    private void sendSubNotification(){
-        String currentDayID = DateHelper.dayDateToString(DateHelper.previousDay(0));
-        Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
-        String yesterdayID = DateHelper.dayDateToString(DateHelper.previousDay(1));
-        Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
-
-        int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
-        int currentStepsTotal = currentDay.getStepsTracked()+currentDay.getStepsUntracked();
-
-        //if we have crossed yesterdays threshold
-        if (currentStepsTotal > yesterdayTotal){
-
-
-            //find the difference
-            int difference = currentStepsTotal-yesterdayTotal;
-
-            //if difference is 500 or 1000 or 1500 or 2000... we want to show notification
-            int FIVE_HUNDRED_INCREMENT = 500;
-            int fiveHundredIncrements = difference/FIVE_HUNDRED_INCREMENT;
-            int remainder = difference%FIVE_HUNDRED_INCREMENT;
-
-            Log.d("YESTERDAY VS TODAY", "XXXX\nCURRENT: "+currentStepsTotal+"\nYEST: "+yesterdayTotal
-                    +"\nDIFF: "+difference+"\nREM: "+remainder);
-            if(remainder <= 10){
-
-                Log.d("YESTERDAY NOTIFICATION!", "NOTIFICATION WITH INCREASE OF "
-                        +FIVE_HUNDRED_INCREMENT*fiveHundredIncrements);
-                sendEncouragement(fiveHundredIncrements*FIVE_HUNDRED_INCREMENT);
-
-            }
-        }
-    }
 }
