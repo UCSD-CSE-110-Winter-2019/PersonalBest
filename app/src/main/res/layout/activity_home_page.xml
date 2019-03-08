@@ -139,12 +139,26 @@
     </LinearLayout>
 
 
-    <Button
-        android:id="@+id/add500Button"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Add 500 Steps" />
+    <LinearLayout
+        android:layout_width="283dp"
+        android:layout_height="93dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/add500Button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Add 500 Steps" />
+
+        <Button
+            android:id="@+id/manageFriendsButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="launchManageFriendsActivity"
+            android:text="Manage Friends" />
+    </LinearLayout>
 
 
 </LinearLayout>

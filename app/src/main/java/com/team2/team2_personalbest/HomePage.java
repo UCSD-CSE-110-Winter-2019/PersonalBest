@@ -294,6 +294,22 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 
+//    public void manageFriendsButtonOnClick(View view) {
+//        Button manageFriendsButton = (Button) findViewById(R.id.manageFriendsButton);
+//
+//        manageFriendsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                launchManageFriendsActivity();
+//            }
+//        });
+//    }
+
+    public void launchManageFriendsActivity(View view) {
+        Intent intent = new Intent(this, ManageFriendsActivity.class);
+        startActivity(intent);
+    }
+
     /**
      * Launch SetNewGoal Activity
      * @param view
