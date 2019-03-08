@@ -23,7 +23,7 @@ import java.util.TimerTask;
 /**
  * Main activity of the app
  */
-public class HomePage extends AppCompatActivity {
+public class    HomePage extends AppCompatActivity {
     //TODO Variables
     /* Constants */
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
@@ -65,6 +65,7 @@ public class HomePage extends AppCompatActivity {
     //SharePreferences
     SharedPref firstTime;
     SharedPref goalReached;
+    SharedPref userName;
 
     /* Vars for planned walk data storage */
     private int psBaseline = 0; //daily steps at time planned steps turned on
@@ -165,6 +166,11 @@ public class HomePage extends AppCompatActivity {
             timer.schedule(doAsynchronousTask, 0, UPDATE_LENGTH);
             fitnessService.setup();
         }
+
+
+
+        //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
+        setUserName();
     }
 
     //TODO On Resume
@@ -256,6 +262,19 @@ public class HomePage extends AppCompatActivity {
         if(planned_walk) {
             updateStats();
         }
+
+    }
+
+    /*
+    TODO
+    GET USERNAME OR ID FROM GOOGLE ACCOUNT ON SIGN IN
+     */
+
+    private void setUserName(){
+        //here
+
+        userName = new SharedPref(this);
+        userName.setStr("username", "DUMMY");
 
     }
 
@@ -430,34 +449,6 @@ public class HomePage extends AppCompatActivity {
         editor.apply();
     }
 
-    /*
-     Helper method to print DB values and test in LOG
-     */
-//    private void loggerForTesting(){
-//
-//        Log.d("change-string", "X\n\nInitial Values\n\n");
-//
-//        String toLog  = dayToString("Monday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Tuesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Wednesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        Log.d("change-string", "Now\n\nWe change the value of Tuesday\n\n");
-//
-//        toLog  = dayToString("Monday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Tuesday");
-//        Log.d("DB VALUES", toLog);
-//
-//        toLog  = dayToString("Wednesday");
-//        Log.d("DB VALUES", toLog);
-//
-//    }
 
     /**
      * log test values
@@ -478,16 +469,6 @@ public class HomePage extends AppCompatActivity {
         }).start();
     }
 
-    /*
-    Private Helper Method that converts a day entry into readable LOGGER output
-     */
-//    private String dayToString(String testId){
-//        Day outputDay = dayDatabase.dayDao().getDayById(testId);
-//        return (" \n\n" +
-//                "\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n" +
-//                "Its "+outputDay.getDayId()+"\nYou have walked \n" +outputDay.getStepsTracked()+
-//                " tracked steps and\n"+outputDay.getStepsUntracked()+" untracked steps today!");
-//    }
 
     /**
      * Launch the encouragement popup

@@ -47,6 +47,9 @@ public class GraphActivity extends AppCompatActivity {
     private Button walkHist;
     private DatabaseReference firebaseDatabaseRef;
     private String userName = "dev";
+    final String DATABASE_NAME = "days_db";
+
+
 
 
     @Override
@@ -63,7 +66,7 @@ public class GraphActivity extends AppCompatActivity {
             }
         });
 
-        final String DATABASE_NAME = "days_db";
+
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
                 DayDatabase.class, DATABASE_NAME)
                 .build();
@@ -71,14 +74,23 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
+        FirebaseApp.initializeApp(this);
+
+        firebaseUser user = new firebaseUser(getApplicationContext());
+
+
 
         //Firebase sync accesses DB so execute from seperate thread
         new Thread(new Runnable() {
             @Override
             public void run() {
-                FirebaseSync();
+                user.FirebaseSync();
             }
         }).start();
+
+//        SharedPreferences sp = getSharedPreferences("username", MODE_PRIVATE);
+//        userName = sp.getString("username", "bluh");
+
 
     }
 
@@ -118,53 +130,7 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    private void FirebaseSync() {
 
-        // Write a message to the database
-        FirebaseApp.initializeApp(this);
-        Log.d("FIREBASE_INIT", "Writing to firebase");
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabaseRef = firebaseDatabase.getReference();
-        firebaseDatabaseRef.child("messages").child("TestMssg2").setValue("ValueTest2");
-
-        //get Day values
-        for (int i = 0; i < 30; i++) {
-            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
-
-            Day currentDay = dayDatabase.dayDao().getDayById(date);
-
-
-            //if day exists in local db
-            if(currentDay != null) {
-                String dayId = currentDay.getDayId();
-                int dayStepsTracked = currentDay.getStepsTracked();
-                int dayStepsUntracked = currentDay.getStepsUntracked();
-
-
-                Log.d("FIREBASE_DAY_VAL",
-                        "DayID: " + dayId+ "\n" +
-                                "Tracked Steps: " + dayStepsTracked+ "\n" +
-                                "Untracked Steps: " + dayStepsUntracked+ "\n");
-
-                firebaseDatabaseRef.child(userName+"/DayData/"+dayId+"/Tracked").setValue(dayStepsTracked);
-                firebaseDatabaseRef.child(userName+"/DayData/"+dayId+"/Untracked").setValue(dayStepsUntracked);
-
-            }
-            else{
-                //create day in local db if doesn't exist and update with firebase values
-
-                //hardcoded for now
-                int firebaseUntracked = 42;
-                int firebaseTracked = 9042;
-                Day newDay = new Day(date, firebaseTracked, firebaseUntracked );
-                dayDatabase.dayDao().insertSingleDay(newDay);
-
-                //try again
-                i--;
-            }
-
-        }
-    }
 
     public void generateBarChart(List<BarEntry> entries) {
         CombinedChart chart = findViewById(R.id.chart);

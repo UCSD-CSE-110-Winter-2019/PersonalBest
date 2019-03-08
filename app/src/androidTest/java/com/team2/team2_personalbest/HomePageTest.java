@@ -53,11 +53,12 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class HomePageTest {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
+    public ActivityTestRule<HomePage> mActivityTestRule;
     private UiDevice mDevice;
 
     @Before
     public void before() {
+
         // Initialize UiDevice instance
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         //  assertThat(mDevice, notNullValue());
@@ -65,69 +66,63 @@ public class HomePageTest {
         mDevice.pressBack();
     }
 
+
     @Test
     public void homePageTest() {
-         // Added a sleep statement to match the app's execution delay.
- // The recommended way to handle such scenarios is to use Espresso idling resources:
-  // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-try {
- Thread.sleep(700);
- } catch (InterruptedException e) {
- e.printStackTrace();
- }
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+             Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction appCompatButton = onView(
-allOf(withId(R.id.set_goal), withText("set goal"),
-childAtPosition(
-childAtPosition(
-withId(android.R.id.content),
-0),
-8),
-isDisplayed()));
+        allOf(withId(R.id.set_goal), withText("set goal"),
+        childAtPosition(
+        childAtPosition(
+        withId(android.R.id.content), 0), 8), isDisplayed()));
         appCompatButton.perform(click());
 
-         // Added a sleep statement to match the app's execution delay.
- // The recommended way to handle such scenarios is to use Espresso idling resources:
-  // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-try {
- Thread.sleep(700);
- } catch (InterruptedException e) {
- e.printStackTrace();
- }
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction editText = onView(
-allOf(withId(R.id.set_goal),
-childAtPosition(
-childAtPosition(
-withId(android.R.id.content),
-0),
-1),
-isDisplayed()));
+        allOf(withId(R.id.set_goal),
+        childAtPosition(
+        childAtPosition(
+        withId(android.R.id.content), 0), 1), isDisplayed()));
         editText.perform(click());
 
         ViewInteraction editText2 = onView(
-allOf(withId(R.id.set_goal),
-childAtPosition(
-childAtPosition(
-withId(android.R.id.content),
-0),
-1),
-isDisplayed()));
+        allOf(withId(R.id.set_goal),
+        childAtPosition(
+        childAtPosition(
+        withId(android.R.id.content),
+        0),
+        1),
+        isDisplayed()));
+
         editText2.perform(replaceText("c"), closeSoftKeyboard());
 
         ViewInteraction button = onView(
-allOf(withId(R.id.confirm), withText("confirm"),
-childAtPosition(
-allOf(withId(R.id.linearLayout1),
-childAtPosition(
-withClassName(is("android.widget.LinearLayout")),
-2)),
-0),
-isDisplayed()));
+        allOf(withId(R.id.confirm), withText("confirm"),
+        childAtPosition(
+        allOf(withId(R.id.linearLayout1),
+        childAtPosition(
+        withClassName(is("android.widget.LinearLayout")), 2)), 0), isDisplayed()));
         button.perform(click());
         }
 
-    private static Matcher<View> childAtPosition(
+        private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
         return new TypeSafeMatcher<View>() {
@@ -145,4 +140,4 @@ isDisplayed()));
             }
         };
     }
-    }
+}
