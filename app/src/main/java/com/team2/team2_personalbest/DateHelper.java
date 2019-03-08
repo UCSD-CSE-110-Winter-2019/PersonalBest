@@ -26,6 +26,7 @@ public class DateHelper {
     public static String[] getLastSevenWeekDays(int dayOfWeek) {
         String[] days = new String[7];
         dayOfWeek += 1;
+        dayOfWeek = dayOfWeek % 7;
         for(int i = 0; i < 7; i++) {
             days[i] = daysOfWeek[dayOfWeek];
             dayOfWeek += 1;
