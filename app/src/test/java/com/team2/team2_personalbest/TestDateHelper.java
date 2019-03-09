@@ -26,7 +26,7 @@ public class TestDateHelper {
         long feb17 = 1550445565750L;
         Date day = new Date();
         day.setTime(feb17);
-        assertEquals("02.17.19", DateHelper.dayDateToString(day));
+        assertEquals("02-17-19", DateHelper.dayDateToString(day));
     }
 
 }
