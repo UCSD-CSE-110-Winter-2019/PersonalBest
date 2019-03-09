@@ -18,10 +18,11 @@ public abstract class IUser {
 //
 //    getWalks(gmail address): return the last 30 days in an array of pair values (planned, unplanned)
 //
-    abstract boolean addFriend(String email);
-    abstract boolean removeFriend(String email);
-    abstract List<Pair<Float, Float>> getWalks(String email);
+    abstract boolean addFriend(String name);
+    abstract boolean removeFriend(String name);
+    abstract List<Pair<Float, Float>> getWalks(String name);
     abstract List<Friend> getFriendlist();
+    abstract Friend getAppUser(String email);
 
     static class Friend {
         String name;
