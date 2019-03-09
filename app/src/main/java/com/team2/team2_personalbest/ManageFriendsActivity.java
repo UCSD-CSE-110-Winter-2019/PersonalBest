@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class ManageFriendsActivity extends AppCompatActivity {
 
     // TODO Declare global variable for database instance
+    // Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void displayFriends() {
+        // TODO Get friends list from DB
+        // TODO Display all friends that do not have the "pending" field == true
         String[] friends = {"Daniel", "Anton", "Shady", "D", "Yosuke", "Joseph"};
         for (String friend : friends) {
             addFriend(friend);
