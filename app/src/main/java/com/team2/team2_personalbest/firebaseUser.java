@@ -11,11 +11,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class firebaseUser extends IUser {
+public class FirebaseUser extends IUser {
 
     private DatabaseReference firebaseDatabaseRef;
     private DayDatabase dayDatabase;
@@ -23,7 +22,7 @@ public class firebaseUser extends IUser {
     private String USER_NAME = "dev";
 
 
-    public firebaseUser(Context activityContext){
+    public FirebaseUser(Context activityContext){
         dayDatabase = Room.databaseBuilder(activityContext,
                 DayDatabase.class, DATABASE_NAME)
                 .build();
@@ -33,6 +32,10 @@ public class firebaseUser extends IUser {
     private boolean setFriendList(){
 
         return true;
+    }
+
+    Friend getAppUser(String email){
+        return null;
     }
 
 
@@ -55,16 +58,48 @@ public class firebaseUser extends IUser {
 
     List<Friend> getFriendlist(){
 
-        return this.friendlist;
+        //return this.friendlist;
+        Log.d("GET_FRIEND_LIST_INIT", "Getting friends for user: "+USER_NAME);
+        DatabaseReference friendsRef = firebaseDatabaseRef.child(USER_NAME+"/Friends");
+
+        List<Friend> friendlist = new ArrayList<>();
+
+        // Read from the database and add it to dayDataList
+        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot friend : dataSnapshot.getChildren()) {
+                    String email = friend.child("email").getValue().toString();
+                    String name = friend.child("name").getValue().toString();
+                    String isPending = friend.child("").getValue().toString();
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("FIREBASE VAL: UN", "Failed to read value.", error.toException());
+            }
+        });
+
+
+        return friendlist;
     }
+
+
+
 
     public void FirebaseSync() {
 
         // Write a message to the database
-        Log.d("FIREBASE_INIT", "Writing to firebase");
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabaseRef = firebaseDatabase.getReference();
-        firebaseDatabaseRef.child("messages").child("TestMssg2").setValue("ValueTest2");
+        Log.d("FIREBASE_SYNC_INIT", "firebase-sync initialized");
+//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        firebaseDatabaseRef = firebaseDatabase.getReference();
+//        firebaseDatabaseRef.child("messages").child("TestMssg2").setValue("ValueTest2");
 
         //get Day values
         for (int i = 0; i < 30; i++) {
@@ -82,7 +117,7 @@ public class firebaseUser extends IUser {
                 int dayStepsUntracked = currentDay.getStepsUntracked();
 
 
-                Log.d("FIREBASE_DAY_VAL",
+                Log.d("LOCAL_DAY_VAL",
                         "DayID: " + dayId+ "\n" +
                                 "Tracked Steps: " + dayStepsTracked+ "\n" +
                                 "Untracked Steps: " + dayStepsUntracked+ "\n");
@@ -92,61 +127,84 @@ public class firebaseUser extends IUser {
 
             }
             else{
-                //create day in local db if doesn't exist and update with firebase values
 
-                DatabaseReference newRefTracked = firebaseDatabaseRef.child(USER_NAME+"/DayData/"+date+"/Tracked");
+                //Get dayData for given date from firebase
+                DayData tempDay = getStepsForDate(date);
 
-                Long tracked_firebase;
-                Long untracked_firebase;
-
-                // Read from the database
-                newRefTracked.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // This method is called once with the initial value and again
-                        // whenever data at this location is updated.
-                        Long value = dataSnapshot.getValue(Long.class);
-                        //tracked_firebase = value;
-                        Log.d("FIREBASE VAL: TR", "Value is: " + value);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                        Log.w("FIREBASE VAL: TR", "Failed to read value.", error.toException());
-                    }
-                });
-
-                DatabaseReference newRefUntracked = firebaseDatabaseRef.child(USER_NAME+"/DayData/"+date+"/Untracked");
-
-                // Read from the database
-                newRefUntracked.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // This method is called once with the initial value and again
-                        // whenever data at this location is updated.
-                        Long value = dataSnapshot.getValue(Long.class);
-                        Log.d("FIREBASE VAL UN: ", "Value is: " + value);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                        Log.w("FIREBASE VAL: UN", "Failed to read value.", error.toException());
-                    }
-                });
+                Float firebaseUntracked = tempDay.unplanned;
+                Float firebaseTracked = tempDay.planned;
 
 
-                //hardcoded for now
-                int firebaseUntracked = -1;
-                int firebaseTracked = -10;
-                Day newDay = new Day(date, firebaseTracked, firebaseUntracked );
+                Day newDay = new Day(date, firebaseTracked.intValue(), firebaseUntracked.intValue() );
                 dayDatabase.dayDao().insertSingleDay(newDay);
 
                 //try again
                 i--;
             }
 
+        }
+    }
+
+
+    /* Helper method to get DayData for given date string */
+    private DayData getStepsForDate(String date){
+
+        List<DayData> dayDataList = new ArrayList<>();
+
+        DatabaseReference newRefUntracked = firebaseDatabaseRef.child(USER_NAME+"/DayData/"+date);
+        float a,b;
+        a=0;b=0;
+
+        DayData dayToRet=new DayData( a, b);
+
+        // Read from the database and add it to dayDataList
+        newRefUntracked.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Float tracked; Float untracked;
+
+                DataSnapshot untrackedSnapshot = dataSnapshot.child("Untracked");
+                DataSnapshot trackedSnapshot = dataSnapshot.child("Tracked");
+
+                tracked = trackedSnapshot.getValue(Float.class);
+                untracked = untrackedSnapshot.getValue(Float.class);
+
+                DayData day = new DayData(tracked, untracked);
+
+                dayDataList.add(day);
+                Log.d("FIREBASE VAL", "FIREBASE VAL: \n "+date+
+                        "\nPlanned:"+day.planned+
+                        "\nUnplanned:"+day.unplanned);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("FIREBASE VAL: UN", "Failed to read value.", error.toException());
+            }
+        });
+
+
+        if (!dayDataList.isEmpty()) {
+            int currsize = dayDataList.size();
+            dayToRet = dayDataList.get(currsize);
+        }
+
+        return dayToRet;
+    }
+
+
+    private class DayData {
+        Float planned;
+        Float unplanned;
+
+        DayData(float planned, float unplanned){
+            this.planned = planned;
+            this.unplanned = unplanned;
         }
     }
 }
