@@ -27,7 +27,13 @@ public abstract class IUser {
     static class Friend {
         String name;
         String address;
-        boolean isPending;
+        String isPending;
+
+        public Friend(String name, String address, String isPending){
+            this.name = name;
+            this.address = address;
+            this.isPending = isPending;
+        }
 
         public Friend(String name, String address, boolean isPending) {
             this.name = name;
@@ -51,7 +57,7 @@ public abstract class IUser {
             this.address = address;
         }
 
-        public void setPending(boolean pending) {
+        public void setPending(String pending) {
             isPending = pending;
         }
 

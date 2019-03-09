@@ -74,9 +74,10 @@ public class FirebaseUser extends IUser {
                     String name = friend.child("name").getValue().toString();
                     String isPending = friend.child("").getValue().toString();
 
+                    Friend thisFriend = new Friend(name, email, isPending);
+
+                    friendlist.add(thisFriend);
                 }
-
-
             }
 
             @Override
@@ -85,7 +86,6 @@ public class FirebaseUser extends IUser {
                 Log.w("FIREBASE VAL: UN", "Failed to read value.", error.toException());
             }
         });
-
 
         return friendlist;
     }
@@ -97,9 +97,7 @@ public class FirebaseUser extends IUser {
 
         // Write a message to the database
         Log.d("FIREBASE_SYNC_INIT", "firebase-sync initialized");
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-//        firebaseDatabaseRef = firebaseDatabase.getReference();
-//        firebaseDatabaseRef.child("messages").child("TestMssg2").setValue("ValueTest2");
+
 
         //get Day values
         for (int i = 0; i < 30; i++) {
