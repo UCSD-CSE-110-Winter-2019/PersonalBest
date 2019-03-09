@@ -9,32 +9,48 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ManageFriendsActivity extends AppCompatActivity {
 
     // TODO Declare global variable for database instance
-    // Database db;
+    firebaseUser db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_friends);
 
-        // TODO get database instance
+        // Get db instance and display current friends
+        db = new firebaseUser(this);
         displayFriends();
     }
 
     public void displayFriends() {
         // TODO Get friends list from DB
-        // TODO Display all friends that do not have the "pending" field == true
-        String[] friends = {"Daniel", "Anton", "Shady", "D", "Yosuke", "Joseph"};
-        for (String friend : friends) {
-            addFriend(friend);
+        List<IUser.Friend> friends = db.getFriendlist();
+
+        List<IUser.Friend> testFriends = new ArrayList<IUser.Friend>();
+        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", true));
+
+        // Display all friends that both added each other
+        for (IUser.Friend friend : friends) {
+            if (!friend.isPending) {
+                addFriendToScrollable(friend);
+            }
         }
+
+//        // TODO Display all friends that do not have the "pending" field == true
+//        String[] mockFriends = {"Daniel", "Anton", "Shady", "D", "Yosuke", "Joseph"};
+//        for (String friend : mockFriends) {
+//            addFriendToScrollable(friend);
+//        }
     }
 
-    public void addFriend(String friend) {
+    public void addFriendToScrollable(IUser.Friend friend) {
         TextView newFriend = new TextView(this);
-        newFriend.setText(friend);
+        newFriend.setText(friend.toString());
 
         LinearLayout friendsListView = findViewById(R.id.friendsListView);
         friendsListView.addView(newFriend);
@@ -44,8 +60,11 @@ public class ManageFriendsActivity extends AppCompatActivity {
         TextView emailField = findViewById(R.id.emailPromptField);
         String emailAddress = emailField.getText().toString();
 
-        // TODO get name that corresponds to email
-        addFriend(emailAddress);
+        // TODO get Personal Best Friend that corresponds the that email -->
+        // TODO IUser.Friend newFriend = db.getAppUser(emailAddress)
+//        if (!newFriend.isPending) {
+//            addFriendToScrollable(newFriend);
+//        }
 
         // TODO get name's email address
         // TODO add Friend object to the database

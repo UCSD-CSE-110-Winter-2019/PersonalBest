@@ -23,10 +23,16 @@ public abstract class IUser {
     abstract List<Pair<Float, Float>> getWalks(String email);
     abstract List<Friend> getFriendlist();
 
-    class Friend{
+    static class Friend {
         String name;
         String address;
         boolean isPending;
+
+        public Friend(String name, String address, boolean isPending) {
+            this.name = name;
+            this.address = address;
+            this.isPending = isPending;
+        }
 
         public String getName() {
             return name;
@@ -48,5 +54,9 @@ public abstract class IUser {
             isPending = pending;
         }
 
+        // Added by Daniel to be able to print the Friend info in the friends list
+        public String toString() {
+            return "  Name: " + this.name + "   |     Email: " + this.address;
+        }
     }
 }

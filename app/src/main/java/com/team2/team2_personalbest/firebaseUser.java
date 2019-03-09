@@ -58,9 +58,6 @@ public class firebaseUser extends IUser {
         return this.friendlist;
     }
 
-
-
-
     public void FirebaseSync() {
 
         // Write a message to the database
