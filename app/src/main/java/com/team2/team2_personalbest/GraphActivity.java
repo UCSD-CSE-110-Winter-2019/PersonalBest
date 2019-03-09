@@ -12,11 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,11 +24,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +70,7 @@ public class GraphActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        firebaseUser user = new firebaseUser(getApplicationContext());
+        FirebaseUser user = new FirebaseUser(getApplicationContext());
 
 
 
@@ -87,10 +81,6 @@ public class GraphActivity extends AppCompatActivity {
                 user.FirebaseSync();
             }
         }).start();
-
-//        SharedPreferences sp = getSharedPreferences("username", MODE_PRIVATE);
-//        userName = sp.getString("username", "bluh");
-
 
     }
 
