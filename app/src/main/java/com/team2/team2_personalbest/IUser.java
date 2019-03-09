@@ -35,12 +35,6 @@ public abstract class IUser {
             this.isPending = isPending;
         }
 
-        public Friend(String name, String address, boolean isPending) {
-            this.name = name;
-            this.address = address;
-            this.isPending = isPending;
-        }
-
         public String getName() {
             return name;
         }
