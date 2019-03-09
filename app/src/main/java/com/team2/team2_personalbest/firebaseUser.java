@@ -21,6 +21,7 @@ public class FirebaseUser extends IUser {
     final String DATABASE_NAME = "days_db";
     private String USER_NAME = "dev";
 
+
     public FirebaseUser(Context activityContext){
         dayDatabase = Room.databaseBuilder(activityContext,
                 DayDatabase.class, DATABASE_NAME)
