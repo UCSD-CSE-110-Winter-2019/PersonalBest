@@ -15,7 +15,7 @@ import java.util.List;
 public class ManageFriendsActivity extends AppCompatActivity {
 
     // TODO Declare global variable for database instance
-    firebaseUser db;
+    FirebaseUser db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_friends);
 
         // Get db instance and display current friends
-        db = new firebaseUser(this);
+        db = new FirebaseUser(this);
         displayFriends();
     }
 
@@ -31,8 +31,9 @@ public class ManageFriendsActivity extends AppCompatActivity {
         // TODO Get friends list from DB
         List<IUser.Friend> friends = db.getFriendlist();
 
-        List<IUser.Friend> testFriends = new ArrayList<IUser.Friend>();
+        List<IUser.Friend> testFriends = new ArrayList<>();
         testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", true));
+        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", true));
 
         // Display all friends that both added each other
         for (IUser.Friend friend : friends) {
