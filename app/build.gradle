@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.team2.team2_personalbest"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
     //Junit
+    implementation 'com.google.firebase:firebase-firestore:17.1.0'
     testImplementation 'junit:junit:4.12'
     //Espresso
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -63,5 +64,9 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
     testImplementation 'org.robolectric:robolectric:4.2'
-    compile 'com.google.android.gms:play-services-auth:16.0.1'
+    //Firebase messaging
+    implementation 'com.google.firebase:firebase-messaging:17.4.0'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+
+
 }
