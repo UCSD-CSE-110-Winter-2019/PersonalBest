@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -147,6 +149,9 @@ public class    HomePage extends AppCompatActivity {
                 return new GoogleFitAdapter(homePage);
             }
         });
+
+
+
 
         //update step every 5 seconds
         goalReached = new SharedPref(this);
