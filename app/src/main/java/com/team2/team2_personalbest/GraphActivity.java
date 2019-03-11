@@ -72,13 +72,17 @@ public class GraphActivity extends AppCompatActivity {
 
         FirebaseUser user = new FirebaseUser(getApplicationContext());
 
-
-
         //Firebase sync accesses DB so execute from seperate thread
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user.FirebaseSync();
+                //user.FirebaseSync();
+                List<IUser.Friend> friendList = user.getFriendlist();
+                Log.d("FRIENDLIST_SIZE", ""+friendList.size());
+                for (IUser.Friend listElem : friendList){
+                    Log.d("FRIENDLIST", "\nName:"+listElem.name+
+                                            "\nEmail:"+listElem.address);
+                }
             }
         }).start();
 
