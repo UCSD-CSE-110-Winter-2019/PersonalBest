@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
