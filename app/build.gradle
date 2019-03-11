@@ -63,5 +63,5 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
     testImplementation 'org.robolectric:robolectric:4.2'
-
+    compile 'com.google.android.gms:play-services-auth:16.0.1'
 }
