@@ -1,12 +1,16 @@
 package com.team2.team2_personalbest;
 
 
+import android.content.Intent;
+import android.graphics.Point;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -36,7 +40,7 @@ import static org.hamcrest.Matchers.allOf;
 public class TestHomePageDisplay {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, true, true);
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, true);
     private UiDevice mDevice;
     private SharedPref firstTime;
     private boolean hasRun;
@@ -48,7 +52,24 @@ public class TestHomePageDisplay {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
         firstTime = new SharedPref(mActivityTestRule.getActivity());
+        //firstTime.setBool("init", true);
         hasRun = firstTime.getBool("init");
+
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
+
+        //TODO try running this with an intent to skip the google log in stuff
+        mActivityTestRule.launchActivity(testing);
+        Point bottomLeft = new Point();
+        Display mdisp = mActivityTestRule.getActivity().getWindowManager().getDefaultDisplay();
+        mdisp.getSize(bottomLeft);
+        //if (!hasRun){
+            mDevice.click(bottomLeft.x+1, bottomLeft.y/2);
+            //mActivityTestRule.launchActivity(null);
+            Log.d("TESTHOMEPAGEDISPLAYLOG", "INSIDE HAS RUN IF BLOCK");
+        //}
+
+        Log.d("TESTHOMEPAGEDISPLAYLOG", "IN BEFORE AFTER IF");
     }
 
     @Test
@@ -64,7 +85,6 @@ public class TestHomePageDisplay {
 
         //This action only happens the first time the app is launched
         if (!hasRun) {
-            mDevice.pressBack();
 
             ViewInteraction appCompatEditText = onView(
                     allOf(withId(R.id.enterHeightField),

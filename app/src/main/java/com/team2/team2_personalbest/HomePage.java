@@ -77,11 +77,18 @@ public class    HomePage extends AppCompatActivity {
     public double elapsedTime;
     public double start;
 
+    /* for testing purposes */
+    boolean isTesting = false;
+
     //TODO OnCreate
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        if (getIntent().getExtras() != null) {
+            isTesting = getIntent().getExtras().getBoolean("TESTING");
+        }
 
         final String DATABASE_NAME = "days_db";
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
@@ -127,10 +134,11 @@ public class    HomePage extends AppCompatActivity {
 
         // TODO Check if it's the first time running the appp
 
+
         firstTime = new SharedPref(this);
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         boolean hasRun = firstTime.getBool("init");
-        if (!hasRun) {
+        if (!hasRun && !isTesting) {
             goToSetupActivity();
             fitnessService.setupInit();
             firstTime.setBool("init", true);
