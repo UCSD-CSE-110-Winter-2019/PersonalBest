@@ -39,7 +39,7 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        firebaseUser user = new firebaseUser(getApplicationContext());
+        FirebaseUser user = new FirebaseUser(getApplicationContext());
 
         new FillEntriesTask(user).execute(name);
 
@@ -50,9 +50,9 @@ public class FriendGraph extends AppCompatActivity {
     private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
 
         Context mContext;
-        firebaseUser user;
+        FirebaseUser user;
 
-        public FillEntriesTask(firebaseUser user) {
+        public FillEntriesTask(FirebaseUser user) {
             this.user = user;
         }
         @Override
