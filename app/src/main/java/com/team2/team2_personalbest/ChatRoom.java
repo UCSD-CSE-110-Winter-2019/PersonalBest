@@ -31,7 +31,9 @@ public class ChatRoom extends AppCompatActivity {
     String TIMESTAMP_KEY = "timestamp";
 
     CollectionReference chat;
-    //TODO set it to userid
+    //TODO set it to sender user id and receiver user id passed from the original activity
+    //TODO maybe using intent.putExtra?
+    //TODO also u dont need to I think
     String from;
     String to;
 
@@ -42,8 +44,8 @@ public class ChatRoom extends AppCompatActivity {
         SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
 
         from = sharedpreferences.getString(FROM_KEY, null);
+        //TODO this is sample
         from = "U";
-        //TODO get the name of person u r texting
         to = "Duy";
         TextView toTextView = (TextView) findViewById(R.id.user_name);
         toTextView.setText(to);
@@ -57,15 +59,11 @@ public class ChatRoom extends AppCompatActivity {
 
         findViewById(R.id.btn_send).setOnClickListener(view -> sendMessage());
         subscribeToNotificationsTopic();
-        //TODO edit from to userID
+
         sharedpreferences.edit().putString(FROM_KEY, from);
     }
 
     private void sendMessage() {
-        if (from == null || from.isEmpty()) {
-            Toast.makeText(this, "Enter your name", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         EditText messageView = findViewById(R.id.text_message);
 
