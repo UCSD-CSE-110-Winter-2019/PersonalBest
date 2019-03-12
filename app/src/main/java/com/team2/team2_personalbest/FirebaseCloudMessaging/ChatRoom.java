@@ -1,4 +1,4 @@
-package com.team2.team2_personalbest;
+package com.team2.team2_personalbest.FirebaseCloudMessaging;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.team2.team2_personalbest.R;
 
 import java.util.HashMap;
 import java.util.List;

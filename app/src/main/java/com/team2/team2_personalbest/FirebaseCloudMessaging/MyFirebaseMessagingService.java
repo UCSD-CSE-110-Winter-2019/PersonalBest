@@ -1,4 +1,4 @@
-package com.team2.team2_personalbest;
+package com.team2.team2_personalbest.FirebaseCloudMessaging;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

@@ -26,6 +26,7 @@ exports.sendChatNotifications = functions.firestore
          notification: {
            title: document.from + ' sent you a message',
            body: document.text
+           //click_action: 'com.google.firebase.MESSAGING_EVENT'
          },
          topic: context.params.chatId
        };
