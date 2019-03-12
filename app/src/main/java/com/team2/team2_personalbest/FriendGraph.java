@@ -1,16 +1,13 @@
 package com.team2.team2_personalbest;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.util.Pair;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -24,90 +21,53 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
-/**
- * This activity displays the graph
- */
-
-public class GraphActivity extends AppCompatActivity {
-
-    private DayDatabase dayDatabase;
-    private Button walkHist;
-    private DatabaseReference firebaseDatabaseRef;
-    private String userName = "dev";
-    final String DATABASE_NAME = "days_db";
-
-
-
+public class FriendGraph extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_graph);
+        setContentView(R.layout.activity_friend_graph);
 
-        walkHist = (Button) findViewById(R.id.walkHistBttn);
-        walkHist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), walkHistory.class);
-                startActivity(intent);
-            }
-        });
-
-
-        dayDatabase = Room.databaseBuilder(getApplicationContext(),
-                DayDatabase.class, DATABASE_NAME)
-                .build();
-
-        new FillEntriesTask(this).execute(dayDatabase);
-
+        String name = getIntent().getStringExtra("name");
 
         FirebaseApp.initializeApp(this);
 
         FirebaseUser user = new FirebaseUser(getApplicationContext());
 
-
-
-        //Firebase sync accesses DB so execute from seperate thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                user.FirebaseSync();
-            }
-        }).start();
+        new FillEntriesTask(user).execute(name);
 
     }
 
 
 
-    private class FillEntriesTask extends AsyncTask<DayDatabase, Void, List<BarEntry>> {
+    private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
 
         Context mContext;
+        FirebaseUser user;
 
-        public FillEntriesTask(Context context) {
-            this.mContext = context;
+        public FillEntriesTask(FirebaseUser user) {
+            this.user = user;
         }
         @Override
-        protected List<BarEntry> doInBackground(DayDatabase... databases) {
-            DayDatabase database = databases[0];
+        protected List<BarEntry> doInBackground(String... friends) {
+            String friend = friends[0];
+
+            List<Pair<Float, Float>> walks = user.getWalks(friend);
 
             List<BarEntry> entries = new ArrayList<>();
-            for(int i = 0; i < 7; i++) {
-                String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
-
-                Day currentDay = database.dayDao().getDayById(date);
-
-                if(currentDay != null) {
-                    Log.d("GraphActivity", Integer.toString(i));
-                    int trackedSteps = currentDay.getStepsTracked();
-                    int untrackedSteps = currentDay.getStepsUntracked() - trackedSteps;
-                    entries.add(new BarEntry(6 - i, new float[]{untrackedSteps, trackedSteps}));
+            for(int i = 0; i < 28; i++) {
+                Pair<Float, Float> day = walks.get(i);
+                if(day != null) {
+                    Float trackedSteps = day.first;
+                    Float untrackedSteps = day.second - trackedSteps;
+                    entries.add(new BarEntry(28 - i, new float[]{untrackedSteps, trackedSteps}));
                 }
             }
 
@@ -175,7 +135,7 @@ public class GraphActivity extends AppCompatActivity {
 
         ArrayList<Entry> lineEntries = new ArrayList<>();
         lineEntries.add(new Entry(0, goal));
-        lineEntries.add(new Entry(6, goal));
+        lineEntries.add(new Entry(28, goal));
 
         LineDataSet set = new LineDataSet(lineEntries, "Line Dataset");
         set.setLineWidth(2.5f);
