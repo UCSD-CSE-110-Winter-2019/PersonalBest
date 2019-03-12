@@ -2,6 +2,7 @@ package com.team2.team2_personalbest;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Pair;
 
@@ -13,6 +14,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class FirebaseUser extends IUser {
 
@@ -26,12 +29,18 @@ public class FirebaseUser extends IUser {
         dayDatabase = Room.databaseBuilder(activityContext,
                 DayDatabase.class, DATABASE_NAME)
                 .build();
+        setUSER_NAME(activityContext);
     }
 
 
     private boolean setFriendList(){
 
         return true;
+    }
+
+    void setUSER_NAME(Context activityContext){
+        SharedPreferences sharedPreferences = activityContext.getSharedPreferences("goal", MODE_PRIVATE);
+        this.USER_NAME = sharedPreferences.getString("newgoal", "");
     }
 
     Friend getAppUser(String email){
