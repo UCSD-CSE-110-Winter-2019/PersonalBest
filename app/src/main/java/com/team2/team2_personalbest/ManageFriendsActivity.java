@@ -32,12 +32,12 @@ public class ManageFriendsActivity extends AppCompatActivity {
         List<IUser.Friend> friends = db.getFriendlist();
 
         List<IUser.Friend> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", true));
-        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", true));
+        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", "true"));
+        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", "true"));
 
         // Display all friends that both added each other
         for (IUser.Friend friend : friends) {
-            if (!friend.isPending) {
+            if (friend.isPending.equals("false")) {
                 addFriendToScrollable(friend);
             }
         }
@@ -50,7 +50,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void addFriendToScrollable(IUser.Friend friend) {
-        TextView newFriend = new TextView(this);
+        Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
 
         LinearLayout friendsListView = findViewById(R.id.friendsListView);
