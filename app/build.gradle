@@ -64,6 +64,6 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
     testImplementation 'org.robolectric:robolectric:4.2'
 
-    implementation 'com.google.code.gson:gson:2.7'
+    //implementation 'com.google.code.gson:gson:2.7'
 
 }
