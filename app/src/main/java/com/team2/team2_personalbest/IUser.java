@@ -8,8 +8,6 @@ public abstract class IUser {
 
     //protected List<Friend> friendlist;
 
-    // Make sure to init User
-    protected Friend User;
 
     /*
         pre: ID is a user
@@ -32,6 +30,11 @@ public abstract class IUser {
     abstract List<Pair<Integer, Integer>> getWalks(int ID);
 
     /*
+        Set 30 days Walks for this user in firebase
+     */
+    abstract void setWalks(List<Pair<Integer, Integer>> walks);
+
+    /*
         Used to get users most current friend list
      */
     abstract List<Friend> getFriendList();
@@ -51,23 +54,10 @@ public abstract class IUser {
        Adds a user to our total list of users
        Meant to be used on sign up
      */
-    abstract void addUser(Friend user);
+    //abstract void addUser(Friend user);
 
 
-    /*
-        Takes two UserID's and gives their absolute difference,
-        Used to get ChatID for two users
-        returns ChatId as integer
-     */
-    public int getChatwithFriend(Friend friendToChat){
-        int user1 = User.userID;
-        int user2 = friendToChat.userID;
 
-        if(user1 >= user2)
-            return user1-user2;
-        else
-            return user2-user1;
-    }
 
     /*
         Private class Friend
@@ -76,13 +66,13 @@ public abstract class IUser {
     class Friend{
         String name;
         String address;
-        String isPending;
+        //String isPending;
         int userID;
 
-        public Friend(String name, String address, String isPending){
+        public Friend(String name, String address /*, String isPending */){
             this.name = name;
             this.address = address;
-            this.isPending = isPending;
+            //this.isPending = isPending;
             this.userID = emailToUniqueId(address);
         }
 
@@ -94,9 +84,9 @@ public abstract class IUser {
             return address;
         }
 
-        public String getIsPending(){
-            return isPending;
-        }
+//        public String getIsPending(){
+//            return isPending;
+//        }
 
         public int getUserID(){
             return userID;
@@ -118,7 +108,7 @@ public abstract class IUser {
 
         private int emailToUniqueId(String email){
             int hashVal = 7;
-            for (int i = 0; i < email.length(); i++) {
+            for (int i = 0; i < (email.length()-10); i++) {
                 hashVal = hashVal*31 + email.charAt(i);
             }
             return hashVal;
