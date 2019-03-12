@@ -107,13 +107,13 @@ public class    HomePage extends AppCompatActivity {
         this.psBaseline = PS.getInt("psBaseline");
 
         //Initializing Firestore User
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-            }
-        });
-        thread.start();
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//            }
+//        });
+//        thread.start();
 
 
         //Getting XML elements

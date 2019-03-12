@@ -70,17 +70,17 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
 
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-                List<Pair<Integer, Integer>> walks = getHistoryAsList();
-                user.setWalks(walks);
-            }
-        });
-        thread.start();
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
 
     }
 
