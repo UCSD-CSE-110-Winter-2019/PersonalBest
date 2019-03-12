@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
@@ -35,84 +36,19 @@ import static org.hamcrest.Matchers.allOf;
 public class TestGraphButton {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, true, true);
-    private UiDevice mDevice;
-    private SharedPref firstTime;
-    private boolean hasRun;
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
 
     @Before
     public void before() {
 
-        // Initialize UiDevice instance
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
 
-        firstTime = new SharedPref(mActivityTestRule.getActivity());
-        hasRun = firstTime.getBool("init");
+        mActivityTestRule.launchActivity(testing);
     }
 
     @Test
     public void testGraphButton() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (!hasRun) {
-            mDevice.pressBack();
-
-            ViewInteraction appCompatEditText = onView(
-                    allOf(withId(R.id.enterHeightField),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText.perform(click());
-
-            ViewInteraction appCompatEditText2 = onView(
-                    allOf(withId(R.id.enterHeightField),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText2.perform(replaceText("72"), closeSoftKeyboard());
-
-            // Added a sleep statement to match the app's execution delay.
-            // The recommended way to handle such scenarios is to use Espresso idling resources:
-            // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-            try {
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            ViewInteraction appCompatEditText3 = onView(
-                    allOf(withId(R.id.enterHeightField), withText("72"),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText3.perform(pressImeActionButton());
-
-            ViewInteraction appCompatButton = onView(
-                    allOf(withId(R.id.doneButton), withText("Done"),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    5),
-                            isDisplayed()));
-            appCompatButton.perform(click());
-        }
-
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html

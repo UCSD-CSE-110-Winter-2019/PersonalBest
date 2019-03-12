@@ -40,36 +40,15 @@ import static org.hamcrest.Matchers.allOf;
 public class TestHomePageDisplay {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, true);
-    private UiDevice mDevice;
-    private SharedPref firstTime;
-    private boolean hasRun;
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
 
     @Before
     public void before() {
 
-        // Initialize UiDevice instance
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-
-        firstTime = new SharedPref(mActivityTestRule.getActivity());
-        //firstTime.setBool("init", true);
-        hasRun = firstTime.getBool("init");
-
         Intent testing = new Intent();
         testing.putExtra("TESTING", true);
 
-        //TODO try running this with an intent to skip the google log in stuff
         mActivityTestRule.launchActivity(testing);
-        Point bottomLeft = new Point();
-        Display mdisp = mActivityTestRule.getActivity().getWindowManager().getDefaultDisplay();
-        mdisp.getSize(bottomLeft);
-        //if (!hasRun){
-            mDevice.click(bottomLeft.x+1, bottomLeft.y/2);
-            //mActivityTestRule.launchActivity(null);
-            Log.d("TESTHOMEPAGEDISPLAYLOG", "INSIDE HAS RUN IF BLOCK");
-        //}
-
-        Log.d("TESTHOMEPAGEDISPLAYLOG", "IN BEFORE AFTER IF");
     }
 
     @Test
@@ -83,59 +62,7 @@ public class TestHomePageDisplay {
             e.printStackTrace();
         }
 
-        //This action only happens the first time the app is launched
-        if (!hasRun) {
-
-            ViewInteraction appCompatEditText = onView(
-                    allOf(withId(R.id.enterHeightField),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText.perform(click());
-
-            ViewInteraction appCompatEditText2 = onView(
-                    allOf(withId(R.id.enterHeightField),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText2.perform(replaceText("72"), closeSoftKeyboard());
-
-            ViewInteraction appCompatEditText3 = onView(
-                    allOf(withId(R.id.enterHeightField), withText("72"),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    3),
-                            isDisplayed()));
-            appCompatEditText3.perform(pressImeActionButton());
-
-            ViewInteraction appCompatButton = onView(
-                    allOf(withId(R.id.doneButton), withText("Done"),
-                            childAtPosition(
-                                    childAtPosition(
-                                            withId(android.R.id.content),
-                                            0),
-                                    5),
-                            isDisplayed()));
-            appCompatButton.perform(click());
-        }
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        /* Graph button is displayed */
         ViewInteraction button = onView(
                 allOf(withId(R.id.button),
                         childAtPosition(
@@ -146,6 +73,7 @@ public class TestHomePageDisplay {
                         isDisplayed()));
         button.check(matches(isDisplayed()));
 
+        /* Toggle planned walk button is displayed */
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.toggle_walk),
                         childAtPosition(
@@ -156,6 +84,7 @@ public class TestHomePageDisplay {
                         isDisplayed()));
         button2.check(matches(isDisplayed()));
 
+        /* Set goal button is displayed */
         ViewInteraction button3 = onView(
                 allOf(withId(R.id.set_goal),
                         childAtPosition(

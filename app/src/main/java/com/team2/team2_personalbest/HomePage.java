@@ -138,10 +138,12 @@ public class    HomePage extends AppCompatActivity {
         firstTime = new SharedPref(this);
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         boolean hasRun = firstTime.getBool("init");
-        if (!hasRun && !isTesting) {
-            goToSetupActivity();
-            fitnessService.setupInit();
-            firstTime.setBool("init", true);
+        if (!hasRun) {
+            if (!isTesting) {
+                goToSetupActivity();
+                fitnessService.setupInit();
+                firstTime.setBool("init", true);
+            }
             setInitialGoal();
         }
         else {

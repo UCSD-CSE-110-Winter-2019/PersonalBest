@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 
+import android.content.Intent;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -12,78 +13,111 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class Test500Added {
+public class TestSetInvalidGoal {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
+
+    @Before
+    public void before() {
+
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
+
+        mActivityTestRule.launchActivity(testing);
+    }
 
     @Test
-    public void test500Added() {
+    public void testSetInvalidGoal() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(700);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.add500Button), withText("Add 500 Steps"),
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.set_goal), withText("set goal"),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout2),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                11)),
+                                0),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.set_goal),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                12),
+                                1),
                         isDisplayed()));
-        appCompatButton.perform(click());
+        editText.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.step_taken), withText("500 Steps taken"),
+        ViewInteraction editText2 = onView(
+                allOf(withId(R.id.set_goal),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                8),
+                                1),
                         isDisplayed()));
-        textView.check(matches(withText("500 Steps taken")));
+        editText2.perform(replaceText("sauce"), closeSoftKeyboard());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.steps_left), withText("4500"),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.confirm), withText("Confirm"),
                         childAtPosition(
                                 allOf(withId(R.id.linearLayout1),
                                         childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                9)),
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                2)),
                                 0),
                         isDisplayed()));
-        textView2.check(matches(withText("4500")));
+        button.perform(click());
 
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.steps_left), withText("4500"),
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.cancel), withText("Cancel"),
                         childAtPosition(
                                 allOf(withId(R.id.linearLayout1),
                                         childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                9)),
-                                0),
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                2)),
+                                1),
                         isDisplayed()));
-        textView3.check(matches(withText("4500")));
+        button2.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

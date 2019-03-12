@@ -53,16 +53,15 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class TestInvalidInput {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
-    private UiDevice mDevice;
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
 
     @Before
     public void before() {
-        // Initialize UiDevice instance
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        assertThat(mDevice, notNullValue());
-        // Press back so I don't have to log in
-        mDevice.pressBack();
+
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
+
+        mActivityTestRule.launchActivity(testing);
     }
 
     @Test
@@ -77,7 +76,7 @@ public class TestInvalidInput {
         }
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.set_goal), withText("set goal"),
+                allOf(withId(R.id.set_goal), withText("SET GOAL"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
