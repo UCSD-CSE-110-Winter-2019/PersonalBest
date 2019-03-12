@@ -77,7 +77,7 @@ public class GraphActivity extends AppCompatActivity {
             public void run(){
                 FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
                 List<Pair<Integer, Integer>> walks = getHistoryAsList();
-                //user.setWalks(walks);
+                user.setWalks(walks);
             }
         });
         thread.start();

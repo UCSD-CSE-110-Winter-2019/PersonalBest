@@ -16,6 +16,12 @@ public abstract class IUser {
     abstract boolean addFriend(int ID);
 
     /*
+        Used to check if given friend's ID is already a friend of user
+        ie: is in Users/UserID/Friends
+     */
+    abstract boolean isFriend(int ID);
+
+    /*
         pre: ID is a user
         Pre: Given ID is Users friend
         Used to remove a friend
