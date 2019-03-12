@@ -24,7 +24,7 @@ public class ChatRoom extends AppCompatActivity {
 
     String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    String DOCUMENT_KEY = "chat2";
+    String DOCUMENT_KEY = "chat1";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
@@ -109,7 +109,7 @@ public class ChatRoom extends AppCompatActivity {
     private void subscribeToNotificationsTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic(DOCUMENT_KEY)
                 .addOnCompleteListener(task -> {
-                            String msg = "Subscribed to notifications";
+                            String msg = "Subscribed to channel " + DOCUMENT_KEY;
                             if (!task.isSuccessful()) {
                                 msg = "Subscribe to notifications failed";
                             }
