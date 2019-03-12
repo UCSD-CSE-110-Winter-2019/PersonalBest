@@ -83,8 +83,10 @@ public class GoogleFitAdapter implements FitnessService {
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
         } else {*/
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-        Log.d("GOOGLE_ACC", ""+acct.getEmail());
+        if (!activity.isTesting) {
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+            //Log.d("GOOGLE_ACC", "" + acct.getEmail());
+        }
             updateStepCount();
             startRecording();
 

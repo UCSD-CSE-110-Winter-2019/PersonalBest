@@ -83,7 +83,7 @@ public class    HomePage extends AppCompatActivity {
 
 
     /* for testing purposes */
-    boolean isTesting = false;
+    public boolean isTesting = false;
 
     /*Firebase User*/
     private FirestoreUser user;
