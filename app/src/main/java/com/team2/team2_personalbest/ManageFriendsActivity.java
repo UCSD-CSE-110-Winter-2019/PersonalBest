@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,13 @@ public class ManageFriendsActivity extends AppCompatActivity {
     // TODO Declare global variable for database instance
     FirebaseUser db;
 
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    );
+
+    LinearLayout friendsListView = findViewById(R.id.friendsListView);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,37 +32,45 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
         // Get db instance and display current friends
         //TODO
-//        db = new FirebaseUser(this);
+        db = new FirebaseUser(this);
         displayFriends();
     }
 
     public void displayFriends() {
         // TODO Get friends list from DB
-//        List<IUser.Friend> friends = db.getFriendlist();
+        List<IUser.Friend> friends = db.getFriendlist();
 
         List<IUser.Friend> testFriends = new ArrayList<>();
         testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", "false"));
         testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", "false"));
 
         // Display all friends that both added each other
-        for (IUser.Friend friend : testFriends) {
+        for (IUser.Friend friend : friends) {
             if (friend.isPending.equals("false")) {
                 addFriendToScrollable(friend);
             }
         }
-
-//        // TODO Display all friends that do not have the "pending" field == true
-//        String[] mockFriends = {"Daniel", "Anton", "Shady", "D", "Yosuke", "Joseph"};
-//        for (String friend : mockFriends) {
-//            addFriendToScrollable(friend);
-//        }
     }
 
     public void addFriendToScrollable(IUser.Friend friend) {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
+        newFriend.setHeight(30);                // TODO edit height here
 
-        LinearLayout friendsListView = findViewById(R.id.friendsListView);
+        // Set button margins programatically
+        params.setMargins(20, 20, 20, 10);
+        newFriend.setLayoutParams(params);
+
+        // When user clicks on button w/ friend name, go to graph
+        newFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), GraphActivity.class);   // TODO @anton change this here to whatever Activity desired
+                intent.putExtra("name", friend.name);
+                startActivity(intent);
+            }
+        });
+
         friendsListView.addView(newFriend);
     }
 
