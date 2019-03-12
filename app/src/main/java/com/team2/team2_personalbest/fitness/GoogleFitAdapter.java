@@ -10,6 +10,8 @@ import java.lang.String;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataSet;
@@ -40,12 +42,24 @@ public class GoogleFitAdapter implements FitnessService {
                 .build();
 
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
+
             GoogleSignIn.requestPermissions(
                     activity, // your activity
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
+
         } else {
+
+
+            //Get userID
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+            Log.d("GOOGLE_ACC", ""+acct.getEmail());
         updateStepCount();
         startRecording();
 
@@ -69,6 +83,8 @@ public class GoogleFitAdapter implements FitnessService {
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
         } else {*/
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+        Log.d("GOOGLE_ACC", ""+acct.getEmail());
             updateStepCount();
             startRecording();
 

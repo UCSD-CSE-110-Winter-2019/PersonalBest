@@ -18,15 +18,22 @@ public abstract class IUser {
 //
 //    getWalks(gmail address): return the last 30 days in an array of pair values (planned, unplanned)
 //
-    abstract boolean addFriend(String email);
-    abstract boolean removeFriend(String email);
-    abstract List<Pair<Float, Float>> getWalks(String email);
+    abstract boolean addFriend(String name);
+    abstract boolean removeFriend(String name);
+    abstract List<Pair<Float, Float>> getWalks(String name);
     abstract List<Friend> getFriendlist();
+    abstract Friend getAppUser(String email);
 
     class Friend{
         String name;
         String address;
-        boolean isPending;
+        String isPending;
+
+        public Friend(String name, String address, String isPending){
+            this.name = name;
+            this.address = address;
+            this.isPending = isPending;
+        }
 
         public String getName() {
             return name;
@@ -44,7 +51,7 @@ public abstract class IUser {
             this.address = address;
         }
 
-        public void setPending(boolean pending) {
+        public void setPending(String pending) {
             isPending = pending;
         }
 
