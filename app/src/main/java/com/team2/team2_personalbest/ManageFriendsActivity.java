@@ -23,20 +23,21 @@ public class ManageFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_friends);
 
         // Get db instance and display current friends
-        db = new FirebaseUser(this);
+        //TODO
+//        db = new FirebaseUser(this);
         displayFriends();
     }
 
     public void displayFriends() {
         // TODO Get friends list from DB
-        List<IUser.Friend> friends = db.getFriendlist();
+//        List<IUser.Friend> friends = db.getFriendlist();
 
         List<IUser.Friend> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", "true"));
-        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", "true"));
+        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", "false"));
+        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", "false"));
 
         // Display all friends that both added each other
-        for (IUser.Friend friend : friends) {
+        for (IUser.Friend friend : testFriends) {
             if (friend.isPending.equals("false")) {
                 addFriendToScrollable(friend);
             }
