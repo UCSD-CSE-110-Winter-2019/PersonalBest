@@ -1,5 +1,7 @@
 package com.team2.team2_personalbest;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -176,6 +178,26 @@ public class    HomePage extends AppCompatActivity {
 
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
         setUserName();
+        saveEmailId();
+    }
+
+    private void saveEmailId() {
+        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+        Account[] list = manager.getAccounts();
+        String gmail = null;
+        for(Account account: list)
+        {
+            if(account.type.equalsIgnoreCase("com.google"))
+            {
+                gmail = account.name;
+                Log.d("userid", gmail);
+                SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("userID", gmail);
+                editor.apply();
+                break;
+            }
+        }
     }
 
     //TODO On Resume

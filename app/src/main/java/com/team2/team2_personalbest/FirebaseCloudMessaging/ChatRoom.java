@@ -1,4 +1,4 @@
-package com.team2.team2_personalbest;
+package com.team2.team2_personalbest.FirebaseCloudMessaging;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.team2.team2_personalbest.R;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ChatRoom extends AppCompatActivity {
 
     String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    String DOCUMENT_KEY = "chat2";
+    String DOCUMENT_KEY = "chat1";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
@@ -107,7 +108,7 @@ public class ChatRoom extends AppCompatActivity {
     private void subscribeToNotificationsTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic(DOCUMENT_KEY)
                 .addOnCompleteListener(task -> {
-                            String msg = "Subscribed to notifications";
+                            String msg = "Subscribed to channel " + DOCUMENT_KEY;
                             if (!task.isSuccessful()) {
                                 msg = "Subscribe to notifications failed";
                             }
