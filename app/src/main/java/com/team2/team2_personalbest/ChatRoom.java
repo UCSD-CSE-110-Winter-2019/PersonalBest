@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -24,14 +25,16 @@ public class ChatRoom extends AppCompatActivity {
 
     String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    String DOCUMENT_KEY = "chat2";
+    String DOCUMENT_KEY = "chat3";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
     String TIMESTAMP_KEY = "timestamp";
 
     CollectionReference chat;
-    //TODO set it to userid
+    //TODO set it to sender user id and receiver user id passed from the original activity
+    //TODO maybe using intent.putExtra?
+    //TODO also u dont need to
     String from;
     String to;
 
@@ -81,7 +84,8 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void initMessageUpdateListener() {
-        chat.addSnapshotListener((newChatSnapShot, error) -> {
+        chat.orderBy(TIMESTAMP_KEY, Query.Direction.ASCENDING)
+                .addSnapshotListener((newChatSnapShot, error) -> {
                     if (error != null) {
                         Log.e(TAG, error.getLocalizedMessage());
                         return;
