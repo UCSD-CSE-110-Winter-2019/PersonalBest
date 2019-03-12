@@ -33,7 +33,7 @@ public class ChatRoom extends AppCompatActivity {
     CollectionReference chat;
     //TODO set it to sender user id and receiver user id passed from the original activity
     //TODO maybe using intent.putExtra?
-    //TODO also u dont need to I think
+    //TODO also u dont need to
     String from;
     String to;
 
