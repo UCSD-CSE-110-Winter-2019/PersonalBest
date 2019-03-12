@@ -9,14 +9,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -26,13 +25,10 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
@@ -76,22 +72,28 @@ public class GraphActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        firebaseUser user = new firebaseUser(getApplicationContext());
-
-
-
-        //Firebase sync accesses DB so execute from seperate thread
-        new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable(){
             @Override
-            public void run() {
-                user.FirebaseSync();
+            public void run(){
+                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+                user.setWalks(walks);
             }
-        }).start();
+        });
+        thread.start();
 
-//        SharedPreferences sp = getSharedPreferences("username", MODE_PRIVATE);
-//        userName = sp.getString("username", "bluh");
+    }
 
+    public List<Pair<Integer, Integer>> getHistoryAsList() {
+        List<Pair<Integer, Integer>> walks = new LinkedList<>();
 
+        for (int i = 0; i < 30; i++) {
+            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+            Day currentDay = dayDatabase.dayDao().getDayById(date);
+            walks.add(new Pair<>(currentDay.getStepsTracked(), currentDay.getStepsUntracked()));
+        }
+
+        return walks;
     }
 
 
@@ -196,4 +198,6 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
+
+
 }

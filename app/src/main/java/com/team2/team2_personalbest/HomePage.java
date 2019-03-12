@@ -1,5 +1,7 @@
 package com.team2.team2_personalbest;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -77,8 +81,12 @@ public class    HomePage extends AppCompatActivity {
     public double elapsedTime;
     public double start;
 
+
     /* for testing purposes */
     boolean isTesting = false;
+
+    /*Firebase User*/
+    private FirestoreUser user;
 
     //TODO OnCreate
 
@@ -106,6 +114,16 @@ public class    HomePage extends AppCompatActivity {
         this.psDailyTotal = PS.getInt("psDailyTotal");
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
+
+        //Initializing Firestore User
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+            }
+        });
+        thread.start();
+
 
         //Getting XML elements
         textViewStepCount = findViewById(R.id.step_taken); //daily step counter
@@ -157,6 +175,9 @@ public class    HomePage extends AppCompatActivity {
             }
         });
 
+
+
+
         //update step every 5 seconds
         goalReached = new SharedPref(this);
         boolean goal_reached = goalReached.getBool("goalReached");
@@ -182,6 +203,26 @@ public class    HomePage extends AppCompatActivity {
 
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
         setUserName();
+        saveEmailId();
+    }
+
+    private void saveEmailId() {
+        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+        Account[] list = manager.getAccounts();
+        String gmail = null;
+        for(Account account: list)
+        {
+            if(account.type.equalsIgnoreCase("com.google"))
+            {
+                gmail = account.name;
+                Log.d("userid", gmail);
+                SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("userID", gmail);
+                editor.apply();
+                break;
+            }
+        }
     }
 
     //TODO On Resume
