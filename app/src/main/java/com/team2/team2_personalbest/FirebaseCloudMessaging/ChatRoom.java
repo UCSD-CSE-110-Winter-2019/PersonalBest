@@ -26,11 +26,7 @@ public class ChatRoom extends AppCompatActivity {
 
     String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-<<<<<<< HEAD:app/src/main/java/com/team2/team2_personalbest/ChatRoom.java
-    String DOCUMENT_KEY = "chat3";
-=======
-    String DOCUMENT_KEY = "chat1";
->>>>>>> remotes/origin/firebasemessaging:app/src/main/java/com/team2/team2_personalbest/FirebaseCloudMessaging/ChatRoom.java
+    String DOCUMENT_KEY = "chat7";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
@@ -50,7 +46,8 @@ public class ChatRoom extends AppCompatActivity {
         SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
 
         from = sharedpreferences.getString(FROM_KEY, null);
-        from = "U";
+        //TODO this is sample
+        from = "Y";
         //TODO get the name of person u r texting
         to = "Duy";
         TextView toTextView = (TextView) findViewById(R.id.user_name);
@@ -70,10 +67,6 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        if (from == null || from.isEmpty()) {
-            Toast.makeText(this, "Enter your name", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         EditText messageView = findViewById(R.id.text_message);
 

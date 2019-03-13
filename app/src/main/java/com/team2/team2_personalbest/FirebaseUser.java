@@ -14,7 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirebaseUser extends IUser {
+public class FirebaseUser{
 
     private DatabaseReference firebaseDatabaseRef;
     private DayDatabase dayDatabase;
@@ -26,6 +26,7 @@ public class FirebaseUser extends IUser {
         dayDatabase = Room.databaseBuilder(activityContext,
                 DayDatabase.class, DATABASE_NAME)
                 .build();
+        firebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
     }
 
 
@@ -34,7 +35,7 @@ public class FirebaseUser extends IUser {
         return true;
     }
 
-    Friend getAppUser(String email){
+    IUser.Friend getAppUser(String email){
         return null;
     }
 
@@ -56,27 +57,31 @@ public class FirebaseUser extends IUser {
         return walkList;
     }
 
-    List<Friend> getFriendlist(){
+    List<IUser.Friend> getFriendlist(){
 
         //return this.friendlist;
         Log.d("GET_FRIEND_LIST_INIT", "Getting friends for user: "+USER_NAME);
-        DatabaseReference friendsRef = firebaseDatabaseRef.child(USER_NAME+"/Friends");
+        DatabaseReference friendsRef = firebaseDatabaseRef.child(USER_NAME+"/Friends/");
 
-        List<Friend> friendlist = new ArrayList<>();
+        List<IUser.Friend> friendlist = new ArrayList<>();
 
         // Read from the database and add it to dayDataList
-        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        friendsRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot friend : dataSnapshot.getChildren()) {
+                    Log.d("EMAIL", friend.child("email").getValue().toString());
+                    Log.d("name", friend.child("name").getValue().toString());
+                    Log.d("isPending", friend.child("isPending").getValue().toString());
                     String email = friend.child("email").getValue().toString();
                     String name = friend.child("name").getValue().toString();
-                    String isPending = friend.child("").getValue().toString();
+                    String isPending = friend.child("isPending").getValue().toString();
 
-                    Friend thisFriend = new Friend(name, email, isPending);
+                    //IUser.Friend thisFriend = new IUser.Friend(name, email, isPending);
 
-                    friendlist.add(thisFriend);
+                    //friendlist.add(thisFriend);
+                    //friendlist.add(thisFriend);
                 }
             }
 

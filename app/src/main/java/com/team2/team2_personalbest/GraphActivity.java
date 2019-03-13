@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,6 +28,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
@@ -68,20 +70,30 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
 
-        FirebaseUser user = new FirebaseUser(getApplicationContext());
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
 
+    }
 
+    public List<Pair<Integer, Integer>> getHistoryAsList() {
+        List<Pair<Integer, Integer>> walks = new LinkedList<>();
 
-        //Firebase sync accesses DB so execute from seperate thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                user.FirebaseSync();
-            }
-        }).start();
+        for (int i = 0; i < 30; i++) {
+            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+            Day currentDay = dayDatabase.dayDao().getDayById(date);
+            walks.add(new Pair<>(currentDay.getStepsTracked(), currentDay.getStepsUntracked()));
+        }
 
+        return walks;
     }
 
 
@@ -186,4 +198,6 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
+
+
 }
