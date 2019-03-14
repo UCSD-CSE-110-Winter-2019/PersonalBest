@@ -9,6 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ManageFriendsActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".FriendGraph"></activity>
         <activity
             android:name=".HomePage"
@@ -43,7 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".walkHistory"></activity>
         <activity android:name=".FirebaseCloudMessaging.ChatRoomActivity">
             <intent-filter>
@@ -59,7 +60,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-
     </application>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"></uses-permission>
