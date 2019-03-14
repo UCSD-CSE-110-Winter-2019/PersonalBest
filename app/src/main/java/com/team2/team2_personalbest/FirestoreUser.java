@@ -71,6 +71,7 @@ public class FirestoreUser extends IUser {
 //            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
 //                                                        +"\nUnplanned:"+walkList.get(i).second+"\nXXXXXX\n");
 //        }
+
     }
 
     /*
@@ -334,13 +335,10 @@ public class FirestoreUser extends IUser {
        Scans our list of users and returns user as Friend Type given ID
     */
     Friend getAppUser(int ID){
-
         Friend appUser = new Friend("", "");
         CollectionReference UsersRef = db.collection("Users");
-
         // Create a query against the collection to get This User
         Query query = UsersRef.whereEqualTo("UserID", ID);
-
         Log.d("IS_USER", "Executing Query Task");
         Task<QuerySnapshot> task = query.get();
         try{

@@ -4,7 +4,6 @@
     <string name="miles_taken">Miles walked</string>
     <string name="planned_steps"> Planned steps taken</string>
     <string name="planned_distance"> Planned miles travelled</string>
-    >>>>>>> 8b3b95c0e77d4dbf7623735975dcc6eae2ed8cc2
     <string name="select_new_goal">Select New Goal</string>
     <string name="num_steps">Number of steps</string>
     <string name="cancel">Cancel</string>

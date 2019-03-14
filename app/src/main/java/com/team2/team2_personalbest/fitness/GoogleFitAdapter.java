@@ -56,12 +56,11 @@ public class GoogleFitAdapter implements FitnessService {
 
         } else {
 
-
             //Get userID
             GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
             Log.d("GOOGLE_ACC", ""+acct.getEmail());
-        updateStepCount();
-        startRecording();
+            updateStepCount();
+            startRecording();
 
         }
     }
@@ -70,26 +69,27 @@ public class GoogleFitAdapter implements FitnessService {
      * setup but without login prompt
      */
     public void setup() {
-        /*
-        FitnessOptions fitnessOptions = FitnessOptions.builder()
-                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-                .build();
 
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                    activity, // your activity
-                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                    GoogleSignIn.getLastSignedInAccount(activity),
-                    fitnessOptions);
-        } else {*/
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-        if (acct != null) {
-            Log.d("GOOGLE_ACC", "" + acct.getEmail());
+
+//        FitnessOptions fitnessOptions = FitnessOptions.builder()
+//                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+//                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+//                .build();
+//
+//        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
+//            GoogleSignIn.requestPermissions(
+//                    activity, // your activity
+//                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+//                    GoogleSignIn.getLastSignedInAccount(activity),
+//                    fitnessOptions);
+//        } else {
+
+        if (!activity.isTesting) {
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+//            Log.d("GOOGLE_ACC", "" + acct.getEmail());
         }
-            updateStepCount();
-            startRecording();
-
+        updateStepCount();
+        startRecording();
         //}
     }
 

@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ManageFriendsActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".FriendGraph"></activity>
         <activity
             android:name=".HomePage"
             android:screenOrientation="portrait">
@@ -34,6 +37,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ChatOrGraph"
+            android:theme="@android:style/Theme.Material.Dialog">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".GoalAccomplished"
@@ -42,22 +52,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".walkHistory"></activity>
-
-        <activity android:name=".ChatRoom">
+        <activity android:name=".FirebaseCloudMessaging.ChatRoomActivity">
             <intent-filter>
                 <!--<action android:name="android.intent.action.MAIN" />-->
+
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="MyFirebaseMessagingService">
+        <service android:name=".FirebaseCloudMessaging.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-
     </application>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"></uses-permission>

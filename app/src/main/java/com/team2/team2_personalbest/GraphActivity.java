@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -24,12 +25,14 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
@@ -43,10 +46,13 @@ public class GraphActivity extends AppCompatActivity {
     private Button walkHist;
     final String DATABASE_NAME = "days_db";
 
+    private boolean isTesting = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        isTesting = getIntent().getExtras().getBoolean("TESTING");
 
         walkHist = (Button) findViewById(R.id.walkHistBttn);
         walkHist.setOnClickListener(new View.OnClickListener() {
@@ -65,9 +71,10 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
 
-        // TODO make this thing not throw an error so user can sync data
+//        if (!isTesting) {
+// TODO make this thing not throw an error so user can sync data
 //        Thread thread = new Thread(new Runnable(){
 //            @Override
 //            public void run(){
@@ -77,6 +84,7 @@ public class GraphActivity extends AppCompatActivity {
 //            }
 //        });
 //        thread.start();
+//      }
 
     }
 
@@ -194,6 +202,31 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        String from ="Shady";
+        //from = intent.getStringExtra("Shady");
+        intent.putExtra("friend's name", from);
+        startActivity(intent);
+    }
+    /*
+    public void sendMessage(View view) {
 
+        EditText messageView = findViewById(R.id.textView);
+
+        Map<String, String> newMessage = new HashMap<>();
+        newMessage.put(FROM_KEY, from);
+        newMessage.put(TEXT_KEY, messageView.getText().toString());
+
+        chat.add(newMessage).addOnSuccessListener(result -> {
+            messageView.setText("");
+        }).addOnFailureListener(error -> {
+            Log.e(TAG, error.getLocalizedMessage());
+        });
+    }*/
 
 }
