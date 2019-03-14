@@ -39,9 +39,8 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        FirebaseUser user = new FirebaseUser(getApplicationContext());
 
-        new FillEntriesTask(user).execute(name);
+        new FillEntriesTask().execute(name);
 
     }
 
@@ -50,23 +49,22 @@ public class FriendGraph extends AppCompatActivity {
     private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
 
         Context mContext;
-        FirestoreUser user;
 
-        public FillEntriesTask(FirestoreUser user) {
-            this.user = user;
+        public FillEntriesTask() {
         }
         @Override
         protected List<BarEntry> doInBackground(String... friends) {
+            FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
             String friend = friends[0];
 
-            List<Pair<Float, Float>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
+            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
 
             List<BarEntry> entries = new ArrayList<>();
             for(int i = 0; i < 28; i++) {
-                Pair<Float, Float> day = walks.get(i);
+                Pair<Integer, Integer> day = walks.get(i);
                 if(day != null) {
-                    Float trackedSteps = day.first;
-                    Float untrackedSteps = day.second - trackedSteps;
+                    Integer trackedSteps = day.first;
+                    Integer untrackedSteps = day.second - trackedSteps;
                     entries.add(new BarEntry(28 - i, new float[]{untrackedSteps, trackedSteps}));
                 } else {
                     entries.add(new BarEntry(28 - i, new float[]{0, 0}));
