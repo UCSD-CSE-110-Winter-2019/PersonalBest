@@ -1,10 +1,7 @@
 package com.team2.team2_personalbest;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -22,10 +19,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -37,30 +34,29 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestSetGoal {
-    Intent intent;
-    SharedPreferences.Editor preferencesEditor;
+public class TestSetNewGoal {
+
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, true, false);
-    Context context = getInstrumentation().getTargetContext();
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
+
     @Before
-    public void setUp() {
-        Context targetContext = getInstrumentation().getTargetContext();
-        preferencesEditor = PreferenceManager.getDefaultSharedPreferences(targetContext).edit();
+    public void before() {
+
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
+
+        mActivityTestRule.launchActivity(testing);
     }
 
     @Test
-    public void testSetGoal() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+    public void testSetNewGoal() {
         try {
             Thread.sleep(700);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton = onView(
+        ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.set_goal), withText("set goal"),
                         childAtPosition(
                                 allOf(withId(R.id.linearLayout2),
@@ -69,7 +65,7 @@ public class TestSetGoal {
                                                 11)),
                                 0),
                         isDisplayed()));
-        appCompatButton.perform(click());
+        appCompatButton2.perform(click());
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
@@ -88,37 +84,17 @@ public class TestSetGoal {
                                         0),
                                 1),
                         isDisplayed()));
-        editText.perform(replaceText("900"), closeSoftKeyboard());
+        editText.perform(click());
 
         ViewInteraction editText2 = onView(
-                allOf(withId(R.id.set_goal), withText("900"),
+                allOf(withId(R.id.set_goal),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
                         isDisplayed()));
-        editText2.perform(click());
-
-        ViewInteraction editText3 = onView(
-                allOf(withId(R.id.set_goal), withText("900"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        editText3.perform(replaceText("9000"));
-
-        ViewInteraction editText4 = onView(
-                allOf(withId(R.id.set_goal), withText("9000"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        editText4.perform(closeSoftKeyboard());
+        editText2.perform(replaceText("6000"), closeSoftKeyboard());
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.confirm), withText("Confirm"),
@@ -141,7 +117,7 @@ public class TestSetGoal {
         }
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.steps_left), withText("9000"),
+                allOf(withId(R.id.steps_left),
                         childAtPosition(
                                 allOf(withId(R.id.linearLayout1),
                                         childAtPosition(
@@ -149,38 +125,7 @@ public class TestSetGoal {
                                                 9)),
                                 0),
                         isDisplayed()));
-        textView.check(matches(withText("9000")));
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.add500Button), withText("Add 500 Steps"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                12),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.step_taken), withText("500 Steps taken"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                8),
-                        isDisplayed()));
-        textView2.check(matches(withText("500 Steps taken")));
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.steps_left), withText("8500"),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout1),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
-                                                9)),
-                                0),
-                        isDisplayed()));
-        textView3.check(matches(withText("8500")));
+        textView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

@@ -14,6 +14,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".GraphActivityLong"></activity>
         <activity android:name=".FriendGraph" />
+        <activity android:name=".ManageFriendsActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".HomePage"
             android:screenOrientation="portrait">
@@ -46,7 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".walkHistory" />
+        <activity android:name=".walkHistory"></activity>
         <activity android:name=".FirebaseCloudMessaging.ChatRoomActivity">
             <intent-filter>
 
