@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
@@ -87,10 +88,21 @@ public class    HomePage extends AppCompatActivity {
 
     /*Firebase User*/
     private FirestoreUser user;
-
+    /*
+    // TODO Possible bug
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }
+    }*/
     //TODO OnCreate
-
     protected void onCreate(Bundle savedInstanceState) {
+        /*Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
