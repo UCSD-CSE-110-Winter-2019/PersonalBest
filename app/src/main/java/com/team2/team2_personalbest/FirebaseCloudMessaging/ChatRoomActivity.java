@@ -43,7 +43,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setUpPopup();
-        setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+        //setTheme(android.R.style.Theme_DeviceDefault);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
         Intent intent = getIntent();

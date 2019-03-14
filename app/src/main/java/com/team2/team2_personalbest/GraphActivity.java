@@ -210,6 +210,7 @@ public class GraphActivity extends AppCompatActivity {
         editor.putBoolean("openedFromGraph", true).apply();
         Intent intent = new Intent(this, ChatRoomActivity.class);
         String from ="Shady";
+        //from = intent.getStringExtra("Shady");
         intent.putExtra("friend's name", from);
         startActivity(intent);
     }
