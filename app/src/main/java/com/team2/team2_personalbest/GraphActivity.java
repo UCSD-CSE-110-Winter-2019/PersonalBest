@@ -24,8 +24,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -70,19 +70,19 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
 
-        if (!isTesting) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-                    List<Pair<Integer, Integer>> walks = getHistoryAsList();
-                    user.setWalks(walks);
-                }
-            });
-            thread.start();
-        }
+//        if (!isTesting) {
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
+//      }
 
     }
 
@@ -200,6 +200,14 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
-
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 }

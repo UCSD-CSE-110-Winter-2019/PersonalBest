@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.arch.persistence.room.Room;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,7 +64,9 @@ public class walkHistory extends AppCompatActivity {
 
                     TextView line = new TextView(getBaseContext());
                     line.setHeight(5);
-                    line.setBackgroundColor(getResources().getColor(android.R.color.black));
+
+                    int blackColor = ContextCompat.getColor(getApplicationContext(), android.R.color.black);
+                    line.setBackgroundColor(blackColor);
                     linearLayout.addView(line);
 
 
