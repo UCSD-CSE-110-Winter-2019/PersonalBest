@@ -45,3 +45,5 @@ exports.sendChatNotifications = functions.firestore
 
      return "document was null or emtpy";
    });
+
+

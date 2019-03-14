@@ -1,5 +1,7 @@
 package com.team2.team2_personalbest;
 
+import android.view.WindowManager;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,6 +11,7 @@ import java.util.Locale;
  * This class helps with the date
  */
 public class DateHelper {
+
     private static String[] daysOfWeek = {"Sat", "Sun", "Mon", "Tues", "Wed",
             "Thurs", "Fri"};
 

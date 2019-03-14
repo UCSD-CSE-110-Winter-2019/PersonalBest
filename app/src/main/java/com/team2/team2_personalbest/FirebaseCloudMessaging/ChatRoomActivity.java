@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest.FirebaseCloudMessaging;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.team2.team2_personalbest.R;
@@ -20,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChatRoom extends AppCompatActivity {
-    String TAG = ChatRoom.class.getSimpleName();
+public class ChatRoomActivity extends AppCompatActivity {
+    String TAG = ChatRoomActivity.class.getSimpleName();
 
-    String COLLECTION_KEY = "chats";
+    static String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    String DOCUMENT_KEY = "chat1";
+    static String DOCUMENT_KEY = "chat7";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
@@ -40,13 +42,18 @@ public class ChatRoom extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setUpPopup();
+        //setTheme(android.R.style.Theme_DeviceDefault);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
+        Intent intent = getIntent();
+        intent.getStringExtra("friend's name");
         SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
 
         from = sharedpreferences.getString(FROM_KEY, null);
         //TODO this is sample
-        from = "U";
+        from = "Y";
+        //TODO get the name of person u r texting
         to = "Duy";
         TextView toTextView = (TextView) findViewById(R.id.user_name);
         toTextView.setText(to);
@@ -60,8 +67,18 @@ public class ChatRoom extends AppCompatActivity {
 
         findViewById(R.id.btn_send).setOnClickListener(view -> sendMessage());
         subscribeToNotificationsTopic();
-
+        //TODO edit from to userID
         sharedpreferences.edit().putString(FROM_KEY, from);
+    }
+
+    private void setUpPopup() {
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        boolean openedFromGraph = sharedPreferences.getBoolean("openedFromGraph", false);
+        if (openedFromGraph) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("openedFromGraph", false).apply();
+            setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+        }
     }
 
     private void sendMessage() {
@@ -80,7 +97,8 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     private void initMessageUpdateListener() {
-        chat.addSnapshotListener((newChatSnapShot, error) -> {
+        chat.orderBy(TIMESTAMP_KEY, Query.Direction.ASCENDING)
+                .addSnapshotListener((newChatSnapShot, error) -> {
                     if (error != null) {
                         Log.e(TAG, error.getLocalizedMessage());
                         return;
@@ -113,10 +131,8 @@ public class ChatRoom extends AppCompatActivity {
                                 msg = "Subscribe to notifications failed";
                             }
                             Log.d(TAG, msg);
-                            Toast.makeText(ChatRoom.this, msg, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatRoomActivity.this, msg, Toast.LENGTH_SHORT).show();
                         }
                 );
     }
-
-
 }

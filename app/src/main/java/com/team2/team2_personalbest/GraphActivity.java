@@ -9,8 +9,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -23,11 +25,14 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
@@ -43,13 +48,13 @@ public class GraphActivity extends AppCompatActivity {
     private String userName = "dev";
     final String DATABASE_NAME = "days_db";
 
-
-
+    private boolean isTesting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        isTesting = getIntent().getExtras().getBoolean("TESTING");
 
         walkHist = (Button) findViewById(R.id.walkHistBttn);
         walkHist.setOnClickListener(new View.OnClickListener() {
@@ -68,20 +73,32 @@ public class GraphActivity extends AppCompatActivity {
         new FillEntriesTask(this).execute(dayDatabase);
 
 
-        FirebaseApp.initializeApp(this);
+        //FirebaseApp.initializeApp(this);
 
-        FirebaseUser user = new FirebaseUser(getApplicationContext());
+//        if (!isTesting) {
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
+//      }
 
+    }
 
+    public List<Pair<Integer, Integer>> getHistoryAsList() {
+        List<Pair<Integer, Integer>> walks = new LinkedList<>();
 
-        //Firebase sync accesses DB so execute from seperate thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                user.FirebaseSync();
-            }
-        }).start();
+        for (int i = 0; i < 30; i++) {
+            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+            Day currentDay = dayDatabase.dayDao().getDayById(date);
+            walks.add(new Pair<>(currentDay.getStepsTracked(), currentDay.getStepsUntracked()));
+        }
 
+        return walks;
     }
 
 
@@ -186,4 +203,31 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        String from ="Shady";
+        //from = intent.getStringExtra("Shady");
+        intent.putExtra("friend's name", from);
+        startActivity(intent);
+    }
+    /*
+    public void sendMessage(View view) {
+
+        EditText messageView = findViewById(R.id.textView);
+
+        Map<String, String> newMessage = new HashMap<>();
+        newMessage.put(FROM_KEY, from);
+        newMessage.put(TEXT_KEY, messageView.getText().toString());
+
+        chat.add(newMessage).addOnSuccessListener(result -> {
+            messageView.setText("");
+        }).addOnFailureListener(error -> {
+            Log.e(TAG, error.getLocalizedMessage());
+        });
+    }*/
+
 }

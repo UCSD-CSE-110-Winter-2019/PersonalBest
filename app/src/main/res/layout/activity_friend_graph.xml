@@ -27,19 +27,27 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <TextView
+            <EditText
                 android:id="@+id/textView"
                 android:layout_width="299dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:hint="Send a message to this friend" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="send"
+                android:onClick="sendMessage"/>
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Chat Room"
+                android:onClick="goToChat"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 
+import android.content.Intent;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -12,6 +13,7 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +32,16 @@ import static org.hamcrest.Matchers.allOf;
 public class TestStepsTakenPersists {
 
     @Rule
-    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class);
+    public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
+
+    @Before
+    public void before() {
+
+        Intent testing = new Intent();
+        testing.putExtra("TESTING", true);
+
+        mActivityTestRule.launchActivity(testing);
+    }
 
     @Test
     public void testStepsTakenPersists() {
@@ -45,11 +56,6 @@ public class TestStepsTakenPersists {
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.add500Button), withText("Add 500 Steps"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                12),
                         isDisplayed()));
         appCompatButton.perform(click());
 
