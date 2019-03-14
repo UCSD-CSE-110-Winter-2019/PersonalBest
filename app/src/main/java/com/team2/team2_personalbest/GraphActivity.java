@@ -24,9 +24,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
-import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomPopup;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -204,7 +203,7 @@ public class GraphActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("openedFromGraph", true).apply();
-        Intent intent = new Intent(this, ChatRoomPopup.class);
+        Intent intent = new Intent(this, ChatRoomActivity.class);
         startActivity(intent);
         finish();
     }
