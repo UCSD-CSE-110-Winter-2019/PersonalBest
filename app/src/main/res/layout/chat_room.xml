@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:hint="message will appear here"
             android:padding="10dp"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:gravity="bottom"/>
     </ScrollView>
 
     <EditText

@@ -88,21 +88,21 @@ public class    HomePage extends AppCompatActivity {
 
     /*Firebase User*/
     private FirestoreUser user;
-
-    //TODO OnCreate
+    /*
+    // TODO Possible bug
     @Override
     protected void onNewIntent(Intent intent) {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             startActivity(new Intent(this, ChatRoomActivity.class));
         }
-    }
-
+    }*/
+    //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
-        Bundle bundle = getIntent().getExtras();
+        /*Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             startActivity(new Intent(this, ChatRoomActivity.class));
-        }
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
