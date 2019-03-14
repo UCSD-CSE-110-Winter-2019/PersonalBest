@@ -115,14 +115,16 @@ public class    HomePage extends AppCompatActivity {
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
 
-        //Initializing Firestore User
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-            }
-        });
-        thread.start();
+        if (!isTesting) {
+            //Initializing Firestore User
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                }
+            });
+            thread.start();
+        }
 
 
         //Getting XML elements
@@ -380,6 +382,7 @@ public class    HomePage extends AppCompatActivity {
      */
     public void goToGraph(View view) {
         Intent intent = new Intent(this, GraphActivity.class);
+        intent.putExtra("TESTING", isTesting);
         startActivity(intent);
     }
 

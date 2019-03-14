@@ -45,13 +45,13 @@ public class GraphActivity extends AppCompatActivity {
     private String userName = "dev";
     final String DATABASE_NAME = "days_db";
 
-
-
+    private boolean isTesting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        isTesting = getIntent().getExtras().getBoolean("TESTING");
 
         walkHist = (Button) findViewById(R.id.walkHistBttn);
         walkHist.setOnClickListener(new View.OnClickListener() {
@@ -72,15 +72,17 @@ public class GraphActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-                List<Pair<Integer, Integer>> walks = getHistoryAsList();
-                user.setWalks(walks);
-            }
-        });
-        thread.start();
+        if (!isTesting) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                    List<Pair<Integer, Integer>> walks = getHistoryAsList();
+                    user.setWalks(walks);
+                }
+            });
+            thread.start();
+        }
 
     }
 
