@@ -56,11 +56,6 @@ public class TestStepsTakenPersists {
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.add500Button), withText("Add 500 Steps"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                12),
                         isDisplayed()));
         appCompatButton.perform(click());
 
