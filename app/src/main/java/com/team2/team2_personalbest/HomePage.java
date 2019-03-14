@@ -3,6 +3,7 @@ package com.team2.team2_personalbest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -80,6 +81,10 @@ public class    HomePage extends AppCompatActivity {
     public double elapsedTime;
     public double start;
 
+
+    /* for testing purposes */
+    public boolean isTesting = false;
+
     /*Firebase User*/
     private FirestoreUser user;
 
@@ -88,6 +93,10 @@ public class    HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        if (getIntent().getExtras() != null) {
+            isTesting = getIntent().getExtras().getBoolean("TESTING");
+        }
 
         final String DATABASE_NAME = "days_db";
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
@@ -107,6 +116,7 @@ public class    HomePage extends AppCompatActivity {
         this.psBaseline = PS.getInt("psBaseline");
 
         //Initializing Firestore User
+//      if (!isTesting) {
 //        Thread thread = new Thread(new Runnable(){
 //            @Override
 //            public void run(){
@@ -114,6 +124,7 @@ public class    HomePage extends AppCompatActivity {
 //            }
 //        });
 //        thread.start();
+//      }
 
 
         //Getting XML elements
@@ -143,13 +154,16 @@ public class    HomePage extends AppCompatActivity {
 
         // TODO Check if it's the first time running the appp
 
+
         firstTime = new SharedPref(this);
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         boolean hasRun = firstTime.getBool("init");
         if (!hasRun) {
-            goToSetupActivity();
-            fitnessService.setupInit();
-            firstTime.setBool("init", true);
+            if (!isTesting) {
+                goToSetupActivity();
+                fitnessService.setupInit();
+                firstTime.setBool("init", true);
+            }
             setInitialGoal();
         }
         else {
@@ -384,6 +398,7 @@ public class    HomePage extends AppCompatActivity {
      */
     public void goToGraph(View view) {
         Intent intent = new Intent(this, GraphActivity.class);
+        intent.putExtra("TESTING", isTesting);
         startActivity(intent);
     }
 
