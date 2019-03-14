@@ -58,12 +58,12 @@ public class FirestoreUser extends IUser {
 
 
         //Testing getWalksfor this user
-        List<Pair<Integer, Integer>> walkList = getWalks(User.userID);
-        for (int i=0; i<walkList.size(); i++){
-            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
-            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
-                                                        +"\nUnplanned:"+walkList.get(i).second+"\nXXXXXX\n");
-        }
+//        List<Pair<Integer, Integer>> walkList = getWalks(User.userID);
+//        for (int i=0; i<walkList.size(); i++){
+//            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+//            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
+//                                                        +"\nUnplanned:"+walkList.get(i).second+"\nXXXXXX\n");
+//        }
     }
 
     /*
@@ -325,9 +325,35 @@ public class FirestoreUser extends IUser {
        Scans our list of users and returns user as Friend Type given ID
     */
     Friend getAppUser(int ID){
+        Friend appUser = new Friend("", "");
+        CollectionReference UsersRef = db.collection("Users");
+        // Create a query against the collection to get This User
+        Query query = UsersRef.whereEqualTo("UserID", ID);
+        Log.d("IS_USER", "Executing Query Task");
+        Task<QuerySnapshot> task = query.get();
+        try{
+            Log.d("IS_USER", "Awaiting Task");
+            Tasks.await(task);
+            Log.d("IS_USER", "Task Done");
+            if (task.isSuccessful()) {
+                Log.d("IS_USER", "Task was successful");
+                QuerySnapshot document = task.getResult();
+                List<DocumentSnapshot> docList = document.getDocuments();
+                String email = docList.get(0).get("email").toString();
+                String name = docList.get(0).get("name").toString();
+                appUser = new Friend(name, email);
 
-        Friend user = new Friend("", "");
-        return user;
+                Log.d("GETTING_USER_DEB", "Size:"+docList.size());
+            }
+        } catch (ExecutionException e) {
+            Log.d("GET_FRIEND_LIST", "Query Failed to execute");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d("GET_FRIEND_LIST", "Query Failed due to interruption");
+            e.printStackTrace();
+        }
+        Log.d("GET_FRIEND_LIST", "Task Failed");
+        return appUser;
     }
 
     /*
