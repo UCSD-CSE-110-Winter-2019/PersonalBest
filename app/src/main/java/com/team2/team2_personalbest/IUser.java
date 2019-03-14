@@ -6,10 +6,7 @@ import java.util.List;
 
 public abstract class IUser {
 
-    //protected List<Friend> friendlist;
-
-
-    /*
+ /*
         pre: ID is a user
         Used to add an app user to another App users FriendList given ID
      */
@@ -52,6 +49,12 @@ public abstract class IUser {
     abstract boolean isUser(int ID);
 
     /*
+        returns true or false if user history is in db
+        Should be Used for checkers before getWalks
+    */
+    abstract boolean hasWalks(int ID);
+
+    /*
         Scans our list of users and returns user given ID
      */
     abstract Friend getAppUser(int ID);
@@ -61,9 +64,6 @@ public abstract class IUser {
        Meant to be used on sign up
      */
     //abstract void addUser(Friend user);
-
-
-
 
     /*
         Private class Friend

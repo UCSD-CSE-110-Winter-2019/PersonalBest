@@ -110,7 +110,8 @@ public class    HomePage extends AppCompatActivity {
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run(){
-                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                //user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                user = new FirestoreUser("Joey", "joey@ucsd.edu");
             }
         });
         thread.start();

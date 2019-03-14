@@ -35,9 +35,9 @@ public class GoalAccomplished extends Activity {
      */
     public void no(View view){
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
-        String newGoal = sharedPreferences.getString("newgoal", "");
+        String newGoal = sharedPreferences.getString("newgoal", "0");
         // New suggested goal
-        long goal = Long.parseLong(newGoal) + 500;
+        long goal = Long.parseLong(newGoal)+500;
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("newgoal", Long.toString(goal));
         editor.apply();

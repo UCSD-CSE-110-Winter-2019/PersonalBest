@@ -41,12 +41,7 @@ public class GraphActivity extends AppCompatActivity {
 
     private DayDatabase dayDatabase;
     private Button walkHist;
-    private DatabaseReference firebaseDatabaseRef;
-    private String userName = "dev";
     final String DATABASE_NAME = "days_db";
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +67,16 @@ public class GraphActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-                List<Pair<Integer, Integer>> walks = getHistoryAsList();
-                user.setWalks(walks);
-            }
-        });
-        thread.start();
+        // TODO make this thing not throw an error so user can sync data
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
 
     }
 
