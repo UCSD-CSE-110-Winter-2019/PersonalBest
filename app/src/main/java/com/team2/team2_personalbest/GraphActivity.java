@@ -2,18 +2,20 @@ package com.team2.team2_personalbest;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
+import android.widget.Button;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -22,47 +24,81 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.firebase.database.DatabaseReference;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
+/**
+ * This activity displays the graph
+ */
+
 public class GraphActivity extends AppCompatActivity {
 
     private DayDatabase dayDatabase;
+    private Button walkHist;
+    private DatabaseReference firebaseDatabaseRef;
+    private String userName = "dev";
+    final String DATABASE_NAME = "days_db";
+
+    private boolean isTesting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
+        isTesting = getIntent().getExtras().getBoolean("TESTING");
 
-        final String DATABASE_NAME = "days_db";
+        walkHist = (Button) findViewById(R.id.walkHistBttn);
+        walkHist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), walkHistory.class);
+                startActivity(intent);
+            }
+        });
+
+
         dayDatabase = Room.databaseBuilder(getApplicationContext(),
                 DayDatabase.class, DATABASE_NAME)
                 .build();
 
-
-//        DayViewModel model = ViewModelProviders.of(this).get(DayViewModel.class);
-//
-//        model.getDays().observe(this, days -> {
-//            List<BarEntry> entries = new ArrayList<>();
-//            for(int i = 0; i < days.size(); i++) {
-//                entries.add(new BarEntry(i, new float[] {days.get(i).getStepsTracked(), days.get(i).getStepsUntracked()}));
-//            }
-//            generateBarChart(entries);
-//        });
-
-
         new FillEntriesTask(this).execute(dayDatabase);
 
 
+        //FirebaseApp.initializeApp(this);
+
+//        if (!isTesting) {
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                List<Pair<Integer, Integer>> walks = getHistoryAsList();
+//                user.setWalks(walks);
+//            }
+//        });
+//        thread.start();
+//      }
 
     }
-//    private void addObserver(DayDatabase database, LiveData<Day> day) {
-//        DataBaseObserver observer = new DataBaseObserver(database, this);
-//        day.observe(this, observer);
-//    }
+
+    public List<Pair<Integer, Integer>> getHistoryAsList() {
+        List<Pair<Integer, Integer>> walks = new LinkedList<>();
+
+        for (int i = 0; i < 30; i++) {
+            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+            Day currentDay = dayDatabase.dayDao().getDayById(date);
+            walks.add(new Pair<>(currentDay.getStepsTracked(), currentDay.getStepsUntracked()));
+        }
+
+        return walks;
+    }
+
+
 
     private class FillEntriesTask extends AsyncTask<DayDatabase, Void, List<BarEntry>> {
 
@@ -77,7 +113,7 @@ public class GraphActivity extends AppCompatActivity {
 
             List<BarEntry> entries = new ArrayList<>();
             for(int i = 0; i < 7; i++) {
-                String date = DateHelper.getPreviousDayDateString(i);
+                String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
 
                 Day currentDay = database.dayDao().getDayById(date);
 
@@ -97,6 +133,8 @@ public class GraphActivity extends AppCompatActivity {
             generateBarChart(entries);
         }
     }
+
+
 
     public void generateBarChart(List<BarEntry> entries) {
         CombinedChart chart = findViewById(R.id.chart);
@@ -162,30 +200,14 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
-
-//    public class DayViewModel extends ViewModel {
-//        private MutableLiveData<List<Day>> days;
-//
-//        public DayViewModel(){}
-//
-//        public MutableLiveData<List<Day>> getDays() {
-//            if(days == null) {
-//                days = new MutableLiveData<>();
-//                loadDays();
-//            }
-//            return days;
-//        }
-//
-//        private void loadDays() {
-//            List<Day> lastWeek = new ArrayList<>();
-//            for(int i = 0; i < 7; i++) {
-//                String date = DateHelper.getPreviousDayDateString(i);
-//
-//                Day currentDay = dayDatabase.dayDao().getDayById(date);
-//                lastWeek.add(currentDay);
-//            }
-//            days.postValue(lastWeek);
-//        }
-//    }
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
 }

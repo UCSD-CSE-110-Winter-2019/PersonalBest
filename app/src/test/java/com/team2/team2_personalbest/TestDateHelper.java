@@ -4,6 +4,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import com.team2.team2_personalbest.DateHelper;
 
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class TestDateHelper {
 
@@ -19,10 +22,11 @@ public class TestDateHelper {
     }
 
     @Test
-    public void testGetDayOfWeek() {
-        int i = DateHelper.getDayOfWeek();
-
-        assertEquals(1, i);
-
+    public void testDayToString() {
+        long feb17 = 1550445565750L;
+        Date day = new Date();
+        day.setTime(feb17);
+        assertEquals("02-17-19", DateHelper.dayDateToString(day));
     }
+
 }

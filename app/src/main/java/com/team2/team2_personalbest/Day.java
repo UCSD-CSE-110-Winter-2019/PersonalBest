@@ -8,7 +8,9 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
-
+/**
+ * This class is used for database
+ */
 @Entity/*(tableName = "day_step_table")*/
 public class Day {
 

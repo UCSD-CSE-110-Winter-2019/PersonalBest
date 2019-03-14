@@ -9,7 +9,9 @@ import android.arch.persistence.room.Update;
 import android.database.Observable;
 
 import java.util.List;
-
+/**
+ * This class is used for database
+ */
 @Dao
 public interface DayDao {
 

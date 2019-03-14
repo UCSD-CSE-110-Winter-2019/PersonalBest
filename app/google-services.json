@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "768841034924",
+    "firebase_url": "https://team2-personalbest.firebaseio.com",
+    "project_id": "team2-personalbest",
+    "storage_bucket": "team2-personalbest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768841034924:android:a2cb825564562947",
+        "android_client_info": {
+          "package_name": "com.team2.team2_personalbest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768841034924-j3g7a0cgg6uj9930rrrutcgupm02hlne.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team2.team2_personalbest",
+            "certificate_hash": "90f778d282aac0d7e123f67e634dd9e363a5eda9"
+          }
+        },
+        {
+          "client_id": "768841034924-hchul801nctur2ve3pfosffmhfv4icuj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team2.team2_personalbest",
+            "certificate_hash": "427517f663a50b482cb516a07b78d783521ce42d"
+          }
+        },
+        {
+          "client_id": "768841034924-5it5dck70leloi7qukblf38kftksao96.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team2.team2_personalbest",
+            "certificate_hash": "d43405d62ddbc703c167e1cf522e8807399550fa"
+          }
+        },
+        {
+          "client_id": "768841034924-gqnks0cl63poppj6imio3pa8fo3pslac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHqI3JQDqWyRBqdJbxQdqZCWt7XR6IwR8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768841034924-gqnks0cl63poppj6imio3pa8fo3pslac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

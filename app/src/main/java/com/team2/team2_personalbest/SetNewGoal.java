@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
+/**
+ * This activity prompt the user for the new goal if confirmed is clicked,
+ *  or go back to previous activity if cancel is clicked
+ */
 public class SetNewGoal extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +20,10 @@ public class SetNewGoal extends Activity {
         setContentView(R.layout.activity_newgoal_popup);
     }
 
+    /**
+     * Confirm button
+     * @param view
+     */
     public void confirm(View view){
         EditText newGoal = (EditText) findViewById(R.id.set_goal);
         //TODO Check for valid input
@@ -35,12 +42,12 @@ public class SetNewGoal extends Activity {
         editor.apply();
         finish();
     }
+
+    /**
+     * Cancel button
+     * @param view
+     */
     public void cancel(View view){
-        /*
-        Intent intent = new Intent(this, HomePage.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        */
         finish();
     }
 }
