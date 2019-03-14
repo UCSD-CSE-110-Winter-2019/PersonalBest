@@ -2,6 +2,7 @@ package com.team2.team2_personalbest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,47 +16,51 @@ import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
 
-    // TODO Declare global variable for database instance
-    FirebaseUser db;
+    FirestoreUser db;
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
     );
 
-    LinearLayout friendsListView = findViewById(R.id.friendsListView);
+    LinearLayout friendsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_friends);
 
+        friendsListView = findViewById(R.id.friendsListView);
+
         // Get db instance and display current friends
-        //TODO
-        db = new FirebaseUser(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
+        String email = sharedPreferences.getString("userID", "");
+
+        // TODO change this to also get passed in the name
+        db = new FirestoreUser("", email);
         displayFriends();
     }
 
     public void displayFriends() {
-        // TODO Get friends list from DB
-        List<IUser.Friend> friends = db.getFriendlist();
+        List<IUser.Friend> friends = db.getFriendList();
 
         List<IUser.Friend> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com", "false"));
-        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com", "false"));
+        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com"));
+        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com"));
+        testFriends.add(new IUser.Friend("Shady", "shady@gmail.com"));
+        testFriends.add(new IUser.Friend("Yosuke", "yosuke@gmail.com"));
+        testFriends.add(new IUser.Friend("D", "D@gmail.com"));
 
         // Display all friends that both added each other
-        for (IUser.Friend friend : friends) {
-            if (friend.isPending.equals("false")) {
-                addFriendToScrollable(friend);
-            }
+        for (IUser.Friend friend : testFriends) {   // TODO change to 'friends'
+            addFriendToScrollable(friend);
         }
     }
 
     public void addFriendToScrollable(IUser.Friend friend) {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
-        newFriend.setHeight(30);                // TODO edit height here
+        newFriend.setHeight(30);
 
         // Set button margins programatically
         params.setMargins(20, 20, 20, 10);
@@ -65,7 +70,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), GraphActivity.class);   // TODO @anton change this here to whatever Activity desired
+                Intent intent = new Intent(v.getContext(), FriendGraph.class);
                 intent.putExtra("name", friend.name);
                 startActivity(intent);
             }
@@ -78,22 +83,16 @@ public class ManageFriendsActivity extends AppCompatActivity {
         TextView emailField = findViewById(R.id.emailPromptField);
         String emailAddress = emailField.getText().toString();
 
-        // TODO get Personal Best Friend that corresponds the that email -->
-        // TODO IUser.Friend newFriend = db.getAppUser(emailAddress)
-//        if (!newFriend.isPending) {
-//            addFriendToScrollable(newFriend);
-//        }
-
-        // TODO get name's email address
-        // TODO add Friend object to the database
+        // Add friend to curr user's friend list by the email's unique hashed ID
+        db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
     }
 
-    public void removeButtonOnClick(View view) {
-        TextView emailField = findViewById(R.id.emailPromptField);
-        String emailAddress = emailField.getText().toString();
-        // TODO get name that corresponds to email
-
-        // TODO get name's email address
-        // TODO delete Friend object from database
-    }
+//    public void removeButtonOnClick(View view) {
+//        TextView emailField = findViewById(R.id.emailPromptField);
+//        String emailAddress = emailField.getText().toString();
+//        // TOD get name that corresponds to email
+//
+//        // TOD get name's email address
+//        // TOD delete Friend object from database
+//    }
 }
