@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChatRoom extends AppCompatActivity {
-    String TAG = ChatRoom.class.getSimpleName();
+public class ChatRoomPopup extends AppCompatActivity {
+    String TAG = ChatRoomPopup.class.getSimpleName();
 
     String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
@@ -116,7 +116,7 @@ public class ChatRoom extends AppCompatActivity {
                                 msg = "Subscribe to notifications failed";
                             }
                             Log.d(TAG, msg);
-                            Toast.makeText(ChatRoom.this, msg, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatRoomPopup.this, msg, Toast.LENGTH_SHORT).show();
                         }
                 );
     }

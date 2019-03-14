@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomPopup;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -198,6 +199,14 @@ public class GraphActivity extends AppCompatActivity {
         return data;
 
     }
-
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomPopup.class);
+        startActivity(intent);
+        finish();
+    }
 
 }
