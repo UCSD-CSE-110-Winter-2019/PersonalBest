@@ -208,4 +208,9 @@ public class GraphActivity extends AppCompatActivity {
         finish();
     }
 
+    public void goToLongGraph(View view) {
+        Intent intent = new Intent(this, GraphActivityLong.class);
+        startActivity(intent);
+    }
+
 }
