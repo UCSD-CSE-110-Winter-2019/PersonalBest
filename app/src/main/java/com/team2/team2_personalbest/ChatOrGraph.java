@@ -28,32 +28,35 @@ public class ChatOrGraph extends Activity {
         // Retrieve username from previous activity
         Bundle bundle = getIntent().getExtras();
         String userName;
+        int friend_id;
         try {
-            userName = bundle.getString("friend'sName");
+            //userName = bundle.getString("friend'sName");
+            friend_id = bundle.getInt("friend_id");
         }
         catch(NullPointerException e){
-            userName = "Shady";
+            friend_id = 0;
         }
         Intent intent = new Intent(this, FriendGraph.class);
         // Pass username to next activity
-        intent.putExtra("friend'sName", userName);
+        intent.putExtra("friend_id", friend_id);
         startActivity(intent);
         finish();
     }
 
-    public void launchChatActivity(View view){
+    public void launchChatActivity(View view) {
         // Retrieve username from previous activity
         Bundle bundle = getIntent().getExtras();
         String userName;
+        int friend_id;
         try {
-            userName = bundle.getString("friend'sName");
-        }
-        catch(NullPointerException e){
-            userName = "Shady";
+            //userName = bundle.getString("friend'sName");
+            friend_id = bundle.getInt("friend_id");
+        } catch (NullPointerException e) {
+            friend_id = 0;
         }
         Intent intent = new Intent(this, ChatRoomActivity.class);
         // Pass username to next activity
-        intent.putExtra("friend'sName", userName);
+        intent.putExtra("friend_id", friend_id);
         startActivity(intent);
         finish();
     }

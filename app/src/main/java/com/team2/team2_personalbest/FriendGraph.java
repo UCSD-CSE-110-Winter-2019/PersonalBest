@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.firebase.FirebaseApp;
 
 import java.lang.reflect.Array;
@@ -35,14 +36,24 @@ public class FriendGraph extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_graph);
 
-        String name = getIntent().getStringExtra("name");
+        //int friend_ID_string = getIntent().getInt("friend_ID");
+        Bundle bundle = getIntent().getExtras();
+        String userName;
+        int friend_id;
+        try {
+            //userName = bundle.getString("friend'sName");
+            friend_id = bundle.getInt("friend_id");
+        } catch (NullPointerException e) {
+            friend_id = 0;
+        }
 
         FirebaseApp.initializeApp(this);
 
-        FirebaseUser user = new FirebaseUser(getApplicationContext());
+        FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
 
-        new FillEntriesTask(user).execute(name);
+        List<Pair<Integer, Integer>> walksList = user.getWalks(friend_id);
 
+        new FillEntriesTask(walksList).execute();
     }
 
 
@@ -50,23 +61,21 @@ public class FriendGraph extends AppCompatActivity {
     private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
 
         Context mContext;
-        FirebaseUser user;
+        List<Pair<Integer, Integer>> walks;
 
-        public FillEntriesTask(FirebaseUser user) {
-            this.user = user;
+        public FillEntriesTask(List<Pair<Integer, Integer>> walks) {
+            this.walks = walks;
         }
         @Override
         protected List<BarEntry> doInBackground(String... friends) {
-            String friend = friends[0];
-
-            List<Pair<Float, Float>> walks = user.getWalks(friend);
+            //String friend = friends[0];
 
             List<BarEntry> entries = new ArrayList<>();
             for(int i = 0; i < 28; i++) {
-                Pair<Float, Float> day = walks.get(i);
+                Pair<Integer, Integer> day = walks.get(i);
                 if(day != null) {
-                    Float trackedSteps = day.first;
-                    Float untrackedSteps = day.second - trackedSteps;
+                    Integer trackedSteps = day.first;
+                    Integer untrackedSteps = day.second - trackedSteps;
                     entries.add(new BarEntry(28 - i, new float[]{untrackedSteps, trackedSteps}));
                 }
             }

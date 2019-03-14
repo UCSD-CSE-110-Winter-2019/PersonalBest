@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,6 +51,9 @@ public class FirestoreUser extends IUser {
         // (Usually if its their first time)
         if (!isUser(User.userID))
             addUser();
+
+        if (!hasWalks(User.userID))
+            setWalks(getDummyWalks());
 
 
         //Testing Add Friend
@@ -212,6 +216,18 @@ public class FirestoreUser extends IUser {
         return ret;
     }
 
+    /*
+        Private helper method to populate dummy users made for testing
+     */
+    private List<Pair<Integer, Integer>> getDummyWalks(){
+        List<Pair<Integer, Integer>> retList = new ArrayList<>();
+        for (int i=0; i<30; i++) {
+            Pair<Integer, Integer> initPair = new Pair<>(-1,-1);
+            retList.add(initPair);
+        }
+        return retList;
+    }
+
 
     /*
         pre: ID is a user and is a friend
@@ -223,10 +239,6 @@ public class FirestoreUser extends IUser {
             Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
             return null;
         }
-        // if(!isFriend(ID)){
-        //      Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not a friend");
-        //      return null;
-        // }
 
         // ID is a user and is a friend of this user
         // Create a reference to This Friends Walk History collection
@@ -269,6 +281,47 @@ public class FirestoreUser extends IUser {
         }
         Log.d("GET_WALKS", "GET_WALKS successful with size - "+walksList.size());
         return walksList;
+    }
+
+
+    /*
+        True if user has walks
+    */
+    boolean hasWalks(int ID){
+
+        if(!isUser(ID)){
+            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
+            return false;
+        }
+
+        CollectionReference UserWalkRef = db.collection("Users").document(Integer.toString(ID)).collection("Walks");
+
+        Log.d("HAS_WALKS", "Executing Query Task");
+        Task<QuerySnapshot> task = UserWalkRef.get();
+        try{
+            Log.d("HAS_WALKS", "Awaiting Task");
+            Tasks.await(task);
+            Log.d("HAS_WALKS", "Task Done");
+            if (task.isSuccessful()) {
+                Log.d("HAS_WALKS", "Task was successful");
+                QuerySnapshot document = task.getResult();
+                List<DocumentSnapshot> docList = document.getDocuments();
+
+                if (!docList.isEmpty())
+                    return true;
+                else
+                    return false;
+            }
+        } catch (ExecutionException e) {
+            Log.d("IS_USER", "Query Failed to execute");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d("IS_USER", "Query Failed due to interruption");
+            e.printStackTrace();
+        }
+
+        Log.d("IS_USER", "Task Failed");
+        return false;
     }
 
     /*
@@ -329,14 +382,14 @@ public class FirestoreUser extends IUser {
         CollectionReference UsersRef = db.collection("Users");
         // Create a query against the collection to get This User
         Query query = UsersRef.whereEqualTo("UserID", ID);
-        Log.d("IS_USER", "Executing Query Task");
+        Log.d("GET_USER", "Executing Query Task to get user: "+ID);
         Task<QuerySnapshot> task = query.get();
         try{
-            Log.d("IS_USER", "Awaiting Task");
+            Log.d("GET_USER", "Awaiting Task");
             Tasks.await(task);
-            Log.d("IS_USER", "Task Done");
+            Log.d("GET_USER", "Task Done");
             if (task.isSuccessful()) {
-                Log.d("IS_USER", "Task was successful");
+                Log.d("GET_USER", "Task was successful for getting user: "+ID);
                 QuerySnapshot document = task.getResult();
                 List<DocumentSnapshot> docList = document.getDocuments();
                 String email = docList.get(0).get("email").toString();

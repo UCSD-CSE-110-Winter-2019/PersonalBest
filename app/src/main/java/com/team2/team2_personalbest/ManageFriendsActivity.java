@@ -84,7 +84,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), FriendGraph.class);
-                intent.putExtra("name", friend.name);
+                intent.putExtra("friend_id", friend.userID);
                 startActivity(intent);
             }
         });
