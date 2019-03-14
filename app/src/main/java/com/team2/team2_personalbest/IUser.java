@@ -76,7 +76,7 @@ public abstract class IUser {
             this.name = name;
             this.address = address;
             //this.isPending = isPending;
-            this.userID = emailToUniqueId(address);
+            this.userID = UserUtilities.emailToUniqueId(address);
         }
 
         public String getName() {
@@ -109,13 +109,6 @@ public abstract class IUser {
 //            isPending = pending;
 //        }
 
-        private int emailToUniqueId(String email){
-            int hashVal = 7;
-            for (int i = 0; i < (email.length()-10); i++) {
-                hashVal = hashVal*31 + email.charAt(i);
-            }
-            return hashVal;
-        }
 
         // Added by Daniel to be able to print the Friend info in the friends list
         public String toString() {
