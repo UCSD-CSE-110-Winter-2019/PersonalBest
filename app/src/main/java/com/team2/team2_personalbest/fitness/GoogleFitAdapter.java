@@ -70,6 +70,7 @@ public class GoogleFitAdapter implements FitnessService {
      */
     public void setup() {
 
+
 //        FitnessOptions fitnessOptions = FitnessOptions.builder()
 //                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
 //                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
@@ -82,10 +83,12 @@ public class GoogleFitAdapter implements FitnessService {
 //                    GoogleSignIn.getLastSignedInAccount(activity),
 //                    fitnessOptions);
 //        } else {
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-        Log.d("GOOGLE_ACC", ""+acct.getEmail());
-            updateStepCount();
-            startRecording();
+        if (!activity.isTesting) {
+            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
+            Log.d("GOOGLE_ACC", "" + acct.getEmail());
+        }
+        updateStepCount();
+        startRecording();
 
         //}
     }
