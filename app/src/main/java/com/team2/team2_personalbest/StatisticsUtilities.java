@@ -1,12 +1,8 @@
 package com.team2.team2_personalbest;
 
-/**
- * This class is used to calculate statistics
- */
 public class StatisticsUtilities {
 
     private static double MILE_CONVERSION = 5280;
-    private static final double TO_GET_AVERAGE_STRIDE = 0.413;
     /**
      *
      * @param steps
@@ -42,17 +38,4 @@ public class StatisticsUtilities {
         }
         return stepGoal - currStepCount;
     }
-
-    public  static double convertMillToHour(long milliSeconds){
-        return milliSeconds / (1000 * 3600);
-    }
-
-    public static double calculateAveStrideLength(double height) {
-        return height * TO_GET_AVERAGE_STRIDE;
-    }
-
-    public static double convertInchToMile(double inch) {
-        return inch * 1.57828e-5;
-    }
-
 }

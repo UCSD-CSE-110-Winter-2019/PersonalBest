@@ -1,17 +1,11 @@
 package com.team2.team2_personalbest.fitness;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
-import java.lang.String;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataSet;
@@ -21,6 +15,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.team2.team2_personalbest.HomePage;
+import com.team2.team2_personalbest.R;
 
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
@@ -32,65 +27,37 @@ public class GoogleFitAdapter implements FitnessService {
         this.activity = activity;
     }
 
-    /**
-     * set up with google login prompt
-     */
-    public void setupInit(){
+
+    public void setup() {
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .build();
 
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .build();
-
-            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(activity, gso);
-
             GoogleSignIn.requestPermissions(
                     activity, // your activity
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     GoogleSignIn.getLastSignedInAccount(activity),
                     fitnessOptions);
-
         } else {
 
-            //Get userID
-            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-            Log.d("GOOGLE_ACC", ""+acct.getEmail());
-            updateStepCount();
-            startRecording();
-
+            newThread();
+            //updateStepCount();
+            //startRecording();
         }
     }
 
-    /**
-     * setup but without login prompt
-     */
-    public void setup() {
 
+    private void newThread(){
 
-//        FitnessOptions fitnessOptions = FitnessOptions.builder()
-//                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-//                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-//                .build();
-//
-//        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
-//            GoogleSignIn.requestPermissions(
-//                    activity, // your activity
-//                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-//                    GoogleSignIn.getLastSignedInAccount(activity),
-//                    fitnessOptions);
-//        } else {
+        new Thread(new Runnable() {
+            public void run() {
 
-        if (!activity.isTesting) {
-            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(activity);
-//            Log.d("GOOGLE_ACC", "" + acct.getEmail());
-        }
-        updateStepCount();
-        startRecording();
-        //}
+                updateStepCount();
+                startRecording();
+            }
+        }).start();
     }
 
     private void startRecording() {

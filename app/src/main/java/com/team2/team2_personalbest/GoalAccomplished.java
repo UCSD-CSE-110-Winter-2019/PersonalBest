@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-/**
- * This activity is called when user completed the goal
- */
+
 public class GoalAccomplished extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,22 +15,12 @@ public class GoalAccomplished extends Activity {
         setContentView(R.layout.activity_goalaccomplished);
     }
 
-    /**
-     * Yes button
-     * start setNewGoal Activity
-     * @param view
-     */
     public void yes(View view){
         Intent intent = new Intent(this, SetNewGoal.class);
         startActivity(intent);
         finish();
     }
 
-    /**
-     * No button
-     * Increment the goal by 500 and return to previous activity
-     * @param view
-     */
     public void no(View view){
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         String newGoal = sharedPreferences.getString("newgoal", "");

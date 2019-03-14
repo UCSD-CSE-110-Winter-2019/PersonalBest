@@ -6,11 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
 public class LoginActivity extends AppCompatActivity {
-    private HomePage activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +18,13 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //launchActivity();
-                finish();
+                launchActivity();
             }
         });
+    }
+
+    public void launchActivity() {
+        Intent intent = new Intent(this, SetupActivity.class);
+        startActivity(intent);
     }
 }
