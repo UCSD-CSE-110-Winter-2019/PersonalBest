@@ -22,6 +22,7 @@ import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
 import com.team2.team2_personalbest.fitness.GoogleFitAdapter;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +30,7 @@ import java.util.TimerTask;
 /**
  * Main activity of the app
  */
-public class    HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity {
     //TODO Variables
     /* Constants */
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
@@ -86,17 +87,24 @@ public class    HomePage extends AppCompatActivity {
     /* for testing purposes */
     public boolean isTesting = false;
 
-    /*Firebase user*/
+    /*Firebase User*/
+    //probably wont work because FirestoreUser must be called from a separate thread
     private FirestoreUser user;
-
+    /*
     // TODO Possible bug
     @Override
     protected void onNewIntent(Intent intent) {
-        notificationToChat();
-    }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }
+    }*/
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
-        notificationToChat();
+        /*Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
@@ -121,16 +129,6 @@ public class    HomePage extends AppCompatActivity {
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
 
-        //Initializing Firestore user
-//      if (!isTesting) {
-//        Thread thread = new Thread(new Runnable(){
-//            @Override
-//            public void run(){
-//                user storeUser= new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-//            }
-//        });
-//        thread.start();
-//      }
 
 
         //Getting XML elements
@@ -176,14 +174,12 @@ public class    HomePage extends AppCompatActivity {
             fitnessService.setup();
         }
         toggleWalk();
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(HomePage homePage) {
-                return new GoogleFitAdapter(homePage);
-            }
-        });
-
-
+//        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+//            @Override
+//            public FitnessService create(HomePage homePage) {
+//                return new GoogleFitAdapter(homePage);
+//            }
+//        });
 
 
         //update step every 5 seconds
@@ -209,25 +205,11 @@ public class    HomePage extends AppCompatActivity {
 
 
 
+
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
-        //setUserName();
-
+//        setUserName();
     }
 
-    private void notificationToChat() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            Object value;
-            for (String key : getIntent().getExtras().keySet()) {
-                if (key.equals("from")) {
-                    Log.d("launchedFromNoti", key);
-                    startActivity(new Intent(this, ChatRoomActivity.class));
-                    Log.d("NotificationTag", "........");
-                }
-            }
-
-        }
-    }
 
 
     //TODO On Resume
@@ -267,6 +249,24 @@ public class    HomePage extends AppCompatActivity {
         PS.setInt("psDailyTotal", this.psDailyTotal);
         PS.setInt("psBaseline", this.psBaseline);
         PS.setInt("psStepsThisWalk", this.psStepsThisWalk);
+
+        String name = PS.getStr("user name");
+        String email = PS.getStr("userID");
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Day> days = dayDatabase.dayDao().getAllDays();
+                List<Day> last30Days;
+                if(days.size() > 30) {
+                    last30Days = days.subList(0, 30);
+                } else {
+                    last30Days = days;
+                }
+                FirestoreUser user = new FirestoreUser(name, email);
+                user.setWalks(last30Days);
+            }
+        }).start();
         super.onDestroy();
     }
 
@@ -300,7 +300,11 @@ public class    HomePage extends AppCompatActivity {
                 getString(R.string.planned_distance));
 
 
-        updateDatabase((int) stepCount, plannedSteps);
+        SharedPreferences userStore = this.getSharedPreferences("appname_prefs", 0);
+        String name = userStore.getString("user name", "");
+        String email = userStore.getString("userID", "");
+
+        updateDatabase((int) stepCount, plannedSteps, name, email);
 
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
@@ -335,12 +339,14 @@ public class    HomePage extends AppCompatActivity {
 
     }
 
-    private void updateDatabase(int stepCount, int plannedSteps) {
+    private void updateDatabase(int stepCount, int plannedSteps, String name, String email) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                Log.d("CREATED_HOMEPAGE", "run: ran updateDatabase");
                 //Initializes a new Day row like this !
+
+
                 String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
                 Log.d("HomePage", date);
                 Day currentDay = dayDatabase.dayDao().getDayById(date);
@@ -352,6 +358,8 @@ public class    HomePage extends AppCompatActivity {
                     currentDay.setStepsUntracked(stepCount);
                     dayDatabase.dayDao().updateDay(currentDay);
                 }
+
+
 
 //                loggerForTesting();
                 EncouragementNotification.sendSubNotification(HomePage.this, dayDatabase);
@@ -434,7 +442,7 @@ public class    HomePage extends AppCompatActivity {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (planned_walk){ //user was on planned walk, wants to end it
+                if (planned_walk){ //User was on planned walk, wants to end it
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
@@ -531,7 +539,7 @@ public class    HomePage extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 1; i < 7; i++) {
+                for(int i = 1; i < 31; i++) {
                     Log.d("HomePage", "test adding day");
                     Day currentDay = dayDatabase.dayDao().getDayById(DateHelper.dayDateToString(DateHelper.previousDay(i)));
                     if(currentDay == null) {
@@ -579,17 +587,6 @@ public class    HomePage extends AppCompatActivity {
 
     public int getManualStepsAddedTotal() {
         return this.manualStepsAddedTotal;
-    }
-
-    private void setUpChatRoom() {
-        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
-        boolean openedFromFCMNotification = sharedPreferences.getBoolean("openedFromFCMNotification", false);
-        Log.d("hello", "hello");
-        if (openedFromFCMNotification) {
-            Log.d("goodbye", "hello");
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("openedFromFCMNotification", false).apply();
-        }
     }
 
 }

@@ -30,7 +30,7 @@ public class SetupActivity extends AppCompatActivity {
         {
             email = account.name;
             Log.d("userEmail", email);
-            SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userID", email);
             editor.apply();
@@ -59,7 +59,7 @@ public class SetupActivity extends AppCompatActivity {
                     finish();
                     startActivity(intent);
                 }
-                SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("height", heightStr);
                 editor.apply();
@@ -76,7 +76,7 @@ public class SetupActivity extends AppCompatActivity {
                     finish();
                     startActivity(intent);
                 }
-                SharedPreferences sharedPreferencesUserName = getSharedPreferences("user name", MODE_PRIVATE);
+                SharedPreferences sharedPreferencesUserName = getSharedPreferences("appname_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editorUserName = sharedPreferencesUserName.edit();
                 editorUserName.putString("user name", userName);
                 editorUserName.apply();
@@ -84,5 +84,31 @@ public class SetupActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences firebaseUserPref = this.getSharedPreferences("appname_prefs", 0);
+        String email = firebaseUserPref.getString("userID", "");
+        String name = firebaseUserPref.getString("user name", "");
+
+        //Initializing Firestore User
+        Thread thread = new Thread(new UserStoreRunnable(name, email));
+        thread.start();
+
+    }
+
+    public class UserStoreRunnable implements Runnable {
+        String userName, email;
+        public UserStoreRunnable(String userName, String email) {
+            this.userName = userName;
+            this.email = email;
+        }
+        @Override
+        public void run() {
+            FirestoreUser storeUser= new FirestoreUser(userName, email);
+        }
     }
 }

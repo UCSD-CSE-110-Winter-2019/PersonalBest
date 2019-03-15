@@ -40,10 +40,13 @@ import static com.team2.team2_personalbest.HomePage.isNumeric;
 
 public class FriendGraph extends AppCompatActivity {
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_graph);
+        context = this;
 
         //int friend_ID_string = getIntent().getInt("friend_ID");
         Bundle bundle = getIntent().getExtras();
@@ -65,11 +68,10 @@ public class FriendGraph extends AppCompatActivity {
 
     private class FillEntriesTask extends AsyncTask<Integer, Void, List<BarEntry>> {
 
-        Context mContext;
-
         @Override
         protected List<BarEntry> doInBackground(Integer... friends) {
-            FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+            SharedPreferences userPref = context.getSharedPreferences("appname_prefs", 0);
+            FirestoreUser user = new FirestoreUser(userPref.getString("user name", "Anton"), userPref.getString("userID", "aopanis@gmail.com"));
             int friend = friends[0];
 
 //            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
