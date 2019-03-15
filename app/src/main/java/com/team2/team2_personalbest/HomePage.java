@@ -230,24 +230,8 @@ public class    HomePage extends AppCompatActivity {
         }
     }
 
-    private void saveEmailId() {
-        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-        Account[] list = manager.getAccounts();
-        String gmail = null;
-        for(Account account: list)
-        {
-            if(account.type.equalsIgnoreCase("com.google"))
-            {
-                gmail = account.name;
-                Log.d("userid", gmail);
-                SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userID", gmail);
-                editor.apply();
-                break;
-            }
-        }
-    }
+
+
 
     //TODO On Resume
     // Update the goal when coming back to homePage
