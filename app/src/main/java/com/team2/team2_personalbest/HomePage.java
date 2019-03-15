@@ -127,16 +127,14 @@ public class    HomePage extends AppCompatActivity {
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
 
+        String email = PS.getStr("userid");
+        String name = PS.getStr("user name");
+
         //Initializing Firestore User
-//      if (!isTesting) {
-//        Thread thread = new Thread(new Runnable(){
-//            @Override
-//            public void run(){
-//                user storeUser= new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-//            }
-//        });
-//        thread.start();
-//      }
+        if (!isTesting) {
+            Thread thread = new Thread(new UserStoreRunnable(name, email));
+            thread.start();
+        }
 
 
         //Getting XML elements
@@ -216,8 +214,20 @@ public class    HomePage extends AppCompatActivity {
 
 
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
-        setUserName();
+//        setUserName();
         saveEmailId();
+    }
+
+    public class UserStoreRunnable implements Runnable {
+        String userName, email;
+        public UserStoreRunnable(String userName, String email) {
+            this.userName = userName;
+            this.email = email;
+        }
+        @Override
+        public void run() {
+            FirestoreUser storeUser= new FirestoreUser(userName, email);
+        }
     }
 
     private void saveEmailId() {
@@ -230,7 +240,7 @@ public class    HomePage extends AppCompatActivity {
             {
                 gmail = account.name;
                 Log.d("userid", gmail);
-                SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("userID", gmail);
                 editor.apply();

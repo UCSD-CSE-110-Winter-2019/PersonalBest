@@ -34,7 +34,7 @@ public class SetupActivity extends AppCompatActivity {
                     finish();
                     startActivity(intent);
                 }
-                SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("height", heightStr);
                 editor.apply();
@@ -51,7 +51,7 @@ public class SetupActivity extends AppCompatActivity {
                     finish();
                     startActivity(intent);
                 }
-                SharedPreferences sharedPreferencesUserName = getSharedPreferences("user name", MODE_PRIVATE);
+                SharedPreferences sharedPreferencesUserName = getSharedPreferences("appname_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editorUserName = sharedPreferencesUserName.edit();
                 editorUserName.putString("user name", userName);
                 editorUserName.apply();
