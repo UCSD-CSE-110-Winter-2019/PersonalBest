@@ -65,6 +65,10 @@ public class MockFirestoreUser extends IUser {
         return null;
     }
 
+    HashMap<Integer, MockFirestoreUser> getFriendMap() {
+        return this.friendsList;
+    }
+
     @Override
     boolean isUser(int ID) {
         return false;
