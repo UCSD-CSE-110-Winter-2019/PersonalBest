@@ -35,6 +35,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         // TODO get name from sharedpreferences as well and pass that into the db constructor
         SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
         String email = sharedPreferences.getString("userID", "");
+        String name = sharedPreferences.getString("user name", "");
 
         // TODO change this to also get passed in the name
 
@@ -42,7 +43,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
-                db = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                db = new FirestoreUser(name, email);
                 displayFriends();
             }
         });
@@ -100,6 +101,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
     public void addButtonOnClick(View view) {
         TextView emailField = findViewById(R.id.emailPromptField);
         String emailAddress = emailField.getText().toString();
+
 
         // Add friend to curr user's friend list by the email's unique hashed ID
         new Thread(new Runnable() {
