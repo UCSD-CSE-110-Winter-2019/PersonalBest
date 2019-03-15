@@ -16,22 +16,20 @@ import static android.content.ContentValues.TAG;
 public class MockFirestoreUser extends IUser {
 
     protected User user;
-    protected MockDB db;
 
-    private
+    private HashMap<Integer, MockFirestoreUser> friendsList;
 
     public MockFirestoreUser (String name, String email, MockDB db){
-        IUser.User me = new User(name, email);
+        User me = new User(name, email);
 
         user = me;
-        this.db = db;
         // Check if user needs to be added to firestore
         // (Usually if its their first time)
         if (!isUser(user.userID))
-            addUser();
+            db.addUser(this);
 
-        if (!hasWalks(user.userID))
-            setWalks(getDummyWalks());
+//        if (!hasWalks(user.userID))
+//            setWalks(getDummyWalks());
     }
 
     @Override
@@ -39,9 +37,15 @@ public class MockFirestoreUser extends IUser {
         return false;
     }
 
+    boolean addFriend(int ID, MockDB db){
+        if (db.getUser(ID) != null)
+            friendsList.put(ID, db.getUser(ID));
+        return true;
+    }
+
     @Override
     boolean isFriend(int ID) {
-        return false;
+        return friendsList.get(ID) != null;
     }
 
     @Override
@@ -79,25 +83,4 @@ public class MockFirestoreUser extends IUser {
         return null;
     }
 
-    private void addUser(){
-        // Create a new user To add to Firestore userList
-        Map<Integer, User> user = new HashMap<>();
-        user.put(this.user.getUserID(), this.user);
-
-        // Add a new document with a generated ID
-        db.collection("Users").document(Integer.toString(this.user.userID))
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
-    }
 }
