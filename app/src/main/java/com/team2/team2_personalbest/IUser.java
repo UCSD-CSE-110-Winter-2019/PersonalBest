@@ -36,6 +36,11 @@ public abstract class IUser {
     abstract List<Pair<Integer, Integer>> getWalks(int ID);
 
     /*
+        true if user has init walks.
+     */
+    abstract boolean hasWalks(int ID);
+
+    /*
         Set 30 days Walks for this user in firebase
      */
     abstract void setWalks(List<Pair<Integer, Integer>> walks);

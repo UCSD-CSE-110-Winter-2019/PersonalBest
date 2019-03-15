@@ -32,27 +32,40 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
         friendsListView = findViewById(R.id.friendsListView);
 
-        // Get db instance and display current friends
+        // TODO get name from sharedpreferences as well and pass that into the db constructor
         SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
         String email = sharedPreferences.getString("userID", "");
 
         // TODO change this to also get passed in the name
-        db = new FirestoreUser("", email);
-        displayFriends();
+
+        //        Initializing Firestore User
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                db = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+                displayFriends();
+            }
+        });
+        thread.start();
+//        try {
+//            thread.wait();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void displayFriends() {
         List<IUser.Friend> friends = db.getFriendList();
 
-        List<IUser.Friend> testFriends = new ArrayList<>();
+        /*List<IUser.Friend> testFriends = new ArrayList<>();
         testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com"));
         testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com"));
         testFriends.add(new IUser.Friend("Shady", "shady@gmail.com"));
         testFriends.add(new IUser.Friend("Yosuke", "yosuke@gmail.com"));
         testFriends.add(new IUser.Friend("D", "D@gmail.com"));
-
+*/
         // Display all friends that both added each other
-        for (IUser.Friend friend : testFriends) {   // TODO change to 'friends'
+        for (IUser.Friend friend : friends) {   // TODO change to 'friends'
             addFriendToScrollable(friend);
         }
     }
@@ -71,12 +84,17 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), FriendGraph.class);
-                intent.putExtra("name", friend.name);
+                intent.putExtra("friend_id", friend.userID);
                 startActivity(intent);
             }
         });
 
-        friendsListView.addView(newFriend);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                friendsListView.addView(newFriend);
+            }
+        });
     }
 
     public void addButtonOnClick(View view) {

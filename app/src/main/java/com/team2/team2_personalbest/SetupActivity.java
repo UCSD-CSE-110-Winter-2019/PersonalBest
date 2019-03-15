@@ -38,6 +38,24 @@ public class SetupActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("height", heightStr);
                 editor.apply();
+
+                EditText userNameField = (EditText) findViewById(R.id.enterUserNameField);
+
+                // TODO store this height value in FireBase with the user's account.
+
+                String userName = userNameField.getText().toString();
+                if (userName.matches("")){
+                    Toast.makeText(SetupActivity.this, "Invalid", Toast.LENGTH_SHORT).show();
+                    // Restart this activity
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
+                SharedPreferences sharedPreferencesUserName = getSharedPreferences("user name", MODE_PRIVATE);
+                SharedPreferences.Editor editorUserName = sharedPreferencesUserName.edit();
+                editorUserName.putString("user name", userName);
+                editorUserName.apply();
+
                 finish();
             }
         });

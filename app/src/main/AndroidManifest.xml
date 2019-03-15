@@ -42,6 +42,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ChatOrGraph"
+            android:theme="@android:style/Theme.Material.Dialog">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".GoalAccomplished"
             android:theme="@android:style/Theme.Holo.Dialog">
             <intent-filter>

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -28,8 +29,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
@@ -206,9 +209,26 @@ public class GraphActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("openedFromGraph", true).apply();
         Intent intent = new Intent(this, ChatRoomActivity.class);
+        String from ="Shady";
+        //from = intent.getStringExtra("Shady");
+        intent.putExtra("friend's name", from);
         startActivity(intent);
-        finish();
     }
+    /*
+    public void sendMessage(View view) {
+
+        EditText messageView = findViewById(R.id.textView);
+
+        Map<String, String> newMessage = new HashMap<>();
+        newMessage.put(FROM_KEY, from);
+        newMessage.put(TEXT_KEY, messageView.getText().toString());
+
+        chat.add(newMessage).addOnSuccessListener(result -> {
+            messageView.setText("");
+        }).addOnFailureListener(error -> {
+            Log.e(TAG, error.getLocalizedMessage());
+        });
+    }*/
 
     public void goToLongGraph(View view) {
         Intent intent = new Intent(this, GraphActivityLong.class);

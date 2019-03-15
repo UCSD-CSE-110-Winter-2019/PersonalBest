@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,6 +52,9 @@ public class FirestoreUser extends IUser {
         if (!isUser(User.userID))
             addUser();
 
+        if (!hasWalks(User.userID))
+            setWalks(getDummyWalks());
+
 
         //Testing Add Friend
         //Friend myFriendToAdd = new Friend("joey", "joey@gmail.com");
@@ -58,12 +62,12 @@ public class FirestoreUser extends IUser {
 
 
         //Testing getWalksfor this user
-        List<Pair<Integer, Integer>> walkList = getWalks(User.userID);
-        for (int i=0; i<walkList.size(); i++){
-            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
-            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
-                                                        +"\nUnplanned:"+walkList.get(i).second+"\nXXXXXX\n");
-        }
+//        List<Pair<Integer, Integer>> walkList = getWalks(User.userID);
+//        for (int i=0; i<walkList.size(); i++){
+//            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
+//            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
+//                                                        +"\nUnplanned:"+walkList.get(i).second+"\nXXXXXX\n");
+//        }
     }
 
     /*
@@ -212,6 +216,18 @@ public class FirestoreUser extends IUser {
         return ret;
     }
 
+    /*
+        Private helper method to populate dummy users made for testing
+     */
+    private List<Pair<Integer, Integer>> getDummyWalks(){
+        List<Pair<Integer, Integer>> retList = new ArrayList<>();
+        for (int i=0; i<30; i++) {
+            Pair<Integer, Integer> initPair = new Pair<>(-1,-1);
+            retList.add(initPair);
+        }
+        return retList;
+    }
+
 
     /*
         pre: ID is a user and is a friend
@@ -223,10 +239,6 @@ public class FirestoreUser extends IUser {
             Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
             return null;
         }
-        // if(!isFriend(ID)){
-        //      Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not a friend");
-        //      return null;
-        // }
 
         // ID is a user and is a friend of this user
         // Create a reference to This Friends Walk History collection
@@ -269,6 +281,47 @@ public class FirestoreUser extends IUser {
         }
         Log.d("GET_WALKS", "GET_WALKS successful with size - "+walksList.size());
         return walksList;
+    }
+
+
+    /*
+        True if user has walks
+    */
+    boolean hasWalks(int ID){
+
+        if(!isUser(ID)){
+            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
+            return false;
+        }
+
+        CollectionReference UserWalkRef = db.collection("Users").document(Integer.toString(ID)).collection("Walks");
+
+        Log.d("HAS_WALKS", "Executing Query Task");
+        Task<QuerySnapshot> task = UserWalkRef.get();
+        try{
+            Log.d("HAS_WALKS", "Awaiting Task");
+            Tasks.await(task);
+            Log.d("HAS_WALKS", "Task Done");
+            if (task.isSuccessful()) {
+                Log.d("HAS_WALKS", "Task was successful");
+                QuerySnapshot document = task.getResult();
+                List<DocumentSnapshot> docList = document.getDocuments();
+
+                if (!docList.isEmpty())
+                    return true;
+                else
+                    return false;
+            }
+        } catch (ExecutionException e) {
+            Log.d("IS_USER", "Query Failed to execute");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d("IS_USER", "Query Failed due to interruption");
+            e.printStackTrace();
+        }
+
+        Log.d("IS_USER", "Task Failed");
+        return false;
     }
 
     /*
@@ -325,9 +378,35 @@ public class FirestoreUser extends IUser {
        Scans our list of users and returns user as Friend Type given ID
     */
     Friend getAppUser(int ID){
+        Friend appUser = new Friend("", "");
+        CollectionReference UsersRef = db.collection("Users");
+        // Create a query against the collection to get This User
+        Query query = UsersRef.whereEqualTo("UserID", ID);
+        Log.d("GET_USER", "Executing Query Task to get user: "+ID);
+        Task<QuerySnapshot> task = query.get();
+        try{
+            Log.d("GET_USER", "Awaiting Task");
+            Tasks.await(task);
+            Log.d("GET_USER", "Task Done");
+            if (task.isSuccessful()) {
+                Log.d("GET_USER", "Task was successful for getting user: "+ID);
+                QuerySnapshot document = task.getResult();
+                List<DocumentSnapshot> docList = document.getDocuments();
+                String email = docList.get(0).get("email").toString();
+                String name = docList.get(0).get("name").toString();
+                appUser = new Friend(name, email);
 
-        Friend user = new Friend("", "");
-        return user;
+                Log.d("GETTING_USER_DEB", "Size:"+docList.size());
+            }
+        } catch (ExecutionException e) {
+            Log.d("GET_FRIEND_LIST", "Query Failed to execute");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.d("GET_FRIEND_LIST", "Query Failed due to interruption");
+            e.printStackTrace();
+        }
+        Log.d("GET_FRIEND_LIST", "Task Failed");
+        return appUser;
     }
 
     /*

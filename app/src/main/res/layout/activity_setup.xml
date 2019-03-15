@@ -46,11 +46,28 @@
 
     <TextView
         android:id="@+id/requiredInfoText"
-        android:layout_width="237dp"
+        android:layout_width="300dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="30sp"
+        android:layout_marginBottom="10sp"
         android:text="We require this information in order to calculate your stride length, which is then used to calculate distance traveled." />
+
+    <TextView
+        android:id="@+id/enterUserNamePrompt"
+        android:layout_width="163dp"
+        android:layout_height="27dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5sp"
+        android:text="Enter User Name:"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/enterUserNameField"
+        android:layout_width="98dp"
+        android:layout_height="41dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5sp"
+        android:ems="10" />
 
     <Button
         android:id="@+id/doneButton"
