@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     static String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    static String DOCUMENT_KEY = "chat7";
+    static String DOCUMENT_KEY = "frinedGraphTest";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
@@ -77,7 +78,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (openedFromGraph) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("openedFromGraph", false).apply();
-            setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+            setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
         }
     }
 
@@ -95,6 +96,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             Log.e(TAG, error.getLocalizedMessage());
         });
     }
+
 
     private void initMessageUpdateListener() {
         chat.orderBy(TIMESTAMP_KEY, Query.Direction.ASCENDING)
