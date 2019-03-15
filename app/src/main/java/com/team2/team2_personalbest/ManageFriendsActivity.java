@@ -1,5 +1,6 @@
 package com.team2.team2_personalbest;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -7,13 +8,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
 
-    FirestoreUser db;
+    String name;
+    String email;
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -30,17 +36,16 @@ public class ManageFriendsActivity extends AppCompatActivity {
         friendsListView = findViewById(R.id.friendsListView);
 
         // TODO get name from sharedpreferences as well and pass that into the db constructor
-        SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
-        String email = sharedPreferences.getString("userID", "");
-        String name = sharedPreferences.getString("user name", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        email = sharedPreferences.getString("userID", "");
+        name = sharedPreferences.getString("user name", "");
 
         // TODO change this to also get passed in the name
 
-        //        Initializing Firestore user
+        //        Initializing Firestore User
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
-                db = new FirestoreUser(name, email);
                 displayFriends();
             }
         });
@@ -53,18 +58,22 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void displayFriends() {
+        FirestoreUser db = new FirestoreUser(name, email);
         List<IUser.User> friends = db.getFriendList();
 
-        /*List<IUser.user> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.user("Daniel", "dfritsch@gmail.com"));
-        testFriends.add(new IUser.user("Panis", "aopanis@gmail.com"));
-        testFriends.add(new IUser.user("Shady", "shady@gmail.com"));
-        testFriends.add(new IUser.user("Yosuke", "yosuke@gmail.com"));
-        testFriends.add(new IUser.user("D", "D@gmail.com"));
+        /*List<IUser.Friend> testFriends = new ArrayList<>();
+        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com"));
+        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com"));
+        testFriends.add(new IUser.Friend("Shady", "shady@gmail.com"));
+        testFriends.add(new IUser.Friend("Yosuke", "yosuke@gmail.com"));
+        testFriends.add(new IUser.Friend("D", "D@gmail.com"));
 */
         // Display all friends that both added each other
         for (IUser.User friend : friends) {   // TODO change to 'friends'
-            addFriendToScrollable(friend);
+            FirestoreUser friendDB = new FirestoreUser(friend.name, friend.address);
+            if(friendDB.getFriendList().contains(db.User)) {
+                addFriendToScrollable(friend);
+            }
         }
     }
 
@@ -104,6 +113,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                FirestoreUser db = new FirestoreUser(name, email);
                 db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
             }
         }).start();
@@ -115,6 +125,6 @@ public class ManageFriendsActivity extends AppCompatActivity {
 //        // TOD get name that corresponds to email
 //
 //        // TOD get name's email address
-//        // TOD delete user object from database
+//        // TOD delete Friend object from database
 //    }
 }
