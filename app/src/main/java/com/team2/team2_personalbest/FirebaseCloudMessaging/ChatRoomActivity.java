@@ -78,7 +78,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (openedFromGraph) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("openedFromGraph", false).apply();
-            setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
+            setTheme(android.R.style.Theme_Material_Dialog_NoActionBar);
         }
     }
 

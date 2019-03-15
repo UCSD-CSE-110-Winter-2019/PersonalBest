@@ -88,21 +88,15 @@ public class    HomePage extends AppCompatActivity {
 
     /*Firebase user*/
     private FirestoreUser user;
-    /*
+
     // TODO Possible bug
     @Override
     protected void onNewIntent(Intent intent) {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            startActivity(new Intent(this, ChatRoomActivity.class));
-        }
-    }*/
+        notificationToChat();
+    }
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
-        /*Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            startActivity(new Intent(this, ChatRoomActivity.class));
-        }*/
+        notificationToChat();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
@@ -220,6 +214,20 @@ public class    HomePage extends AppCompatActivity {
 
     }
 
+    private void notificationToChat() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            Object value;
+            for (String key : getIntent().getExtras().keySet()) {
+                if (key.equals("from")) {
+                    Log.d("launchedFromNoti", key);
+                    startActivity(new Intent(this, ChatRoomActivity.class));
+                    Log.d("NotificationTag", "........");
+                }
+            }
+
+        }
+    }
 
 
     //TODO On Resume
@@ -571,6 +579,17 @@ public class    HomePage extends AppCompatActivity {
 
     public int getManualStepsAddedTotal() {
         return this.manualStepsAddedTotal;
+    }
+
+    private void setUpChatRoom() {
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        boolean openedFromFCMNotification = sharedPreferences.getBoolean("openedFromFCMNotification", false);
+        Log.d("hello", "hello");
+        if (openedFromFCMNotification) {
+            Log.d("goodbye", "hello");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("openedFromFCMNotification", false).apply();
+        }
     }
 
 }
