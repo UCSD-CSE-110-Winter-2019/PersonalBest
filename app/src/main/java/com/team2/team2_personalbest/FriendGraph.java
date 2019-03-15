@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -133,6 +134,7 @@ public class FriendGraph extends AppCompatActivity {
         chart.invalidate();
     }
 
+    // @TODO fix goal line
     private LineData generateLine() {
         LineData data = new LineData();
         int goal = 5000;
@@ -154,6 +156,10 @@ public class FriendGraph extends AppCompatActivity {
         data.addDataSet(set);
 
         return data;
+
+    }
+
+    public void sendMessage(View view) {
 
     }
 }
