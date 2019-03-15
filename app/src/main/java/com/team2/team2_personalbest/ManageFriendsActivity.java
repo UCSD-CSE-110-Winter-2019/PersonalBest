@@ -1,6 +1,5 @@
 package com.team2.team2_personalbest;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -8,10 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
@@ -38,7 +35,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
         // TODO change this to also get passed in the name
 
-        //        Initializing Firestore User
+        //        Initializing Firestore user
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
@@ -55,22 +52,22 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void displayFriends() {
-        List<IUser.Friend> friends = db.getFriendList();
+        List<IUser.User> friends = db.getFriendList();
 
-        /*List<IUser.Friend> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com"));
-        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com"));
-        testFriends.add(new IUser.Friend("Shady", "shady@gmail.com"));
-        testFriends.add(new IUser.Friend("Yosuke", "yosuke@gmail.com"));
-        testFriends.add(new IUser.Friend("D", "D@gmail.com"));
+        /*List<IUser.user> testFriends = new ArrayList<>();
+        testFriends.add(new IUser.user("Daniel", "dfritsch@gmail.com"));
+        testFriends.add(new IUser.user("Panis", "aopanis@gmail.com"));
+        testFriends.add(new IUser.user("Shady", "shady@gmail.com"));
+        testFriends.add(new IUser.user("Yosuke", "yosuke@gmail.com"));
+        testFriends.add(new IUser.user("D", "D@gmail.com"));
 */
         // Display all friends that both added each other
-        for (IUser.Friend friend : friends) {   // TODO change to 'friends'
+        for (IUser.User friend : friends) {   // TODO change to 'friends'
             addFriendToScrollable(friend);
         }
     }
 
-    public void addFriendToScrollable(IUser.Friend friend) {
+    public void addFriendToScrollable(IUser.User friend) {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
         newFriend.setHeight(30);
@@ -116,6 +113,6 @@ public class ManageFriendsActivity extends AppCompatActivity {
 //        // TOD get name that corresponds to email
 //
 //        // TOD get name's email address
-//        // TOD delete Friend object from database
+//        // TOD delete user object from database
 //    }
 }

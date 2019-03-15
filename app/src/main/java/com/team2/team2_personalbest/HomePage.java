@@ -86,7 +86,7 @@ public class    HomePage extends AppCompatActivity {
     /* for testing purposes */
     public boolean isTesting = false;
 
-    /*Firebase User*/
+    /*Firebase user*/
     private FirestoreUser user;
     /*
     // TODO Possible bug
@@ -127,7 +127,7 @@ public class    HomePage extends AppCompatActivity {
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
 
-        //Initializing Firestore User
+        //Initializing Firestore user
 //      if (!isTesting) {
 //        Thread thread = new Thread(new Runnable(){
 //            @Override
@@ -426,7 +426,7 @@ public class    HomePage extends AppCompatActivity {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (planned_walk){ //User was on planned walk, wants to end it
+                if (planned_walk){ //user was on planned walk, wants to end it
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
