@@ -35,7 +35,7 @@ public class FirebaseUser{
         return true;
     }
 
-    IUser.Friend getAppUser(String email){
+    IUser.User getAppUser(String email){
         return null;
     }
 
@@ -57,13 +57,13 @@ public class FirebaseUser{
         return walkList;
     }
 
-    List<IUser.Friend> getFriendlist(){
+    List<IUser.User> getFriendlist(){
 
         //return this.friendlist;
         Log.d("GET_FRIEND_LIST_INIT", "Getting friends for user: "+USER_NAME);
         DatabaseReference friendsRef = firebaseDatabaseRef.child(USER_NAME+"/Friends/");
 
-        List<IUser.Friend> friendlist = new ArrayList<>();
+        List<IUser.User> friendlist = new ArrayList<>();
 
         // Read from the database and add it to dayDataList
         friendsRef.addValueEventListener(new ValueEventListener() {
@@ -78,7 +78,7 @@ public class FirebaseUser{
                     String name = friend.child("name").getValue().toString();
                     String isPending = friend.child("isPending").getValue().toString();
 
-                    //IUser.Friend thisFriend = new IUser.Friend(name, email, isPending);
+                    //IUser.user thisFriend = new IUser.user(name, email, isPending);
 
                     //friendlist.add(thisFriend);
                     //friendlist.add(thisFriend);

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-public class BDDScenarioUS2AddFriendTest {
+public class BDDScenarioUS2AddUserTest {
 
     public HashMap<Integer, TestUser> users = new HashMap<>();
 
