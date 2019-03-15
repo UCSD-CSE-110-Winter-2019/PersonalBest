@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -49,25 +50,23 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-
-        List<Pair<Integer, Integer>> walksList = user.getWalks(friend_id);
-
-        new FillEntriesTask(walksList).execute();
+        new FillEntriesTask().execute(friend_id);
     }
 
 
 
-    private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
+    private class FillEntriesTask extends AsyncTask<Integer, Void, List<BarEntry>> {
 
         Context mContext;
-        List<Pair<Integer, Integer>> walks;
 
-        public FillEntriesTask(List<Pair<Integer, Integer>> walks) {
-            this.walks = walks;
-        }
         @Override
-        protected List<BarEntry> doInBackground(String... friends) {
+        protected List<BarEntry> doInBackground(Integer... friends) {
+            FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+            int friend = friends[0];
+
+//            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
+            List<Pair<Integer, Integer>> walks = user.getWalks(friend);
+
             //String friend = friends[0];
 
             List<BarEntry> entries = new ArrayList<>();
@@ -77,6 +76,8 @@ public class FriendGraph extends AppCompatActivity {
                     Integer trackedSteps = day.first;
                     Integer untrackedSteps = day.second - trackedSteps;
                     entries.add(new BarEntry(28 - i, new float[]{untrackedSteps, trackedSteps}));
+                } else {
+                    entries.add(new BarEntry(28 - i, new float[]{0, 0}));
                 }
             }
 
@@ -96,10 +97,11 @@ public class FriendGraph extends AppCompatActivity {
         chart.setScaleEnabled(false);
 
         final ArrayList<String> xLabel = new ArrayList<>();
-        String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
+//        String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
 
-        for(String i : days) {
-            xLabel.add(i);
+        xLabel.add(DateHelper.dayDateToString(DateHelper.previousDay(27)));
+        for(int i=1; i < 28; i++) {
+            xLabel.add("");
         }
 
         XAxis xAxis = chart.getXAxis();
@@ -132,6 +134,7 @@ public class FriendGraph extends AppCompatActivity {
         chart.invalidate();
     }
 
+    // @TODO fix goal line
     private LineData generateLine() {
         LineData data = new LineData();
         int goal = 5000;
@@ -153,6 +156,10 @@ public class FriendGraph extends AppCompatActivity {
         data.addDataSet(set);
 
         return data;
+
+    }
+
+    public void sendMessage(View view) {
 
     }
 }
