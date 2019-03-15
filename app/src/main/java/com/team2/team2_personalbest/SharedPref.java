@@ -14,7 +14,7 @@ public class SharedPref {
         this.context = context;
     }
 
-    public final static String PREFS_NAME = "";
+    public final static String PREFS_NAME = "appname_prefs";
 
     public static void setInt( String key, int value) {
         SharedPreferences sharedPref = context.getSharedPreferences(PREFS_NAME,0);
