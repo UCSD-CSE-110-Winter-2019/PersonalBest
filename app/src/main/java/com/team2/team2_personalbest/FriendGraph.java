@@ -1,6 +1,7 @@
 package com.team2.team2_personalbest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -23,10 +26,15 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
@@ -159,7 +167,54 @@ public class FriendGraph extends AppCompatActivity {
 
     }
 
-    public void sendMessage(View view) {
+
+    public void sendMessage(View view){
+        String TAG = ChatRoomActivity.class.getSimpleName();
+
+        Toast toast = Toast.makeText(getApplicationContext(), "Your toast message.",
+                Toast.LENGTH_SHORT);
+        toast.show();
+        String COLLECTION_KEY = "chats";
+        String DOCUMENT_KEY = "frinedGraphTest";
+        String MESSAGES_KEY = "messages";
+        String FROM_KEY = "from";
+        String TEXT_KEY = "text";
+        String TIMESTAMP_KEY = "timestamp";
+
+        CollectionReference chat;
+        //TODO set it to sender user id and receiver user id passed from the original activity
+        //TODO maybe using intent.putExtra?
+        //TODO also u dont need "to"  because we pass from former activity
+        String from = "Shady";
+        String to;
+
+        EditText messageView = findViewById(R.id.textView);
+        Map<String, String> newMessage = new HashMap<>();
+        newMessage.put(FROM_KEY, from);
+        newMessage.put(TEXT_KEY, messageView.getText().toString());
+        chat = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_KEY)
+                .document(DOCUMENT_KEY)
+                .collection(MESSAGES_KEY);
+        chat.add(newMessage).addOnSuccessListener(result -> {
+            messageView.setText("");
+        }).addOnFailureListener(error -> {
+            Log.e(TAG, error.getLocalizedMessage());
+        });
 
     }
+
+    public void goToChat(View view){
+        //setContentView(R.layout.activity_friend_graph);
+        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("openedFromGraph", true).apply();
+        Intent intent = new Intent(this, ChatRoomActivity.class);
+        String from ="Shady";
+        //from = intent.getStringExtra("Shady");
+        intent.putExtra("friend's name", from);
+        startActivity(intent);
+    }
+
+
 }

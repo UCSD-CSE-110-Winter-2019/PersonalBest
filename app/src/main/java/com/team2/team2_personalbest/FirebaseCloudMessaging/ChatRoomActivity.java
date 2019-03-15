@@ -27,7 +27,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     static String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    static String DOCUMENT_KEY = "chat7";
+    String DOCUMENT_KEY = "frinedGraphTest";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "from";
     String TEXT_KEY = "text";
