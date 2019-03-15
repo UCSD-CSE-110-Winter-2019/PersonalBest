@@ -43,7 +43,7 @@ public abstract class IUser {
     /*
         Set 30 days Walks for this user in firebase
      */
-    abstract void setWalks(List<Pair<Integer, Integer>> walks);
+    abstract void setWalks(List<Day> walks);
 
     /*
         Used to get users most current friend list

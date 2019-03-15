@@ -30,7 +30,23 @@ public class FirestoreUser extends IUser {
 
     // Make sure to init User
     protected Friend User;
-    protected FirebaseFirestore db;
+    protected static volatile FirebaseFirestore db;
+
+
+    static FirebaseFirestore getDatabase() {
+        if(db == null) {
+            synchronized (FirebaseFirestore.class) {
+                if(db == null) {
+                    db = FirebaseFirestore.getInstance();
+                    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                            .setTimestampsInSnapshotsEnabled(true)
+                            .build();
+                    db.setFirestoreSettings(settings);
+                }
+            }
+        }
+        return db;
+    }
 
     /*
         Constructor
@@ -40,11 +56,8 @@ public class FirestoreUser extends IUser {
         Friend me = new Friend(name, email);
 
         //get Firestore
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
+        Log.d("CREATED", "FirestoreUser: Initialized");
+        db = getDatabase();
         User = me;
 
         // Check if User needs to be added to firestore
@@ -52,8 +65,8 @@ public class FirestoreUser extends IUser {
         if (!isUser(User.userID))
             addUser();
 
-        if (!hasWalks(User.userID))
-            setWalks(getDummyWalks());
+//        if (!hasWalks(User.userID))
+//            setWalks(getDummyWalks());
 
 
         //Testing Add Friend
@@ -89,19 +102,19 @@ public class FirestoreUser extends IUser {
         Input is a List of Integer Pairs
         Adds 30 Days Walk Data to Firestore under User History
      */
-    void setWalks(List<Pair<Integer, Integer>> walks) {
-        for(int i=0; i<walks.size(); i++) {
-
-            Date day = DateHelper.previousDay(i);
-            Pair<Integer, Integer> stepsPair = walks.get(i);
+    @Override
+    void setWalks(List<Day> walks) {
+        for(int i=walks.size()-1; i>=0; i--) {
+            Log.d("WALK_SIZE", "setWalks: " + walks.size());
+            Day stepsPair = walks.get(i);
 
             //Key to store under
-            String date = DateHelper.dayDateToString(day);
+            String date = stepsPair.getDayId();
 
 
             Map<String, Object> dayDataMap = new HashMap<>();
-            dayDataMap.put("Planned", stepsPair.first);
-            dayDataMap.put("Unplanned", stepsPair.second);
+            dayDataMap.put("Planned", stepsPair.getStepsTracked());
+            dayDataMap.put("Unplanned", stepsPair.getStepsUntracked());
 
             db.collection("Users")
                     .document(Integer.toString(User.userID))
@@ -121,6 +134,32 @@ public class FirestoreUser extends IUser {
                         }
                     });
         }
+    }
+
+    public void addWalk(Day day) {
+        Log.d("ADD_WALK", "addWalk: walk added");
+        Map<String, Object> dayDataMap = new HashMap<>();
+        dayDataMap.put("Planned", day.getStepsTracked());
+        dayDataMap.put("Unplanned", day.getStepsUntracked());
+
+        db.collection("Users")
+                .document(Integer.toString(User.userID))
+                .collection("/Walks/")
+                .document(day.getDayId())
+                .set(dayDataMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+
     }
 
     /*

@@ -30,6 +30,9 @@ public interface DayDao {
     @Query("DELETE FROM Day")
     void deleteDay();
 
+    @Query("SELECT * FROM Day")
+    List<Day> getAllDays();
+
     @Update
     void updateDay(Day day);
 
