@@ -11,16 +11,18 @@ import java.util.HashMap;
 public class BDDScenarioUS2AddUserTest {
 
     public MockDB db;
-
-    db = new MockDB(new HashMap<Integer, MockFirestoreUser>);
+    HashMap<Integer, MockFirestoreUser> temp = new HashMap();
+    MockFirestoreUser joey, chandler;
 
     @Before
     private void setUpFriends(){
-        MockFirestoreUser joey = new MockFirestoreUser("Joey", "joey@gmail.com")
+        db = new MockDB(temp);
+        joey = new MockFirestoreUser("Joey", "joey@gmail.com", db);
+        chandler = new MockFirestoreUser("Chandler", "chandler@bing.com", db);
     }
 
     @Test
     private void addFriends(){
-
+        joey.addFriend("chandler@gmail.com");
     }
 }

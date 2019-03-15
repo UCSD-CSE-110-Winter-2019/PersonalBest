@@ -29,7 +29,7 @@ public class MockFirestoreUser extends IUser {
         return false;
     }
 
-    boolean addFriend(int ID, MockDB db){
+    boolean addFriend(S, MockDB db){
         if (db.getUser(ID) != null)
             friendsList.put(ID, db.getUser(ID));
         return true;
