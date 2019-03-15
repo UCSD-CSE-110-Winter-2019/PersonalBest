@@ -1,17 +1,9 @@
 package com.team2.team2_personalbest;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class MockFirestoreUser extends IUser {
 
