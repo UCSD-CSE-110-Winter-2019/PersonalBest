@@ -262,8 +262,19 @@ public class FirestoreUser extends IUser {
                 if (task.isSuccessful()) {
                     Log.d("GET_WALKS", "Task was successful");
                     DocumentSnapshot document = task.getResult();
-                    long plannedLong = (long)document.get("Planned");
-                    long unplannedLong = (long)document.get("Unplanned");
+                    long plannedLong;
+                    long unplannedLong;
+                    try {
+                        plannedLong = (long) document.get("Planned");
+                    } catch (NullPointerException e) {
+                        plannedLong = 0;
+                    }
+                    try {
+                        unplannedLong = (long) document.get("Unplanned");
+                    } catch (NullPointerException e) {
+                        unplannedLong = 0;
+                    }
+
 
                     int planned = Math.toIntExact(plannedLong);
                     int unplanned = Math.toIntExact(unplannedLong);

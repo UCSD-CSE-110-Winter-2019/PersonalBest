@@ -83,7 +83,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), FriendGraph.class);
+                Intent intent = new Intent(v.getContext(), ChatOrGraph.class);
                 intent.putExtra("friend_id", friend.userID);
                 startActivity(intent);
             }
@@ -102,7 +102,12 @@ public class ManageFriendsActivity extends AppCompatActivity {
         String emailAddress = emailField.getText().toString();
 
         // Add friend to curr user's friend list by the email's unique hashed ID
-        db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
+            }
+        }).start();
     }
 
 //    public void removeButtonOnClick(View view) {

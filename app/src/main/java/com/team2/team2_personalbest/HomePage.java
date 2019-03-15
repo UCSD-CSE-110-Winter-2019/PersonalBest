@@ -132,7 +132,7 @@ public class    HomePage extends AppCompatActivity {
 //        Thread thread = new Thread(new Runnable(){
 //            @Override
 //            public void run(){
-//                user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+//                user storeUser= new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
 //            }
 //        });
 //        thread.start();
@@ -216,28 +216,11 @@ public class    HomePage extends AppCompatActivity {
 
 
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
-        setUserName();
-        saveEmailId();
+        //setUserName();
+
     }
 
-    private void saveEmailId() {
-        AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
-        Account[] list = manager.getAccounts();
-        String gmail = null;
-        for(Account account: list)
-        {
-            if(account.type.equalsIgnoreCase("com.google"))
-            {
-                gmail = account.name;
-                Log.d("userid", gmail);
-                SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userID", gmail);
-                editor.apply();
-                break;
-            }
-        }
-    }
+
 
     //TODO On Resume
     // Update the goal when coming back to homePage
