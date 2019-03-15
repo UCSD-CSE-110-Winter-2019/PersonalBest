@@ -14,6 +14,6 @@ public class MockDB {
     }
 
     public void addUser(MockFirestoreUser newUser) {
-        db.put(newUser.user.userID, newUser);
+        db.put(newUser.getUser().userID, newUser);
     }
 }

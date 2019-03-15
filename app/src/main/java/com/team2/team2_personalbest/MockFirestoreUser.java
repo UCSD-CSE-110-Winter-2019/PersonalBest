@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MockFirestoreUser extends IUser {
 
-    protected User user;
+    public User user;
 
     private HashMap<Integer, MockFirestoreUser> friendsList;
 
@@ -17,8 +17,13 @@ public class MockFirestoreUser extends IUser {
         user = me;
         // Check if user needs to be added to firestore
         // (Usually if its their first time)
-        if (!isUser(user.userID))
+        if (!isUser(user.userID)) {
             db.addUser(this);
+            System.out.println("added.");
+        }
+
+        this.friendsList = new HashMap<Integer, MockFirestoreUser>();
+
 
 //        if (!hasWalks(user.userID))
 //            setWalks(getDummyWalks());
@@ -29,10 +34,13 @@ public class MockFirestoreUser extends IUser {
         return false;
     }
 
-    boolean addFriend(S, MockDB db){
-        if (db.getUser(ID) != null)
-            friendsList.put(ID, db.getUser(ID));
-        return true;
+    public boolean addFriend(String email, MockDB db){
+        int id = UserUtilities.emailToUniqueId(email);
+        if (db.getUser(id) != null) {
+            friendsList.put(id, db.getUser(id));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -65,7 +73,7 @@ public class MockFirestoreUser extends IUser {
         return null;
     }
 
-    HashMap<Integer, MockFirestoreUser> getFriendMap() {
+    public HashMap<Integer, MockFirestoreUser> getFriendMap() {
         return this.friendsList;
     }
 
@@ -77,6 +85,14 @@ public class MockFirestoreUser extends IUser {
     @Override
     IUser.User getAppUser(int ID) {
         return null;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public int getUserID() {
+        return this.user.userID;
     }
 
 }
