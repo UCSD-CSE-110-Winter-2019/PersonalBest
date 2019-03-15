@@ -71,7 +71,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         // Display all friends that both added each other
         for (IUser.Friend friend : friends) {   // TODO change to 'friends'
             FirestoreUser friendDB = new FirestoreUser(friend.name, friend.address);
-            if(friendDB.getFriendList().contains(db.User)) {
+            if(friendDB.isFriend(db.User.userID)) {
                 addFriendToScrollable(friend);
             }
         }
