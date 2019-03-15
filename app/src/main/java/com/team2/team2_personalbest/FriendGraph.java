@@ -49,30 +49,23 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        new FillEntriesTask().execute(name);
+        new FillEntriesTask().execute(friend_id);
     }
 
 
 
-    private class FillEntriesTask extends AsyncTask<String, Void, List<BarEntry>> {
+    private class FillEntriesTask extends AsyncTask<Integer, Void, List<BarEntry>> {
 
         Context mContext;
 
-        public FillEntriesTask() {
-        }
         @Override
-        protected List<BarEntry> doInBackground(String... friends) {
+        protected List<BarEntry> doInBackground(Integer... friends) {
             FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
-            String friend = friends[0];
+            int friend = friends[0];
 
-            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
-        List<Pair<Integer, Integer>> walks;
+//            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
+            List<Pair<Integer, Integer>> walks = user.getWalks(friend);
 
-        public FillEntriesTask(List<Pair<Integer, Integer>> walks) {
-            this.walks = walks;
-        }
-        @Override
-        protected List<BarEntry> doInBackground(String... friends) {
             //String friend = friends[0];
 
             List<BarEntry> entries = new ArrayList<>();
@@ -103,7 +96,7 @@ public class FriendGraph extends AppCompatActivity {
         chart.setScaleEnabled(false);
 
         final ArrayList<String> xLabel = new ArrayList<>();
-        String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
+//        String[] days = DateHelper.getLastSevenWeekDays(DateHelper.getDayOfWeek());
 
         xLabel.add(DateHelper.dayDateToString(DateHelper.previousDay(27)));
         for(int i=1; i < 28; i++) {
