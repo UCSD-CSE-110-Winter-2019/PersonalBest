@@ -39,6 +39,7 @@ public class FirestoreUser extends IUser {
                     db = FirebaseFirestore.getInstance();
                     FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                             .setTimestampsInSnapshotsEnabled(true)
+                            .setPersistenceEnabled(false)
                             .build();
                     db.setFirestoreSettings(settings);
                 }
