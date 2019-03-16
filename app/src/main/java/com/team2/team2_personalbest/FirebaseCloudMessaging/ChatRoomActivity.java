@@ -26,6 +26,8 @@ import java.util.Map;
 public class ChatRoomActivity extends AppCompatActivity {
     String TAG = ChatRoomActivity.class.getSimpleName();
 
+    public static final String CHAT_MESSAGE_SERVICE_EXTRA = "CHAT_MESSAGE_SERVICE";
+    public static final String NOTIFICATION_SERVICE_EXTRA = "NOTIFICATION_SERVICE";
     static String COLLECTION_KEY = "chats";
     //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
     static String DOCUMENT_KEY = "frinedGraphTest";

@@ -82,6 +82,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ChatOrGraph.class);
                 intent.putExtra("friend_id", friend.userID);
+
                 startActivity(intent);
             }
         });
