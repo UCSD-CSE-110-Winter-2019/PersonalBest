@@ -36,6 +36,10 @@ public class FirebaseFirestoreAdapter implements ChatMessageService {
         this.chat = chat;
     }
 
+    /**
+     *
+     * function: chat message service
+     */
     public static ChatMessageService getInstance() {
         if (singeleton == null) {
             CollectionReference collection = FirebaseFirestore.getInstance()

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
-  function: factory
+  function: factory pattern
  */
 public class Factory<T> {
 
