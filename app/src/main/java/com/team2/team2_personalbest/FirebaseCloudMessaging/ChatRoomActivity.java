@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+  file name: ChatRoomActivity
+  function: main function for chat room
+ */
 public class ChatRoomActivity extends AppCompatActivity {
     String TAG = ChatRoomActivity.class.getSimpleName();
 
@@ -66,9 +70,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         fromUserName = sharedPreferences.getString("user name", "");
         fromUserId = UserUtilities.emailToUniqueId(fromUserEmail);
 
-        TextView toTextView = (TextView) findViewById(R.id.user_name);
         Log.d("CHAT_ROOM", "User Name: "+toUserName);
-        toTextView.setText(toUserName);
 
         DOCUMENT_KEY = Integer.toString(getChatID(toUserId, fromUserId));
         chat = FirebaseFirestore.getInstance()

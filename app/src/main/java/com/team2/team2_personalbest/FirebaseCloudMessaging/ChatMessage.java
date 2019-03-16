@@ -1,5 +1,8 @@
 package com.team2.team2_personalbest.FirebaseCloudMessaging;
 
+/*
+  function: creating chat message
+ */
 public class ChatMessage {
     private String from;
     private String text;

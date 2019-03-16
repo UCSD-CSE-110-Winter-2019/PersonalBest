@@ -3,6 +3,9 @@ package com.team2.team2_personalbest.FirebaseCloudMessaging;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+  function: factory
+ */
 public class Factory<T> {
 
     private Map<String, Blueprint<T>> blueprints = new HashMap<>();

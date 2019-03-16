@@ -24,6 +24,9 @@ public class ChatOrGraph extends Activity {
         setContentView(R.layout.chat_or_graph);
     }
 
+    /*
+      function: this will be called when user choose to launch graph
+     */
     public void launchGraphActivity(View view){
         // Retrieve username from previous activity
         Bundle bundle = getIntent().getExtras();
@@ -43,6 +46,9 @@ public class ChatOrGraph extends Activity {
         finish();
     }
 
+    /*
+      function: this will be called when user choose to launch chat activity
+     */
     public void launchChatActivity(View view) {
         // Retrieve username from previous activity
         Bundle bundle = getIntent().getExtras();
