@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -15,8 +16,8 @@ import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
 
-    String name;
-    String email;
+    String myName;
+    String myEmail;
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -34,8 +35,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
         // TODO get name from sharedpreferences as well and pass that into the db constructor
         SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
-        email = sharedPreferences.getString("userID", "");
-        name = sharedPreferences.getString("user name", "");
+        myEmail = sharedPreferences.getString("userID", "");
+        myName = sharedPreferences.getString("user name", "");
 
         // TODO change this to also get passed in the name
 
@@ -55,7 +56,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void displayFriends() {
-        FirestoreUser db = new FirestoreUser(name, email);
+        FirestoreUser db = new FirestoreUser(myName, myEmail);
         List<IUser.User> friends = db.getFriendList();
 
         // Display all friends that both added each other
@@ -81,7 +82,10 @@ public class ManageFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ChatOrGraph.class);
+                Log.d("MANAGE_FRIENDS", "\nFriend:"+friend.name+"\nID:"+friend.userID);
                 intent.putExtra("friend_id", friend.userID);
+                intent.putExtra("friend_name", friend.name);
+                intent.putExtra("friend_email", friend.address);
                 startActivity(intent);
             }
         });
@@ -103,7 +107,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                FirestoreUser db = new FirestoreUser(name, email);
+                FirestoreUser db = new FirestoreUser(myName, myEmail);
                 db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
             }
         }).start();

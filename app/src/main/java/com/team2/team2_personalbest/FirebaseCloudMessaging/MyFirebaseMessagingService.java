@@ -13,6 +13,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("openedFromFCMNotification", true).apply();
         Log.d("buhbye", "gg");
-//        need to implement this if you want to do something when you receive a notification while app is in the foreground.
+//        need toUserName implement this if you want toUserName do something when you receive a notification while app is in the foreground.
     }
 }
