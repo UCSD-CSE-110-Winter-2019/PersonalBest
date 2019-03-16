@@ -65,8 +65,8 @@ public class FirestoreUser extends IUser {
         if (!isUser(user.userID))
             addUser();
 
-        if (!hasWalks(user.userID))
-            setWalks(getDummyWalks());
+//        if (!hasWalks(user.userID))
+//            setWalks(getDummyWalks());
 
 
         //Testing Add user
@@ -143,7 +143,7 @@ public class FirestoreUser extends IUser {
         dayDataMap.put("Unplanned", day.getStepsUntracked());
 
         db.collection("Users")
-                .document(Integer.toString(User.userID))
+                .document(Integer.toString(user.userID))
                 .collection("/Walks/")
                 .document(day.getDayId())
                 .set(dayDataMap)

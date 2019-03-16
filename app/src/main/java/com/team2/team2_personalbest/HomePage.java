@@ -312,7 +312,7 @@ public class HomePage extends AppCompatActivity {
         String name = userStore.getString("user name", "");
         String email = userStore.getString("userID", "");
 
-        updateDatabase((int) stepCount, plannedSteps, name, email);
+        updateDatabase((int) stepCount, plannedSteps);
 
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
