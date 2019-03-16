@@ -6,7 +6,7 @@ import java.util.List;
 
 public abstract class IUser {
 
-    //protected List<Friend> friendlist;
+    //protected List<user> friendlist;
 
 
     /*
@@ -48,7 +48,7 @@ public abstract class IUser {
     /*
         Used to get users most current friend list
      */
-    abstract List<Friend> getFriendList();
+    abstract List<User> getFriendList();
 
     /*
         Scans list of users and returns true or false
@@ -59,25 +59,25 @@ public abstract class IUser {
     /*
         Scans our list of users and returns user given ID
      */
-    abstract Friend getAppUser(int ID);
+    abstract User getAppUser(int ID);
 
     /*
        Adds a user to our total list of users
        Meant to be used on sign up
      */
-    //abstract void addUser(Friend user);
+    //abstract void addUser(user user);
 
     /*
-        Private class Friend
-        Note: User is also a 'Friend' datatype and shoukld be initialized as such
+        Private class user
+        Note: user is also a 'user' datatype and should be initialized as such
      */
-    static class Friend{
+    static class User {
         String name;
         String address;
         //String isPending;
         int userID;
 
-        public Friend(String name, String address /*, String isPending */){
+        public User(String name, String address /*, String isPending */){
             this.name = name;
             this.address = address;
             //this.isPending = isPending;
@@ -115,7 +115,7 @@ public abstract class IUser {
 //        }
 
 
-        // Added by Daniel to be able to print the Friend info in the friends list
+        // Added by Daniel to be able to print the user info in the friends list
         public String toString() {
             return "  Name: " + this.name + "   |     Email: " + this.address;
         }

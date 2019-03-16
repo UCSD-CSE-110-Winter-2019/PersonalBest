@@ -90,21 +90,15 @@ public class HomePage extends AppCompatActivity {
     /*Firebase User*/
     //probably wont work because FirestoreUser must be called from a separate thread
     private FirestoreUser user;
-    /*
+
     // TODO Possible bug
     @Override
     protected void onNewIntent(Intent intent) {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            startActivity(new Intent(this, ChatRoomActivity.class));
-        }
-    }*/
+        notificationToChat();
+    }
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
-        /*Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            startActivity(new Intent(this, ChatRoomActivity.class));
-        }*/
+        notificationToChat();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
@@ -210,6 +204,20 @@ public class HomePage extends AppCompatActivity {
 //        setUserName();
     }
 
+    private void notificationToChat() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            Object value;
+            for (String key : getIntent().getExtras().keySet()) {
+                if (key.equals("from")) {
+                    Log.d("launchedFromNoti", key);
+                    startActivity(new Intent(this, ChatRoomActivity.class));
+                    Log.d("NotificationTag", "........");
+                }
+            }
+
+        }
+    }
 
 
     //TODO On Resume
@@ -339,7 +347,7 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    private void updateDatabase(int stepCount, int plannedSteps, String name, String email) {
+    private void updateDatabase(int stepCount, int plannedSteps) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -442,7 +450,7 @@ public class HomePage extends AppCompatActivity {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (planned_walk){ //User was on planned walk, wants to end it
+                if (planned_walk){ //user was on planned walk, wants to end it
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
