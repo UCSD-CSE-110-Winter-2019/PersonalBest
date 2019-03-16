@@ -15,6 +15,8 @@ import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
 
+    static int friend_counter = 0;
+
     String name;
     String email;
 
@@ -71,6 +73,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
         newFriend.setHeight(30);
+        if (friend_counter++ == 0)
+            newFriend.setId(R.id.friend_graph_button);
 
         // Set button margins programatically
         params.setMargins(20, 20, 20, 10);
