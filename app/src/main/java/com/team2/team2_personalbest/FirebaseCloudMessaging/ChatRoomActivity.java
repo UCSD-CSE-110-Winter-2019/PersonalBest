@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,48 +16,63 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.team2.team2_personalbest.IUser;
 import com.team2.team2_personalbest.R;
+import com.team2.team2_personalbest.UserUtilities;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+  file name: ChatRoomActivity
+  function: main function for chat room
+ */
 public class ChatRoomActivity extends AppCompatActivity {
     String TAG = ChatRoomActivity.class.getSimpleName();
 
+    public static final String CHAT_MESSAGE_SERVICE_EXTRA = "CHAT_MESSAGE_SERVICE";
+    public static final String NOTIFICATION_SERVICE_EXTRA = "NOTIFICATION_SERVICE";
     static String COLLECTION_KEY = "chats";
-    //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
-    static String DOCUMENT_KEY = "frinedGraphTest";
+//    static String DOCUMENT_KEY = "frinedGraphTest";
     String MESSAGES_KEY = "messages";
-    String FROM_KEY = "from";
+    String FROM_KEY = "fromUserName";
     String TEXT_KEY = "text";
     String TIMESTAMP_KEY = "timestamp";
+    String DOCUMENT_KEY;
 
     CollectionReference chat;
-    //TODO set it to sender user id and receiver user id passed from the original activity
-    //TODO maybe using intent.putExtra?
-    //TODO also u dont need "to"  because we pass from former activity
-    String from;
-    String to;
+
+    String fromUserName;
+    String toUserName;
+    String fromUserEmail;
+    String toUserEmail;
+    int fromUserId;
+    int toUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setUpPopup();
+
+        // Get Friend Data
+        Bundle bundle = getIntent().getExtras();
+        toUserName = bundle.getString("friend_name");
+        toUserId = bundle.getInt("friend_id");
+        toUserEmail = bundle.getString("friend_email");
         //setTheme(android.R.style.Theme_DeviceDefault);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_room);
-        Intent intent = getIntent();
-        intent.getStringExtra("friend's name");
-        SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
+        super.onCreate(savedInstanceState);
+        //SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
 
-        from = sharedpreferences.getString(FROM_KEY, null);
-        //TODO this is sample
-        from = "Y";
-        //TODO get the name of person u r texting
-        to = "Duy";
-        TextView toTextView = (TextView) findViewById(R.id.user_name);
-        toTextView.setText(to);
+        // Get my Data
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        fromUserEmail = sharedPreferences.getString("userID", "");
+        fromUserName = sharedPreferences.getString("user name", "");
+        fromUserId = UserUtilities.emailToUniqueId(fromUserEmail);
 
+        Log.d("CHAT_ROOM", "User Name: "+toUserName);
+
+        DOCUMENT_KEY = Integer.toString(getChatID(toUserId, fromUserId));
         chat = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_KEY)
                 .document(DOCUMENT_KEY)
@@ -68,8 +82,8 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         findViewById(R.id.btn_send).setOnClickListener(view -> sendMessage());
         subscribeToNotificationsTopic();
-        //TODO edit from to userID
-        sharedpreferences.edit().putString(FROM_KEY, from);
+        //TODO edit fromUserName toUserName userID
+        sharedPreferences.edit().putString(FROM_KEY, fromUserName).apply();
     }
 
     private void setUpPopup() {
@@ -78,7 +92,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (openedFromGraph) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("openedFromGraph", false).apply();
-            setTheme(android.R.style.Theme_Material_Dialog_NoActionBar);
+            setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
         }
     }
 
@@ -87,7 +101,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         EditText messageView = findViewById(R.id.text_message);
 
         Map<String, String> newMessage = new HashMap<>();
-        newMessage.put(FROM_KEY, from);
+        newMessage.put(FROM_KEY, fromUserName);
         newMessage.put(TEXT_KEY, messageView.getText().toString());
 
         chat.add(newMessage).addOnSuccessListener(result -> {
@@ -95,6 +109,19 @@ public class ChatRoomActivity extends AppCompatActivity {
         }).addOnFailureListener(error -> {
             Log.e(TAG, error.getLocalizedMessage());
         });
+    }
+
+
+    /*
+        Takes two UserID's and gives their absolute difference,
+        Used to get ChatID for two users
+        returns ChatId as integer
+    */
+    private int getChatID(int user1, int user2){
+        if(user1 >= user2)
+            return user1-user2;
+        else
+            return user2-user1;
     }
 
 
@@ -128,9 +155,9 @@ public class ChatRoomActivity extends AppCompatActivity {
     private void subscribeToNotificationsTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic(DOCUMENT_KEY)
                 .addOnCompleteListener(task -> {
-                            String msg = "Subscribed to channel " + DOCUMENT_KEY;
+                            String msg = "Subscribed toUserName channel " + DOCUMENT_KEY;
                             if (!task.isSuccessful()) {
-                                msg = "Subscribe to notifications failed";
+                                msg = "Subscribe toUserName notifications failed";
                             }
                             Log.d(TAG, msg);
                             Toast.makeText(ChatRoomActivity.this, msg, Toast.LENGTH_SHORT).show();

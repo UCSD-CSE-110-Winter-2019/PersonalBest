@@ -9,6 +9,9 @@ import android.widget.Button;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+/*
+  function: this activity will be called when the user needs to login
+ */
 public class LoginActivity extends AppCompatActivity {
     private HomePage activity;
 

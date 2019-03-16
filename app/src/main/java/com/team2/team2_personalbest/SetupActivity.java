@@ -34,7 +34,7 @@ public class SetupActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("userID", email);
             editor.apply();
-            break;
+            //break;
         }
     }
 
