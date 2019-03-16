@@ -39,6 +39,9 @@ import java.util.Map;
 
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
+/**
+ * Graph for the friends of a user
+ */
 public class FriendGraph extends AppCompatActivity {
 
     Context context;
@@ -86,7 +89,9 @@ public class FriendGraph extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Get all walks of the given user and fill in the list
+     */
     private class FillEntriesTask extends AsyncTask<Integer, Void, List<BarEntry>> {
 
         @Override
@@ -126,7 +131,10 @@ public class FriendGraph extends AppCompatActivity {
     }
 
 
-
+    /**
+     * display the bar entries
+     * @param entries
+     */
     public void generateBarChart(List<BarEntry> entries) {
         CombinedChart chart = findViewById(R.id.chart);
         chart.setScaleEnabled(false);
@@ -169,7 +177,10 @@ public class FriendGraph extends AppCompatActivity {
         chart.invalidate();
     }
 
-    // @TODO fix goal line
+    /**
+     * Puts a line down
+     * @return
+     */
     private LineData generateLine() {
         LineData data = new LineData();
         int goal = 5000;
@@ -243,6 +254,10 @@ public class FriendGraph extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens the chat view
+     * @param view
+     */
     public void goToChat(View view){
         //setContentView(R.layout.activity_friend_graph);
         SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
