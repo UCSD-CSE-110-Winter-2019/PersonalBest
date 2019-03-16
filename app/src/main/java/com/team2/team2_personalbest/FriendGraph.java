@@ -1,5 +1,6 @@
 package com.team2.team2_personalbest;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,17 +41,33 @@ import static com.team2.team2_personalbest.HomePage.isNumeric;
 
 public class FriendGraph extends AppCompatActivity {
 
+    Context context;
+    ProgressDialog Dialog;
+    String myName;
+    String myEmail;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_graph);
+        context = this;
 
         //int friend_ID_string = getIntent().getInt("friend_ID");
+
+        // Get my Data
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        myEmail = sharedPreferences.getString("userID", "");
+        myName = sharedPreferences.getString("user name", "");
+
+
+        // Get Friend Data
         Bundle bundle = getIntent().getExtras();
-        String userName;
+
+        String friend_name;
         int friend_id;
         try {
-            //userName = bundle.getString("friend'sName");
+            friend_name = bundle.getString("friend_name");
             friend_id = bundle.getInt("friend_id");
         } catch (NullPointerException e) {
             friend_id = 0;
@@ -58,18 +75,27 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
+        Dialog = new ProgressDialog(this);
+        Dialog.setMessage("Loading ");
+        Dialog.show();
+
         new FillEntriesTask().execute(friend_id);
+    }
+    public void dismissDialog(){
+        Dialog.hide();
     }
 
 
 
     private class FillEntriesTask extends AsyncTask<Integer, Void, List<BarEntry>> {
 
-        Context mContext;
-
         @Override
         protected List<BarEntry> doInBackground(Integer... friends) {
-            FirestoreUser user = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
+
+
+
+            SharedPreferences userPref = context.getSharedPreferences("appname_prefs", 0);
+            FirestoreUser user = new FirestoreUser(userPref.getString("user name", "Anton"), userPref.getString("userID", "aopanis@gmail.com"));
             int friend = friends[0];
 
 //            List<Pair<Integer, Integer>> walks = user.getWalks(UserUtilities.emailToUniqueId(friend));
@@ -95,6 +121,7 @@ public class FriendGraph extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<BarEntry> entries) {
             generateBarChart(entries);
+            dismissDialog();
         }
     }
 
@@ -167,11 +194,10 @@ public class FriendGraph extends AppCompatActivity {
 
     }
 
-
     public void sendMessage(View view){
         String TAG = ChatRoomActivity.class.getSimpleName();
 
-        Toast toast = Toast.makeText(getApplicationContext(), "Your toast message.",
+        Toast toast = Toast.makeText(getApplicationContext(), "Message Sent",
                 Toast.LENGTH_SHORT);
         toast.show();
         String COLLECTION_KEY = "chats";
@@ -201,7 +227,6 @@ public class FriendGraph extends AppCompatActivity {
         }).addOnFailureListener(error -> {
             Log.e(TAG, error.getLocalizedMessage());
         });
-
     }
 
     public void goToChat(View view){

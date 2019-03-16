@@ -1,20 +1,29 @@
-package com.team2.team2_personalbest;
+package com.team2.team2_personalbest.UIDisplayTests;
 
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.team2.team2_personalbest.HomePage;
+import com.team2.team2_personalbest.R;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +42,7 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestGraphButton {
+public class TestHomePageDisplay {
 
     @Rule
     public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
@@ -48,7 +57,7 @@ public class TestGraphButton {
     }
 
     @Test
-    public void testGraphButton() {
+    public void testHomePageDisplay() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -58,44 +67,39 @@ public class TestGraphButton {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button), withText("Graph"),
+        /* Graph button is displayed */
+        ViewInteraction button = onView(
+                Matchers.allOf(ViewMatchers.withId(R.id.button),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 5),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        button.check(matches(isDisplayed()));
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction viewGroup = onView(
-                allOf(withId(R.id.chart),
+        /* Toggle planned walk button is displayed */
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.toggle_walk),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
+                                6),
+                        isDisplayed()));
+        button2.check(matches(isDisplayed()));
+
+        /* Set goal button is displayed */
+        ViewInteraction button3 = onView(
+                allOf(withId(R.id.set_goal),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout2),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                11)),
                                 0),
                         isDisplayed()));
-        viewGroup.check(matches(isDisplayed()));
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.walkHistBttn),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
+        button3.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

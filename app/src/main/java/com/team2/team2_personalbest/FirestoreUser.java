@@ -29,40 +29,53 @@ import static android.content.ContentValues.TAG;
 public class FirestoreUser extends IUser {
 
     // Make sure to init User
-    protected Friend User;
-    protected FirebaseFirestore db;
+    protected static volatile FirebaseFirestore db;
+
+
+    static FirebaseFirestore getDatabase() {
+        if(db == null) {
+            synchronized (FirebaseFirestore.class) {
+                if(db == null) {
+                    db = FirebaseFirestore.getInstance();
+                    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                            .setTimestampsInSnapshotsEnabled(true)
+                            .build();
+                    db.setFirestoreSettings(settings);
+                }
+            }
+        }
+        return db;
+    }
+    protected User user;
 
     /*
         Constructor
      */
     public FirestoreUser(String name, String email){
 
-        Friend me = new Friend(name, email);
+        IUser.User me = new User(name, email);
 
         //get Firestore
-        db = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
-        User = me;
+        Log.d("CREATED", "FirestoreUser: Initialized");
+        db = getDatabase();
+        user = me;
 
-        // Check if User needs to be added to firestore
+        // Check if user needs to be added to firestore
         // (Usually if its their first time)
-        if (!isUser(User.userID))
+        if (!isUser(user.userID))
             addUser();
 
-        if (!hasWalks(User.userID))
-            setWalks(getDummyWalks());
+//        if (!hasWalks(user.userID))
+//            setWalks(getDummyWalks());
 
 
-        //Testing Add Friend
-        //Friend myFriendToAdd = new Friend("joey", "joey@gmail.com");
+        //Testing Add user
+        //user myFriendToAdd = new user("joey", "joey@gmail.com");
         //addFriend(myFriendToAdd.userID);
 
 
         //Testing getWalksfor this user
-//        List<Pair<Integer, Integer>> walkList = getWalks(User.userID);
+//        List<Pair<Integer, Integer>> walkList = getWalks(user.userID);
 //        for (int i=0; i<walkList.size(); i++){
 //            String date = DateHelper.dayDateToString(DateHelper.previousDay(i));
 //            Log.d("GET WALKS FOR THIS USER", "\nDate: "+date+"\nPlanned:"+walkList.get(i).first
@@ -70,41 +83,27 @@ public class FirestoreUser extends IUser {
 //        }
     }
 
-    /*
-        Takes two UserID's and gives their absolute difference,
-        Used to get ChatID for two users
-        returns ChatId as integer
-    */
-    private int getChatID(Friend friendToChat){
-        int user1 = User.userID;
-        int user2 = friendToChat.userID;
-
-        if(user1 >= user2)
-            return user1-user2;
-        else
-            return user2-user1;
-    }
 
     /*
         Input is a List of Integer Pairs
-        Adds 30 Days Walk Data to Firestore under User History
+        Adds 30 Days Walk Data to Firestore under user History
      */
-    void setWalks(List<Pair<Integer, Integer>> walks) {
-        for(int i=0; i<walks.size(); i++) {
-
-            Date day = DateHelper.previousDay(i);
-            Pair<Integer, Integer> stepsPair = walks.get(i);
+    @Override
+    void setWalks(List<Day> walks) {
+        for(int i=walks.size()-1; i>=0; i--) {
+            Log.d("WALK_SIZE", "setWalks: " + walks.size());
+            Day stepsPair = walks.get(i);
 
             //Key to store under
-            String date = DateHelper.dayDateToString(day);
+            String date = stepsPair.getDayId();
 
 
             Map<String, Object> dayDataMap = new HashMap<>();
-            dayDataMap.put("Planned", stepsPair.first);
-            dayDataMap.put("Unplanned", stepsPair.second);
+            dayDataMap.put("Planned", stepsPair.getStepsTracked());
+            dayDataMap.put("Unplanned", stepsPair.getStepsUntracked());
 
             db.collection("Users")
-                    .document(Integer.toString(User.userID))
+                    .document(Integer.toString(user.userID))
                     .collection("/Walks/")
                     .document(date)
                     .set(dayDataMap)
@@ -123,6 +122,32 @@ public class FirestoreUser extends IUser {
         }
     }
 
+    public void addWalk(Day day) {
+        Log.d("ADD_WALK", "addWalk: walk added");
+        Map<String, Object> dayDataMap = new HashMap<>();
+        dayDataMap.put("Planned", day.getStepsTracked());
+        dayDataMap.put("Unplanned", day.getStepsUntracked());
+
+        db.collection("Users")
+                .document(Integer.toString(user.userID))
+                .collection("/Walks/")
+                .document(day.getDayId())
+                .set(dayDataMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+
+    }
+
     /*
         pre: ID is a user
         Used to add an app user to another App users FriendList given ID
@@ -139,19 +164,19 @@ public class FirestoreUser extends IUser {
 
         //TODO replace this log with a Toast!, giving the right activity context
         if(!isUser(ID)){
-            Log.d("ADD", "Trying to add :"+ ID +"\nWho is not an App User (yet) !");
+            Log.d("ADD", "Trying to add :"+ ID +"\nWho is not an App user (yet) !");
             return false;
         }
 
 
-        // If this Friend is not already a Friend
-        // And this Friend is a User
+        // If this user is not already a user
+        // And this user is a user
         Map<String, Object> friends = new HashMap<>();
         friends.put("FriendID", ID);
 
-        Log.d("ADD", "Adding Friend:"+ID+" to User:"+User.userID);
+        Log.d("ADD", "Adding user:"+ID+" to user:"+ user.userID);
         // Add a new document with a generated ID
-        db.collection("Users/" + User.userID + "/Friends")
+        db.collection("Users/" + user.userID + "/Friends")
                 .add(friends)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -176,9 +201,9 @@ public class FirestoreUser extends IUser {
     boolean isFriend(int ID){
 
         // Create a reference to the UsersFriends collection
-        CollectionReference usersFriendsRef = db.collection("Users/"+User.userID+"/Friends");
+        CollectionReference usersFriendsRef = db.collection("Users/"+ user.userID+"/Friends");
 
-        // Create a query against the collection to get This User
+        // Create a query against the collection to get This user
         Query query = usersFriendsRef.whereEqualTo("FriendID", ID);
 
         Log.d("IS_FRIEND", "Executing Query Task");
@@ -236,7 +261,7 @@ public class FirestoreUser extends IUser {
     List<Pair<Integer, Integer>> getWalks(int ID){
 
         if(!isUser(ID)){
-            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
+            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App user");
             return null;
         }
 
@@ -301,7 +326,7 @@ public class FirestoreUser extends IUser {
     boolean hasWalks(int ID){
 
         if(!isUser(ID)){
-            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App User");
+            Log.d("GET_WALKS", "Getting walks for :" + ID + "\nWho is not an App user");
             return false;
         }
 
@@ -338,12 +363,12 @@ public class FirestoreUser extends IUser {
     /*
         Used to get users most current friend list
      */
-    List<Friend> getFriendList(){
+    List<IUser.User> getFriendList(){
 
-        // Create a reference to this Users Friend
-        CollectionReference friendsListRef = db.collection("Users/"+User.userID+"/Friends");
+        // Create a reference to this Users user
+        CollectionReference friendsListRef = db.collection("Users/"+ user.userID+"/Friends");
 
-        List<Friend> friendList = new LinkedList<>();
+        List<IUser.User> friendList = new LinkedList<>();
 
         // Create a query against the collection to get Friends Walks on this Date
         Task<QuerySnapshot> task = friendsListRef.get();
@@ -365,8 +390,8 @@ public class FirestoreUser extends IUser {
                     long friendIDLong = (long)document.get("FriendID");
                     int friendID = Math.toIntExact(friendIDLong);
 
-                    // Call to method which gets Friend given ID from DB
-                    Friend thisFriend = getAppUser(friendID);
+                    // Call to method which gets user given ID from DB
+                    IUser.User thisFriend = getAppUser(friendID);
 
                     // Add thisFriend to FriendList
                     friendList.add(thisFriend);
@@ -386,12 +411,12 @@ public class FirestoreUser extends IUser {
 
     /*
        TODO
-       Scans our list of users and returns user as Friend Type given ID
+       Scans our list of users and returns user as user Type given ID
     */
-    Friend getAppUser(int ID){
-        Friend appUser = new Friend("", "");
+    IUser.User getAppUser(int ID){
+        IUser.User appUser = new User("", "");
         CollectionReference UsersRef = db.collection("Users");
-        // Create a query against the collection to get This User
+        // Create a query against the collection to get This user
         Query query = UsersRef.whereEqualTo("UserID", ID);
         Log.d("GET_USER", "Executing Query Task to get user: "+ID);
         Task<QuerySnapshot> task = query.get();
@@ -405,7 +430,7 @@ public class FirestoreUser extends IUser {
                 List<DocumentSnapshot> docList = document.getDocuments();
                 String email = docList.get(0).get("email").toString();
                 String name = docList.get(0).get("name").toString();
-                appUser = new Friend(name, email);
+                appUser = new User(name, email);
 
                 Log.d("GETTING_USER_DEB", "Size:"+docList.size());
             }
@@ -429,7 +454,7 @@ public class FirestoreUser extends IUser {
         // Create a reference to the Users collection
         CollectionReference UsersRef = db.collection("Users");
 
-        // Create a query against the collection to get This User
+        // Create a query against the collection to get This user
         Query query = UsersRef.whereEqualTo("UserID", ID);
 
         Log.d("IS_USER", "Executing Query Task");
@@ -463,17 +488,17 @@ public class FirestoreUser extends IUser {
 
     /*
         Adds a user to our total list of users
-        Meant to be used on sign up for each User
+        Meant to be used on sign up for each user
     */
     private void addUser(){
         // Create a new user To add to Firestore userList
         Map<String, Object> user = new HashMap<>();
-        user.put("name", User.name);
-        user.put("email", User.address);
-        user.put("UserID", User.userID);
+        user.put("name", this.user.name);
+        user.put("email", this.user.address);
+        user.put("UserID", this.user.userID);
 
         // Add a new document with a generated ID
-        db.collection("Users").document(Integer.toString(User.userID))
+        db.collection("Users").document(Integer.toString(this.user.userID))
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

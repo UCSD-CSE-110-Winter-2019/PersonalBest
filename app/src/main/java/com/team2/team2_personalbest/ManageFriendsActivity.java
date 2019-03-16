@@ -1,22 +1,23 @@
 package com.team2.team2_personalbest;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ManageFriendsActivity extends AppCompatActivity {
 
-    FirestoreUser db;
+    String myName;
+    String myEmail;
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -33,16 +34,16 @@ public class ManageFriendsActivity extends AppCompatActivity {
         friendsListView = findViewById(R.id.friendsListView);
 
         // TODO get name from sharedpreferences as well and pass that into the db constructor
-        SharedPreferences sharedPreferences = getSharedPreferences("userID", MODE_PRIVATE);
-        String email = sharedPreferences.getString("userID", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        myEmail = sharedPreferences.getString("userID", "");
+        myName = sharedPreferences.getString("user name", "");
 
         // TODO change this to also get passed in the name
 
-        //        Initializing Firestore User
+        //        Initializing Firestore user
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
-                db = new FirestoreUser("Shardul", "sssaiya@ucsd.edu");
                 displayFriends();
             }
         });
@@ -55,22 +56,19 @@ public class ManageFriendsActivity extends AppCompatActivity {
     }
 
     public void displayFriends() {
-        List<IUser.Friend> friends = db.getFriendList();
+        FirestoreUser db = new FirestoreUser(myName, myEmail);
+        List<IUser.User> friends = db.getFriendList();
 
-        /*List<IUser.Friend> testFriends = new ArrayList<>();
-        testFriends.add(new IUser.Friend("Daniel", "dfritsch@gmail.com"));
-        testFriends.add(new IUser.Friend("Panis", "aopanis@gmail.com"));
-        testFriends.add(new IUser.Friend("Shady", "shady@gmail.com"));
-        testFriends.add(new IUser.Friend("Yosuke", "yosuke@gmail.com"));
-        testFriends.add(new IUser.Friend("D", "D@gmail.com"));
-*/
         // Display all friends that both added each other
-        for (IUser.Friend friend : friends) {   // TODO change to 'friends'
-            addFriendToScrollable(friend);
+        for (IUser.User friend : friends) {   // TODO change to 'friends'
+            FirestoreUser friendDB = new FirestoreUser(friend.name, friend.address);
+            if(friendDB.isFriend(db.user.userID)) {
+                addFriendToScrollable(friend);
+            }
         }
     }
 
-    public void addFriendToScrollable(IUser.Friend friend) {
+    public void addFriendToScrollable(IUser.User friend) {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
         newFriend.setHeight(30);
@@ -83,8 +81,11 @@ public class ManageFriendsActivity extends AppCompatActivity {
         newFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), FriendGraph.class);
+                Intent intent = new Intent(v.getContext(), ChatOrGraph.class);
+                Log.d("MANAGE_FRIENDS", "\nFriend:"+friend.name+"\nID:"+friend.userID);
                 intent.putExtra("friend_id", friend.userID);
+                intent.putExtra("friend_name", friend.name);
+                intent.putExtra("friend_email", friend.address);
                 startActivity(intent);
             }
         });
@@ -101,8 +102,15 @@ public class ManageFriendsActivity extends AppCompatActivity {
         TextView emailField = findViewById(R.id.emailPromptField);
         String emailAddress = emailField.getText().toString();
 
+
         // Add friend to curr user's friend list by the email's unique hashed ID
-        db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                FirestoreUser db = new FirestoreUser(myName, myEmail);
+                db.addFriend(UserUtilities.emailToUniqueId(emailAddress));
+            }
+        }).start();
     }
 
 //    public void removeButtonOnClick(View view) {
@@ -111,6 +119,6 @@ public class ManageFriendsActivity extends AppCompatActivity {
 //        // TOD get name that corresponds to email
 //
 //        // TOD get name's email address
-//        // TOD delete Friend object from database
+//        // TOD delete user object from database
 //    }
 }
