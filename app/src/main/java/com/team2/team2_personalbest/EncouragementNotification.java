@@ -17,13 +17,14 @@ import com.team2.team2_personalbest.GoalAccomplished;
 import com.team2.team2_personalbest.R;
 
 public class EncouragementNotification {
-
+    public static boolean called;
     private static final int FIVE_HUNDRED_INCREMENT = 500;
 
     /**
      * Create a channel to be used for the popup
      */
     private static void createNotificationChannel(Context context) {
+        called = false;
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -45,6 +46,7 @@ public class EncouragementNotification {
      */
 
     public static void sendNotification(Context context){
+        called = true;
         Intent intent = new Intent(context, GoalAccomplished.class);
         //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
@@ -90,6 +92,7 @@ public class EncouragementNotification {
         Day currentDay = dayDatabase.dayDao().getDayById(currentDayID);
         String yesterdayID = DateHelper.dayDateToString(DateHelper.previousDay(1));
         Day yesterday = dayDatabase.dayDao().getDayById(yesterdayID);
+
 
         int yesterdayTotal = yesterday.getStepsTracked()+yesterday.getStepsUntracked();
         int currentStepsTotal = currentDay.getStepsTracked()+currentDay.getStepsUntracked();

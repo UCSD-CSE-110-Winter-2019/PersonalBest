@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GraphActivity">
+    tools:context=".FriendGraph">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,31 +16,41 @@
         <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="648dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
             tools:layout_editor_absoluteX="99dp"
             tools:layout_editor_absoluteY="16dp">
 
         </com.github.mikephil.charting.charts.CombinedChart>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-            <TextView
+            <EditText
                 android:id="@+id/textView"
                 android:layout_width="299dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:hint="Send a message to this friend" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Chat"
-                android:onClick="goToChat"/>
+                android:onClick="sendMessage"
+                android:text="send" />
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="goToChat"
+                android:text="Chat Room" />
         </LinearLayout>
     </LinearLayout>
 
