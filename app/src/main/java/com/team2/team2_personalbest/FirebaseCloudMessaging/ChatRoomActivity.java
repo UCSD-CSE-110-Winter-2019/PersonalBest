@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/*
+  file name: ChatRoomActivity
+  function: main function for chat room
+ */
 public class ChatRoomActivity extends AppCompatActivity {
     String TAG = ChatRoomActivity.class.getSimpleName();
 

@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+
+/*
+  function: adapter for firebase firestore
+ */
 public class FirebaseFirestoreAdapter implements ChatMessageService {
     private static FirebaseFirestoreAdapter singeleton;
 

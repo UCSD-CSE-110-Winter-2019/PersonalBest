@@ -3,6 +3,9 @@ package com.team2.team2_personalbest.FirebaseCloudMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/*
+  fucntion: sserive for firebase messaging
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
