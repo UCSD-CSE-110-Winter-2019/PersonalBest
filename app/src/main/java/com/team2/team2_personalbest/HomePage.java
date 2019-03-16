@@ -283,6 +283,7 @@ public class HomePage extends AppCompatActivity {
      * @param stepCount total steps from googleFit
      */
     public void setStepCount(long stepCount) {
+        Log.d("SET_STEP", "setStepCount: called");
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
         String milesDisplay = String.format(Locale.US, "%.1f %s", StatisticsUtilities.convertInchToMile(totalDistanceInInch),
@@ -327,10 +328,15 @@ public class HomePage extends AppCompatActivity {
                     if (user.getFriendList().size() == 0) {
                         EncouragementNotification.sendNotification(context);
                     }
-                    updateDatabase((int) stepCount, plannedSteps);
                 }
             }).start();
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateDatabase((int) stepCount, plannedSteps);
+            }
+        }).start();
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
 
@@ -354,7 +360,7 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    private void updateDatabase(int stepCount, int plannedSteps) {
+    public void updateDatabase(int stepCount, int plannedSteps) {
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
