@@ -304,7 +304,7 @@ public class HomePage extends AppCompatActivity {
         String name = userStore.getString("user name", "");
         String email = userStore.getString("userID", "");
 
-        updateDatabase((int) stepCount, plannedSteps, name, email);
+        updateDatabase((int) stepCount, plannedSteps);
 
         //Update steps left
         this.stepsLeft = this.goal - (int)stepCount;
@@ -339,7 +339,7 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    private void updateDatabase(int stepCount, int plannedSteps, String name, String email) {
+    private void updateDatabase(int stepCount, int plannedSteps) {
         new Thread(new Runnable() {
             @Override
             public void run() {
