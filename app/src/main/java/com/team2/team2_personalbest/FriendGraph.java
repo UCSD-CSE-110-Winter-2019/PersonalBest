@@ -1,5 +1,6 @@
 package com.team2.team2_personalbest;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,10 @@ import static com.team2.team2_personalbest.HomePage.isNumeric;
 public class FriendGraph extends AppCompatActivity {
 
     Context context;
+    ProgressDialog Dialog;
+    String myName;
+    String myEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +54,20 @@ public class FriendGraph extends AppCompatActivity {
         context = this;
 
         //int friend_ID_string = getIntent().getInt("friend_ID");
+
+        // Get my Data
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        myEmail = sharedPreferences.getString("userID", "");
+        myName = sharedPreferences.getString("user name", "");
+
+
+        // Get Friend Data
         Bundle bundle = getIntent().getExtras();
-        String userName;
+
+        String friend_name;
         int friend_id;
         try {
-            //userName = bundle.getString("friend'sName");
+            friend_name = bundle.getString("friend_name");
             friend_id = bundle.getInt("friend_id");
         } catch (NullPointerException e) {
             friend_id = 0;
@@ -61,7 +75,14 @@ public class FriendGraph extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
+        Dialog = new ProgressDialog(this);
+        Dialog.setMessage("Loading ");
+        Dialog.show();
+
         new FillEntriesTask().execute(friend_id);
+    }
+    public void dismissDialog(){
+        Dialog.hide();
     }
 
 
@@ -70,6 +91,9 @@ public class FriendGraph extends AppCompatActivity {
 
         @Override
         protected List<BarEntry> doInBackground(Integer... friends) {
+
+
+
             SharedPreferences userPref = context.getSharedPreferences("appname_prefs", 0);
             FirestoreUser user = new FirestoreUser(userPref.getString("user name", "Anton"), userPref.getString("userID", "aopanis@gmail.com"));
             int friend = friends[0];
@@ -97,6 +121,7 @@ public class FriendGraph extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<BarEntry> entries) {
             generateBarChart(entries);
+            dismissDialog();
         }
     }
 
