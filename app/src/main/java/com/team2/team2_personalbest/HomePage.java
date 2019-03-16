@@ -98,10 +98,21 @@ public class HomePage extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         notificationToChat();
     }
-
+    /*
+    // TODO Possible bug
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }
+    }*/
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
-        notificationToChat();
+        /*Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            startActivity(new Intent(this, ChatRoomActivity.class));
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
@@ -205,20 +216,6 @@ public class HomePage extends AppCompatActivity {
 //        setUserName();
     }
 
-    private void notificationToChat() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            Object value;
-            for (String key : getIntent().getExtras().keySet()) {
-                if (key.equals("from")) {
-                    Log.d("launchedFromNoti", key);
-                    startActivity(new Intent(this, ChatRoomActivity.class));
-                    Log.d("NotificationTag", "........");
-                }
-            }
-
-        }
-    }
 
 
     //TODO On Resume
@@ -469,7 +466,7 @@ public class HomePage extends AppCompatActivity {
         toggle_walk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (planned_walk){ //user was on planned walk, wants to end it
+                if (planned_walk){ //User was on planned walk, wants to end it
 
                     psDailyTotal += psStepsThisWalk; //update running total of daily planned steps
 
