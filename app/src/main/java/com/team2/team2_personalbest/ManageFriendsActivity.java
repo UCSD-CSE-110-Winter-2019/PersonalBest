@@ -1,3 +1,6 @@
+/*
+ * Fire to manage adding friends and communicating with the database. Activity displays friend list
+ */
 package com.team2.team2_personalbest;
 
 import android.content.Intent;
@@ -18,6 +21,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
 
     String myName;
     String myEmail;
+    static int friend_counter = 0;
+
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -55,6 +60,9 @@ public class ManageFriendsActivity extends AppCompatActivity {
 //        }
     }
 
+    /**
+     * Adds all friends to the scrollable view
+     */
     public void displayFriends() {
         FirestoreUser db = new FirestoreUser(myName, myEmail);
         List<IUser.User> friends = db.getFriendList();
@@ -68,10 +76,17 @@ public class ManageFriendsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adds one friend as a button to the list scrollable view.
+     * @param friend
+     */
     public void addFriendToScrollable(IUser.User friend) {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
         newFriend.setHeight(30);
+
+        if (friend_counter++ == 0)
+            newFriend.setId(R.id.friend_graph_button);
 
         // Set button margins programatically
         params.setMargins(20, 20, 20, 10);
@@ -98,6 +113,11 @@ public class ManageFriendsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Adds an onclick such that when the user clicks on a friend button, they get the option to go
+     * to the graph or to the chat for the friend.
+     * @param view
+     */
     public void addButtonOnClick(View view) {
         TextView emailField = findViewById(R.id.emailPromptField);
         String emailAddress = emailField.getText().toString();
@@ -112,13 +132,4 @@ public class ManageFriendsActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-//    public void removeButtonOnClick(View view) {
-//        TextView emailField = findViewById(R.id.emailPromptField);
-//        String emailAddress = emailField.getText().toString();
-//        // TOD get name that corresponds to email
-//
-//        // TOD get name's email address
-//        // TOD delete user object from database
-//    }
 }
