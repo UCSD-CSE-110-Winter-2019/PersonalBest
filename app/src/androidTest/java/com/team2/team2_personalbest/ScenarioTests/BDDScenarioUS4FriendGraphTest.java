@@ -1,8 +1,9 @@
-package com.team2.team2_personalbest;
+package com.team2.team2_personalbest.ScenarioTests;
 
 
 import android.content.Intent;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -10,8 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.team2.team2_personalbest.FriendGraph;
+import com.team2.team2_personalbest.HomePage;
+import com.team2.team2_personalbest.R;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
@@ -34,7 +40,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class BDDScenarioUS4FriendGraphTest {
 
@@ -62,7 +67,7 @@ public class BDDScenarioUS4FriendGraphTest {
         }
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.manageFriendsButton)));
+                Matchers.allOf(ViewMatchers.withId(R.id.manageFriendsButton)));
         appCompatButton2.perform(click());
 
         // Added a sleep statement to match the app's execution delay.
@@ -75,7 +80,7 @@ public class BDDScenarioUS4FriendGraphTest {
         }
 
         ViewInteraction button = onView(
-                allOf(withId(R.id.friend_graph_button)));
+              allOf(withId(R.id.friend_graph_button)));
         button.perform(scrollTo(), click());
 
         // Added a sleep statement to match the app's execution delay.
