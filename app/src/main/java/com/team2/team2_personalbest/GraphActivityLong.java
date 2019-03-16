@@ -34,7 +34,7 @@ import java.util.List;
 import static com.team2.team2_personalbest.HomePage.isNumeric;
 
 /**
- * This activity displays the graph
+ * This activity displays the graph in long format
  */
 
 public class GraphActivityLong extends AppCompatActivity {

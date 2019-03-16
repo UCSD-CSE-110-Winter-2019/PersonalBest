@@ -105,7 +105,9 @@ public class GraphActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * get all the data from the local database
+     */
     private class FillEntriesTask extends AsyncTask<DayDatabase, Void, List<BarEntry>> {
 
         Context mContext;
@@ -141,7 +143,10 @@ public class GraphActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * display the bar chart
+     * @param entries
+     */
     public void generateBarChart(List<BarEntry> entries) {
         CombinedChart chart = findViewById(R.id.chart);
         chart.setScaleEnabled(false);
@@ -207,18 +212,6 @@ public class GraphActivity extends AppCompatActivity {
 
     }
 
-    //TODO change
-    public void goToChat(View view){
-        //setContentView(R.layout.activity_friend_graph);
-        SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("openedFromGraph", true).apply();
-        Intent intent = new Intent(this, ChatRoomActivity.class);
-        String from ="Shady";
-        //from = intent.getStringExtra("Shady");
-        intent.putExtra("friend's name", from);
-        startActivity(intent);
-    }
 
     public void goToLongGraph(View view) {
         Intent intent = new Intent(this, GraphActivityLong.class);

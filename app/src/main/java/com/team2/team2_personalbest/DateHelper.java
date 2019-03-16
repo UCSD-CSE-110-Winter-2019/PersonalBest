@@ -15,17 +15,29 @@ public class DateHelper {
     private static String[] daysOfWeek = {"Sat", "Sun", "Mon", "Tues", "Wed",
             "Thurs", "Fri"};
 
+    /**
+     * @param daysAgo
+     * @return return the previous date
+     */
     public static Date previousDay(int daysAgo) {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -daysAgo);
         return cal.getTime();
     }
 
+    /**
+     * @param day
+     * @return the string format of the date
+     */
     public static String dayDateToString(Date day) {
         DateFormat dateFormat = new SimpleDateFormat("MM-dd-yy", Locale.US);
         return dateFormat.format(day);
     }
 
+    /**
+     * @param dayOfWeek
+     * @return get the last seven days of the week
+     */
     public static String[] getLastSevenWeekDays(int dayOfWeek) {
         String[] days = new String[7];
         dayOfWeek += 1;
@@ -38,6 +50,9 @@ public class DateHelper {
         return days;
     }
 
+    /**
+     * get current day of the week
+     */
     public static int getDayOfWeek() {
         Calendar cal = Calendar.getInstance();
         return cal.get(Calendar.DAY_OF_WEEK);
