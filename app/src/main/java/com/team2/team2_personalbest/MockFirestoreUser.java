@@ -64,9 +64,10 @@ public class MockFirestoreUser extends IUser {
     }
 
     @Override
-    void setWalks(List<Pair<Integer, Integer>> walks) {
+    void setWalks(List<Day> walks) {
 
     }
+
 
     @Override
     List<IUser.User> getFriendList() {
