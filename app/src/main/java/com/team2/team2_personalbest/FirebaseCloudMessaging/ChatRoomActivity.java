@@ -50,6 +50,11 @@ public class ChatRoomActivity extends AppCompatActivity {
     int fromUserId;
     int toUserId;
 
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setUpPopup();
@@ -86,6 +91,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         sharedPreferences.edit().putString(FROM_KEY, fromUserName).apply();
     }
 
+    /**
+     * function: setting pop up
+     */
     private void setUpPopup() {
         SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
         boolean openedFromGraph = sharedPreferences.getBoolean("openedFromGraph", false);
@@ -96,6 +104,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * function: sending message
+     */
     private void sendMessage() {
 
         EditText messageView = findViewById(R.id.text_message);
@@ -125,6 +136,9 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * initiate listener for message
+     */
     private void initMessageUpdateListener() {
         chat.orderBy(TIMESTAMP_KEY, Query.Direction.ASCENDING)
                 .addSnapshotListener((newChatSnapShot, error) -> {
@@ -152,6 +166,9 @@ public class ChatRoomActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * fuunction: subscribe the user
+     */
     private void subscribeToNotificationsTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic(DOCUMENT_KEY)
                 .addOnCompleteListener(task -> {
