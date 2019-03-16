@@ -19,6 +19,8 @@ public class ManageFriendsActivity extends AppCompatActivity {
     String myName;
     String myEmail;
 
+    static boolean firstFriendButton = true;
+
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -72,6 +74,11 @@ public class ManageFriendsActivity extends AppCompatActivity {
         Button newFriend = new Button(this);
         newFriend.setText(friend.toString());
         newFriend.setHeight(30);
+
+        if (firstFriendButton){
+            newFriend.setId(R.id.friend_graph_button);
+            firstFriendButton = false;
+        }
 
         // Set button margins programatically
         params.setMargins(20, 20, 20, 10);
