@@ -94,10 +94,10 @@ public class HomePage extends AppCompatActivity {
     Context context;
 
     // TODO Possible bug
-    @Override
-    protected void onNewIntent(Intent intent) {
-        notificationToChat();
-    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        notificationToChat();
+//    }
     /*
     // TODO Possible bug
     @Override
