@@ -18,6 +18,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,15 +27,20 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestStepsTakenPersists {
+public class ManageFriendTest {
 
     @Rule
     public ActivityTestRule<HomePage> mActivityTestRule = new ActivityTestRule<>(HomePage.class, false, false);
@@ -49,7 +55,7 @@ public class TestStepsTakenPersists {
     }
 
     @Test
-    public void testStepsTakenPersists() {
+    public void manageFriendTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -59,18 +65,23 @@ public class TestStepsTakenPersists {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton = onView(
-                Matchers.allOf(ViewMatchers.withId(R.id.add500Button), withText("Add 500 Steps"),
-                        isDisplayed()));
-        appCompatButton.perform(click());
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button), withText("Graph"),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.manageFriendsButton),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        12),
+                                1),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.manageFriendsButton), withText("Manage Friends"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        12),
+                                1),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
@@ -78,25 +89,15 @@ public class TestStepsTakenPersists {
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(700);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        pressBack();
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.step_taken)));
-        textView.check(matches(withText("500 Steps taken")));
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.addUserButton),
+                        isDisplayed()));
+        button2.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
