@@ -68,6 +68,7 @@ public class MockFirestoreUser extends IUser {
 
     }
 
+
     @Override
     List<IUser.User> getFriendList() {
         return null;

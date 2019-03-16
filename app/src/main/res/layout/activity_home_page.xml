@@ -149,7 +149,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Add 500 Steps" />
+            android:text="@string/add_500_steps" />
 
         <Button
             android:id="@+id/manageFriendsButton"
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:onClick="launchManageFriendsActivity"
-            android:text="Manage Friends" />
+            android:text="@string/manage_friends" />
     </LinearLayout>
 
 
