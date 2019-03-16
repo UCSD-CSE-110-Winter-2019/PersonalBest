@@ -84,20 +84,6 @@ public class FirestoreUser extends IUser {
 //        }
     }
 
-    /*
-        Takes two UserID's and gives their absolute difference,
-        Used to get ChatID for two users
-        returns ChatId as integer
-    */
-    private int getChatID(IUser.User friendToChat){
-        int user1 = user.userID;
-        int user2 = friendToChat.userID;
-
-        if(user1 >= user2)
-            return user1-user2;
-        else
-            return user2-user1;
-    }
 
     /*
         Input is a List of Integer Pairs
