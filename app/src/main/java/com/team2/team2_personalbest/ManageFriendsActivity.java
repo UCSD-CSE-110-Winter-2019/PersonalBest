@@ -19,7 +19,7 @@ public class ManageFriendsActivity extends AppCompatActivity {
     String myName;
     String myEmail;
 
-    static boolean firstFriendButton = true;
+    boolean firstFriendButton = true;
 
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
