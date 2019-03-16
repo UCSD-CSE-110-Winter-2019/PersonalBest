@@ -441,9 +441,12 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get increment field int value
-                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
-                if (planned_walk) psDailyTotal += FIVE_HUNDRED_INCREMENT;
-                manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
+//                int totalNewSteps = psBaseline + FIVE_HUNDRED_INCREMENT;
+//                if (planned_walk) psDailyTotal += FIVE_HUNDRED_INCREMENT;
+//                manualStepsAddedTotal += FIVE_HUNDRED_INCREMENT;
+                int totalNewSteps = psBaseline + 5;
+                if (planned_walk) psDailyTotal += 5;
+                manualStepsAddedTotal += 5;
                 setStepCount(totalNewSteps);
             }
         });
