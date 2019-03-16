@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.team2.team2_personalbest.FirebaseCloudMessaging.ChatRoomActivity;
 import com.team2.team2_personalbest.fitness.FitnessService;
 import com.team2.team2_personalbest.fitness.FitnessServiceFactory;
@@ -90,17 +91,21 @@ public class HomePage extends AppCompatActivity {
     /*Firebase User*/
     //probably wont work because FirestoreUser must be called from a separate thread
     private FirestoreUser user;
+    Context context;
 
     // TODO Possible bug
     @Override
     protected void onNewIntent(Intent intent) {
         notificationToChat();
     }
+
     //TODO OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         notificationToChat();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        context = this;
 
         if (getIntent().getExtras() != null) {
             isTesting = getIntent().getExtras().getBoolean("TESTING");
@@ -122,7 +127,6 @@ public class HomePage extends AppCompatActivity {
         this.psDailyTotal = PS.getInt("psDailyTotal");
         this.psStepsThisWalk = PS.getInt("psStepsThisWalk");
         this.psBaseline = PS.getInt("psBaseline");
-
 
 
         //Getting XML elements
@@ -163,8 +167,7 @@ public class HomePage extends AppCompatActivity {
                 firstTime.setBool("init", true);
             }
             setInitialGoal();
-        }
-        else {
+        } else {
             fitnessService.setup();
         }
         toggleWalk();
@@ -198,8 +201,6 @@ public class HomePage extends AppCompatActivity {
         }
 
 
-
-
         //FUNCTION TO GET USERNAME AND ADD TO SHARED PREFERENCES
 //        setUserName();
     }
@@ -228,7 +229,7 @@ public class HomePage extends AppCompatActivity {
         TextViewStepsLeft = (TextView) findViewById(R.id.steps_left);
         SharedPreferences sharedPreferences = getSharedPreferences("goal", MODE_PRIVATE);
         String newGoal = sharedPreferences.getString("newgoal", "");
-        if(isNumeric(newGoal)){
+        if (isNumeric(newGoal)) {
             this.goal = Integer.parseInt(newGoal);
             this.stepsLeft = this.goal;
             TextViewStepsLeft.setText(newGoal);
@@ -239,19 +240,19 @@ public class HomePage extends AppCompatActivity {
         //TODO Store the height
         SharedPreferences heightPref = getSharedPreferences("height", MODE_PRIVATE);
         String height = heightPref.getString("height", "");
-        if(isNumeric(height)){
+        if (isNumeric(height)) {
             this.userHeight = Double.parseDouble(height);
         }
     }
 
     /**
      * Author: josephl310
-     *
+     * <p>
      * This should end planned walks when the app is quit
      */
     // TODO On Destroy
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         planned_walk = false;
         SharedPref PS = new SharedPref(this);
         PS.setInt("psDailyTotal", this.psDailyTotal);
@@ -266,7 +267,7 @@ public class HomePage extends AppCompatActivity {
             public void run() {
                 List<Day> days = dayDatabase.dayDao().getAllDays();
                 List<Day> last30Days;
-                if(days.size() > 30) {
+                if (days.size() > 30) {
                     last30Days = days.subList(0, 30);
                 } else {
                     last30Days = days;
@@ -279,26 +280,24 @@ public class HomePage extends AppCompatActivity {
     }
 
     /**
-     *
      * @param stepCount total steps from googleFit
-     *
      */
-    public void setStepCount(long stepCount){
+    public void setStepCount(long stepCount) {
         String stepCountDisplay = String.format(Locale.US, "%d %s", stepCount, getString(R.string.steps_taken));
         double totalDistanceInInch = stepCount * averageStrideLength;
         String milesDisplay = String.format(Locale.US, "%.1f %s", StatisticsUtilities.convertInchToMile(totalDistanceInInch),
-                                            getString(R.string.miles_taken));
+                getString(R.string.miles_taken));
 
         textViewStepCount.setText(stepCountDisplay);
         textViewDistance.setText(milesDisplay);
 
         //total daily steps should always be >= to planned
-        if (stepCount < psDailyTotal){
+        if (stepCount < psDailyTotal) {
             psDailyTotal = 0;
         }
 
-        psStepsThisWalk = (int)stepCount - psBaseline; //Current walk steps
-        setPsBaseline((int)stepCount);
+        psStepsThisWalk = (int) stepCount - psBaseline; //Current walk steps
+        setPsBaseline((int) stepCount);
         int plannedSteps = psStepsThisWalk + psDailyTotal; //Add current walk steps to total daily steps
 
         String plannedStepCountDisplay = String.format(Locale.US, "%d %s", plannedSteps,
@@ -312,23 +311,31 @@ public class HomePage extends AppCompatActivity {
         String name = userStore.getString("user name", "");
         String email = userStore.getString("userID", "");
 
-        updateDatabase((int) stepCount, plannedSteps);
 
         //Update steps left
-        this.stepsLeft = this.goal - (int)stepCount;
+        this.stepsLeft = this.goal - (int) stepCount;
         //For when reached the goal
         if (this.stepsLeft <= 0) {
             this.stepsLeft = 0;
             goalReached = new SharedPref(this);
             goalReached.setBool("goalReached", true);
             launchEncouragementPopup();
-            EncouragementNotification.sendNotification(this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    FirestoreUser user = new FirestoreUser(name, email);
+                    if (user.getFriendList().size() == 0) {
+                        EncouragementNotification.sendNotification(context);
+                    }
+                    updateDatabase((int) stepCount, plannedSteps);
+                }
+            }).start();
         }
         String stepsLeft = String.valueOf(this.stepsLeft);
         TextViewStepsLeft.setText(stepsLeft);
 
         //update planned walk stats
-        if(planned_walk) {
+        if (planned_walk) {
             updateStats();
         }
 
@@ -339,7 +346,7 @@ public class HomePage extends AppCompatActivity {
     GET USERNAME OR ID FROM GOOGLE ACCOUNT ON SIGN IN
      */
 
-    private void setUserName(){
+    private void setUserName() {
         //here
 
         userName = new SharedPref(this);
@@ -348,33 +355,36 @@ public class HomePage extends AppCompatActivity {
     }
 
     private void updateDatabase(int stepCount, int plannedSteps) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("CREATED_HOMEPAGE", "run: ran updateDatabase");
-                //Initializes a new Day row like this !
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+        Log.d("CREATED_HOMEPAGE", "run: ran updateDatabase");
+        //Initializes a new Day row like this !
 
 
-                String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
-                Log.d("HomePage", date);
-                Day currentDay = dayDatabase.dayDao().getDayById(date);
-                if(currentDay == null) {
-                    currentDay = new Day(date, plannedSteps, stepCount);
-                    dayDatabase.dayDao().insertSingleDay(currentDay);
-                } else {
-                    currentDay.setStepsTracked(psDailyTotal);
-                    currentDay.setStepsUntracked(stepCount);
-                    dayDatabase.dayDao().updateDay(currentDay);
-                }
-
+        String date = DateHelper.dayDateToString(DateHelper.previousDay(0));
+        Log.d("HomePage", date);
+        Day currentDay = dayDatabase.dayDao().getDayById(date);
+        if (currentDay == null) {
+            currentDay = new Day(date, plannedSteps, stepCount);
+            dayDatabase.dayDao().insertSingleDay(currentDay);
+        } else {
+            currentDay.setStepsTracked(psDailyTotal);
+            currentDay.setStepsUntracked(stepCount);
+            dayDatabase.dayDao().updateDay(currentDay);
+        }
 
 
 //                loggerForTesting();
-                EncouragementNotification.sendSubNotification(HomePage.this, dayDatabase);
-
-            }
-        }).start();
+        SharedPreferences preferences = HomePage.this.getSharedPreferences("appname_prefs", 0);
+        String email = preferences.getString("userID", "aopanis@gmail.com");
+        String name = preferences.getString("user name", "panis");
+        FirestoreUser user = new FirestoreUser(name, email);
+        if (user.getFriendList().size() == 0) {
+            EncouragementNotification.sendSubNotification(HomePage.this, dayDatabase);
+        }
     }
+//        }).start();
 
     //TODO Buttons
 
