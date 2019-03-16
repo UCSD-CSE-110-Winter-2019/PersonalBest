@@ -30,7 +30,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     public static final String CHAT_MESSAGE_SERVICE_EXTRA = "CHAT_MESSAGE_SERVICE";
     public static final String NOTIFICATION_SERVICE_EXTRA = "NOTIFICATION_SERVICE";
     static String COLLECTION_KEY = "chats";
-    //TODO change the Document Key e.g. chat between yosuke and duy -> duyyosuke(alphabetcal order)
 //    static String DOCUMENT_KEY = "frinedGraphTest";
     String MESSAGES_KEY = "messages";
     String FROM_KEY = "fromUserName";
@@ -59,7 +58,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         //setTheme(android.R.style.Theme_DeviceDefault);
         setContentView(R.layout.chat_room);
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
+        //SharedPreferences sharedpreferences = getSharedPreferences("FirebaseLabApp", Context.MODE_PRIVATE);
 
         // Get my Data
         SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
@@ -82,9 +81,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         findViewById(R.id.btn_send).setOnClickListener(view -> sendMessage());
         subscribeToNotificationsTopic();
         //TODO edit fromUserName toUserName userID
-        sharedpreferences.edit().putString(FROM_KEY, fromUserName);
-
-
+        sharedPreferences.edit().putString(FROM_KEY, fromUserName).apply();
     }
 
     private void setUpPopup() {
@@ -93,7 +90,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         if (openedFromGraph) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("openedFromGraph", false).apply();
-            setTheme(android.R.style.Theme_Material_Dialog_NoActionBar);
+            setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
         }
     }
 

@@ -201,23 +201,37 @@ public class FriendGraph extends AppCompatActivity {
                 Toast.LENGTH_SHORT);
         toast.show();
         String COLLECTION_KEY = "chats";
-        String DOCUMENT_KEY = "frinedGraphTest";
         String MESSAGES_KEY = "messages";
-        String FROM_KEY = "from";
+        String FROM_KEY = "fromUserName";
         String TEXT_KEY = "text";
         String TIMESTAMP_KEY = "timestamp";
+        String DOCUMENT_KEY;
 
         CollectionReference chat;
-        //TODO set it to sender user id and receiver user id passed from the original activity
-        //TODO maybe using intent.putExtra?
-        //TODO also u dont need "to"  because we pass from former activity
-        String from = "Shady";
-        String to;
+
+        String fromUserName;
+        String toUserName;
+        String fromUserEmail;
+        String toUserEmail;
+        int fromUserId;
+        int toUserId;
+
+        Bundle bundle = getIntent().getExtras();
+        toUserName = bundle.getString("friend_name");
+        toUserId = bundle.getInt("friend_id");
+        toUserEmail = bundle.getString("friend_email");
+
+        // Get my Data
+        SharedPreferences sharedPreferences = getSharedPreferences("appname_prefs", MODE_PRIVATE);
+        fromUserEmail = sharedPreferences.getString("userID", "");
+        fromUserName = sharedPreferences.getString("user name", "");
+        fromUserId = UserUtilities.emailToUniqueId(fromUserEmail);
 
         EditText messageView = findViewById(R.id.textView);
         Map<String, String> newMessage = new HashMap<>();
-        newMessage.put(FROM_KEY, from);
+        newMessage.put(FROM_KEY, fromUserName);
         newMessage.put(TEXT_KEY, messageView.getText().toString());
+        DOCUMENT_KEY = Integer.toString(getChatID(toUserId, fromUserId));
         chat = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_KEY)
                 .document(DOCUMENT_KEY)
@@ -234,11 +248,27 @@ public class FriendGraph extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("popup", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("openedFromGraph", true).apply();
+        // Retrieve username from previous activity
+        Bundle bundle = getIntent().getExtras();
+        String userName;
+        int friend_id;
+        try {
+            //userName = bundle.getString("friend'sName");
+            friend_id = bundle.getInt("friend_id");
+        } catch (NullPointerException e) {
+            friend_id = 0;
+        }
         Intent intent = new Intent(this, ChatRoomActivity.class);
-        String from ="Shady";
-        //from = intent.getStringExtra("Shady");
-        intent.putExtra("friend's name", from);
+        // Pass username to next activity
+        intent.putExtra("friend_id", friend_id);
         startActivity(intent);
+        finish();
+    }
+    private int getChatID(int user1, int user2){
+        if(user1 >= user2)
+            return user1-user2;
+        else
+            return user2-user1;
     }
 
 
