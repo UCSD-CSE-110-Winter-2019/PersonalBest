@@ -8,6 +8,6 @@ Languages/Frameworks: Java, Android
 
 APIs: Google Sign-In, Google Fit, Firebase Cloud Messaging, Firebase Cloud Firestore 
 
-Design Patterns: Strategy, Adapter, Observer, Factory, MVP
-
 Tools: Android Studio, JUnit, Expresso, Robolectric, Zenhub, CircleCI, Git
+
+Design Patterns: Strategy, Adapter, Observer, Factory, MVP
