@@ -12,4 +12,4 @@ Tools: Android Studio, JUnit, Expresso, Robolectric, Zenhub, CircleCI, Git
 
 Design Patterns: Strategy, Adapter, Observer, Factory, MVP
 
-![alt text](https://raw.githubusercontent.com/ngoduy1001/PersonalBest/tree/master/app/src/main/res/Screenshot_1554232413.png)
+![alt text](https://raw.githubusercontent.com/ngoduy1001/PersonalBest/master/app/src/main/res/Screenshot_1554232413.png)
