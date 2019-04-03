@@ -11,3 +11,5 @@ APIs: Google Sign-In, Google Fit, Firebase Cloud Messaging, Firebase Cloud Fires
 Tools: Android Studio, JUnit, Expresso, Robolectric, Zenhub, CircleCI, Git
 
 Design Patterns: Strategy, Adapter, Observer, Factory, MVP
+
+![alt text](https://raw.githubusercontent.com/ngoduy1001/PersonalBest/blob/master/app/src/main/res/Screenshot_1554232413.png)
